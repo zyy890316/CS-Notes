@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
+import linkedlist.ListNode;
+
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20树.md
 public class Solutions {
 	// 树的高度
@@ -79,6 +81,7 @@ public class Solutions {
 	}
 
 	// 判断路径和是否等于一个数
+	// root-to-leaf path only
 	public boolean hasPathSum(TreeNode root, int targetSum) {
 		if (root == null) {
 			return false;
@@ -92,6 +95,7 @@ public class Solutions {
 	}
 
 	// 统计路径和等于一个数的路径数量
+	// 路径可为任意起始
 	public int pathSum(TreeNode root, int targetSum) {
 		if (root == null)
 			return 0;
@@ -131,7 +135,7 @@ public class Solutions {
 		return root.val == subRoot.val && isSameTree(root.left, subRoot.left) && isSameTree(root.right, subRoot.right);
 	}
 
-	// 树的对称
+	// 判断树是否对称
 	public boolean isSymmetric(TreeNode root) {
 		if (root == null)
 			return true;
@@ -347,6 +351,7 @@ public class Solutions {
 	}
 
 	// 前中后序遍历 - 非递归
+	// 前序
 	public List<Integer> preorderTraversal(TreeNode root) {
 		final List<Integer> visit = new ArrayList<Integer>();
 		if (root == null)
@@ -473,7 +478,7 @@ public class Solutions {
 		if (root == null)
 			return null;
 
-		Stack<TreeNode> stack = new Stack();
+		Stack<TreeNode> stack = new Stack<TreeNode>();
 		stack.add(root);
 		while (!stack.isEmpty()) {
 			TreeNode cNode = stack.pop();
@@ -523,4 +528,95 @@ public class Solutions {
 		TreeNode root = new TreeNode(nums[mid], toBST(nums, s, mid - 1), toBST(nums, mid + 1, e));
 		return root;
 	}
+
+	// 根据有序链表构造平衡的二叉查找树
+	public TreeNode sortedListToBST(ListNode head) {
+		if (head == null)
+			return null;
+		if (head.next == null)
+			return new TreeNode(head.val);
+		if (head.next.next == null)
+			return new TreeNode(head.next.val, new TreeNode(head.val), null);
+
+		ListNode slow = head;
+		ListNode fast = head.next;
+		ListNode pNode = head; // p node is the node before slow
+
+		while (fast != null && fast.next != null) {
+			pNode = slow;
+			slow = slow.next;
+			fast = fast.next.next;
+		}
+		ListNode newHead = slow.next;
+		pNode.next = null;
+		return new TreeNode(slow.val, sortedListToBST(head), sortedListToBST(newHead));
+	}
+
+	// 在二叉查找树中寻找两个节点，使它们的和为一个给定值
+	// 最优解： 使用中序遍历得到有序数组之后，再利用双指针对数组进行查找。
+	public boolean findTarget(TreeNode root, int k) {
+		if (root == null)
+			return false;
+
+		Stack<TreeNode> stack = new Stack<TreeNode>();
+		stack.add(root);
+		while (!stack.isEmpty()) {
+			TreeNode cNode = stack.pop();
+			if (cNode != null) {
+				if (findTargetFromNode(root, cNode, k)) {
+					return true;
+				}
+				stack.add(cNode.left);
+				stack.add(cNode.right);
+			}
+		}
+		return false;
+	}
+
+	private boolean findTargetFromNode(TreeNode root, TreeNode cNode, int k) {
+		if (cNode == null)
+			return false;
+		if (cNode.val * 2 == k)
+			return false;
+
+		return ifTargetExist(root, k - cNode.val);
+	}
+
+	private boolean ifTargetExist(TreeNode root, int k) {
+		if (root == null)
+			return false;
+		if (root.val == k)
+			return true;
+
+		if (k > root.val) {
+			return ifTargetExist(root.right, k);
+		}
+
+		return ifTargetExist(root.left, k);
+	}
+
+	// 在二叉查找树中查找两个节点之差的最小绝对值
+	public int getMinimumDifference(TreeNode root) {
+		if (root == null)
+			return -1;
+		List<Integer> ordered = new ArrayList<Integer>();
+		inOrderBST(root, ordered);
+		int min = Integer.MAX_VALUE;
+		for (int i = 0; i < ordered.size() - 1; i++) {
+			min = Math.min(min, Math.abs(ordered.get(i) - ordered.get(i + 1)));
+		}
+		return min;
+	}
+
+	private List<Integer> inOrderBST(TreeNode root, List<Integer> ordered) {
+		if (root == null)
+			return ordered;
+		inOrderBST(root.left, ordered);
+		ordered.add(root.val);
+		inOrderBST(root.right, ordered);
+		return ordered;
+	}
+
+	// 寻找二叉查找树中出现次数最多的值
+	// 中序遍历，过程中检查出现次数就好
 }
