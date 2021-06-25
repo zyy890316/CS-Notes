@@ -158,4 +158,33 @@ public class Solutions {
 		}
 		return false;
 	}
+
+	// 统计二进制字符串中连续 1 和连续 0 数量相同的子字符串个数
+	// 由于子字符串里0和1必须连续，所以首先都连续的0和1分组
+	// If we have groups[i] = 2, groups[i+1] = 3, then it represents either "00111"
+	// or "11000".
+	// 然后遍历所有的分组即可， min(groups[i], groups[i+1])即为i组起始的子字符串个数
+	public int countBinarySubstrings(String s) {
+		int group[] = new int[s.length()];
+		Arrays.fill(group, 0); // 0 means no more element there.
+		int index = 0; // index pointing to the end of the array
+		group[0] = 1;
+		for (int i = 1; i < s.length(); i++) {
+			if (s.charAt(i) == s.charAt(i - 1)) {
+				group[index]++;
+			} else {
+				index++;
+				group[index]++;
+			}
+		}
+
+		int count = 0;
+		for (int i = 0; i < group.length - 1; i++) {
+			if (group[i] == 0) {
+				break;
+			}
+			count += Math.min(group[i], group[i + 1]);
+		}
+		return count;
+	}
 }
