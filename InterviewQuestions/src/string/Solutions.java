@@ -47,4 +47,115 @@ public class Solutions {
 		}
 		return true;
 	}
+
+	// 计算一组字符集合可以组成的回文字符串的最大长度
+	public int longestPalindromeInString(String s) {
+		int[] cnts = new int[256];
+		for (char c : s.toCharArray()) {
+			cnts[c]++;
+		}
+		int palindrome = 0;
+		for (int cnt : cnts) {
+			palindrome += (cnt / 2) * 2;
+		}
+		if (palindrome < s.length()) {
+			palindrome++; // 这个条件下 s 中一定有单个未使用的字符存在，可以把这个字符放到回文的最中间
+		}
+		return palindrome;
+	}
+
+	// 字符串同构
+	// 记录一个字符上次出现的位置，如果两个字符串中的字符上次出现的位置一样，那么就属于同构。
+	public boolean isIsomorphic(String s, String t) {
+		int[] sPreIndex = new int[256];
+		int[] tPreIndex = new int[256];
+
+		if (s.length() != t.length()) {
+			return false;
+		}
+		for (int i = 0; i < s.length(); i++) {
+			char sc = s.charAt(i);
+			char tc = t.charAt(i);
+			if (sPreIndex[sc] != tPreIndex[tc]) {
+				return false;
+			}
+			sPreIndex[sc] = i + 1;
+			tPreIndex[tc] = i + 1;
+		}
+		return true;
+	}
+
+	// 最长回文substing
+	// https://www.youtube.com/watch?v=g3R-pjUNa3k
+	public String longestPalindrome(String s) {
+		int start = 0;
+		int maxLength = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int currLength = Math.max(getLen(s, i, i), getLen(s, i, i + 1));
+			if (currLength > maxLength) {
+				maxLength = currLength;
+				start = i - (currLength - 1) / 2;
+			}
+		}
+		return s.substring(start, start + maxLength);
+	}
+
+	// l and r are start index, if they equal, we are checking "ese" pattern
+	// if not equal, we are checking "esse" pattern
+	private int getLen(String s, int l, int r) {
+		while (l >= 0 && r < s.length()) {
+			if (s.charAt(l) == s.charAt(r)) {
+				l--;
+				r++;
+			} else {
+				break;
+			}
+		}
+		return r - l - 1;
+	}
+
+	// 回文子字符串个数
+	public int countSubstrings(String s) {
+		int sum = 0;
+		for (int i = 0; i < s.length(); i++) {
+			sum += getCount(s, i, i) + getCount(s, i, i + 1);
+		}
+		return sum;
+	}
+
+	private int getCount(String s, int l, int r) {
+		int count = 0;
+		while (l >= 0 && r < s.length()) {
+			if (s.charAt(l) == s.charAt(r)) {
+				l--;
+				r++;
+				count++;
+			} else {
+				break;
+			}
+		}
+		return count;
+	}
+
+	// 判断一个整数是否是回文数
+	// 将整数分成左右两部分，右边那部分需要转置，然后判断这两部分是否相等。
+	public boolean isPalindrome(int x) {
+		if (x == 0) {
+			return true;
+		}
+		if (x < 0 || x % 10 == 0) {
+			return false;
+		}
+
+		int right = 0;
+		while (x > right) {
+			right = right * 10 + x % 10;
+			if (right == x)
+				return true;
+			x /= 10;
+			if (right == x)
+				return true;
+		}
+		return false;
+	}
 }
