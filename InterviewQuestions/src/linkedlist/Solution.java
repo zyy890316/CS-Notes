@@ -1,5 +1,7 @@
 package linkedlist;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20链表.md
@@ -31,7 +33,7 @@ public class Solution {
 	public ListNode reverseList(ListNode head) {
 		if (head == null || head.next == null)
 			return head;
-		ListNode pHead, preNode = head;
+		ListNode preNode = head;
 		ListNode currNode = head.next;
 		while (currNode != null) {
 			ListNode nextNode = currNode.next;
@@ -50,7 +52,6 @@ public class Solution {
 		if (l2 == null)
 			return l1;
 		ListNode merged = new ListNode(-1);
-		ListNode cNode = new ListNode(-1);
 		if (l1.val <= l2.val) {
 			merged = l1;
 			l1 = l1.next;
@@ -227,7 +228,6 @@ public class Solution {
 	public ListNode oddEvenList(ListNode head) {
 		if (head == null || head.next == null)
 			return head;
-		ListNode oddHead = new ListNode(-1, head);
 		ListNode evenHead = new ListNode(-1, head.next);
 
 		ListNode oddNode = head;
@@ -242,5 +242,47 @@ public class Solution {
 		}
 		oddNode.next = evenHead.next;
 		return head;
+	}
+
+	// 链表是否有环
+	// https://leetcode.com/problems/linked-list-cycle/
+	// 直接用hashmap，会使用额外空间
+	// 不用额外空间：https://www.youtube.com/watch?v=bxCb37nLXWM 快慢双指针，相遇则有环
+	public boolean hasCycle(ListNode head) {
+		Map<ListNode, Boolean> visited = new HashMap<ListNode, Boolean>();
+		while (head != null) {
+			if (visited.containsKey(head)) {
+				return true;
+			}
+			visited.put(head, true);
+			head = head.next;
+		}
+		return false;
+	}
+
+	// 查找链表环的位置
+	// https://leetcode.com/problems/linked-list-cycle-ii/
+	// 分析：https://www.cnblogs.com/hiddenfox/p/3408931.html
+	public ListNode detectCycle(ListNode head) {
+		if (head == null || head.next == null)
+			return null;
+		ListNode slow = head;
+		ListNode fast = head;
+		while (true) {
+			if (fast == null || fast.next == null) {
+				return null; // 遇到null了，说明不存在环
+			}
+			slow = slow.next;
+			fast = fast.next.next;
+			if (slow == fast)
+				break;
+		}
+
+		slow = head;
+		while (slow != fast) {
+			slow = slow.next;
+			fast = fast.next;
+		}
+		return slow;
 	}
 }

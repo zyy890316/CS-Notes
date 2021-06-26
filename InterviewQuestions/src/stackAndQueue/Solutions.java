@@ -2,6 +2,7 @@ package stackAndQueue;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -160,5 +161,20 @@ public class Solutions {
 			indexs.add(n);
 		}
 		return next;
+	}
+
+	// Kth Largest Element in an Array
+	// use minHeap, 只放比栈顶大的，方k个，这样栈顶肯定是kth largest
+	public int findKthLargest(int[] nums, int k) {
+		PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>();
+		for (int num : nums) {
+			if (maxHeap.size() < k || maxHeap.peek() <= num) {
+				maxHeap.offer(num);
+			}
+			if (maxHeap.size() > k) {
+				maxHeap.poll();
+			}
+		}
+		return maxHeap.peek();
 	}
 }

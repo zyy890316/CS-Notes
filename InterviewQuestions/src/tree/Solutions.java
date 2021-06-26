@@ -390,6 +390,9 @@ public class Solutions {
 		return visit;
 	}
 
+	// 二叉查找树（BST）：根节点大于等于左子树所有节点，小于等于右子树所有节点。
+	// 二叉查找树DFS中序遍历有序。
+
 	// 修剪二叉查找树
 	// 只保留值在 L ~ R 之间的节点
 	public TreeNode trimBST(TreeNode root, int low, int high) {
