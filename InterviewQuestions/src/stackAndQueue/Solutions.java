@@ -177,4 +177,71 @@ public class Solutions {
 		}
 		return maxHeap.peek();
 	}
+
+	// Remove All Adjacent Duplicates In String (1047)
+	// 用堆栈最方便
+	// https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/
+	public String removeDuplicates(String s) {
+		Stack<Character> result = new Stack<Character>();
+		char[] sArray = s.toCharArray();
+
+		for (int i = 0; i < sArray.length; i++) {
+			if (result.isEmpty()) {
+				result.add(sArray[i]);
+				continue;
+			}
+			if (result.peek() == sArray[i]) {
+				result.pop();
+			} else {
+				result.push(sArray[i]);
+			}
+		}
+		char[] resultArray = new char[result.size()];
+		for (int i = result.size() - 1; i >= 0; i--) {
+			resultArray[i] = result.pop();
+		}
+		return String.valueOf(resultArray);
+	}
+
+	// 1209. Remove All Adjacent Duplicates in String II
+	// https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/
+	// 移除任意k长度的duplicate
+	public String removeDuplicates(String s, int k) {
+		Stack<CharCount> stack = new Stack<CharCount>();
+		char[] sArray = s.toCharArray();
+		for (char ch : sArray) {
+			if (stack.isEmpty()) {
+				stack.push(new CharCount(ch, 1));
+				continue;
+			}
+			if (ch == stack.peek().ch) {
+				CharCount current = stack.pop();
+				current.count++;
+				if (current.count < k) {
+					stack.push(current);
+				}
+			} else {
+				stack.push(new CharCount(ch, 1));
+			}
+		}
+
+		StringBuilder sb = new StringBuilder();
+		while (!stack.isEmpty()) {
+			CharCount cc = stack.pop();
+			for (int i = 0; i < cc.count; i++) {
+				sb.append(cc.ch);
+			}
+		}
+		return sb.reverse().toString();
+	}
+
+	public class CharCount {
+		char ch;
+		int count;
+
+		public CharCount(char ch, int count) {
+			this.ch = ch;
+			this.count = count;
+		}
+	}
 }

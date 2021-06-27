@@ -2,9 +2,17 @@ package doublepointer;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import linkedlist.ListNode;
+
 public class Solutions {
+	public static void main(String[] args) {
+		maxArea(new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 });
+		trapDP(new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 });
+	}
+
 	// 反转string
 	// https://leetcode.com/problems/reverse-string
 	public char[] reverseString(char[] str) {
@@ -25,25 +33,60 @@ public class Solutions {
 
 	// 数组去除重复元素
 	// https://leetcode.com/problems/remove-duplicates-from-sorted-array
-	// i指向数组当前排好的位置
+	// slow指向数组当前排好的位置
 	public int removeDuplicates(int[] nums) {
 		if (nums.length < 2)
 			return nums.length;
-		int i = 1;
-		int j = 1;
-		while (j < nums.length && i < nums.length) {
-			if (nums[i] > nums[i - 1]) {
-				i++;
-				j++;
-			} else {
-				if (nums[j] > nums[i - 1]) {
-					nums[i] = nums[j];
-				} else {
-					j++;
-				}
+		int slow = 1;
+		int fast = 1;
+		while (fast < nums.length) {
+			if (nums[slow] > nums[slow - 1]) {
+				slow++;
+				fast++;
+				continue;
+			} else if (nums[fast] > nums[slow - 1]) {
+				nums[slow] = nums[fast];
+				slow++;
+				fast++;
+				continue;
 			}
+			fast++;
 		}
-		return i;
+		return slow;
+	}
+
+	// Remove Duplicates From Sorted Array II (80)
+	// 已经排序的数组，重复元素最多出现2次
+	// https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
+	// slow的意义:第一个意义是下一个valid的number应该被填在slow的位置
+	// 第二个意义是slow以前的array是一个符合题意的valid的array，
+	// 所以对于每个fast指向的number，我们只需要和在slow-2这个位置的数对比，如果相同，则此数重复，移动fast到下一位；
+	// 如果不同，则此数valid，需要填在slow这个index里，然后同时移动slow和fast
+	public int removeDuplicatesII(int[] nums) {
+		if (nums.length <= 2)
+			return nums.length;
+		int slow = 2;
+		int fast = 2;
+		while (fast < nums.length) {
+			if (isValid(nums, fast)) {
+				nums[slow] = nums[fast];
+				slow++;
+				fast++;
+				continue;
+			}
+			if (isValid(nums, slow)) {
+				slow++;
+				fast++;
+				continue;
+			}
+			fast++;
+		}
+		return slow;
+	}
+
+	public boolean isValid(int[] nums, int index) {
+		return ((nums[index] != nums[index - 1] || nums[index] != nums[index - 2]) && nums[index] >= nums[index - 1]
+				&& nums[index] >= nums[index - 2]);
 	}
 
 	// 有序数组的 Two Sum
@@ -137,4 +180,189 @@ public class Solutions {
 		}
 		return true;
 	}
+
+	// 归并两个有序数组，把归并结果存到第一个数组上
+	// 需要从尾开始遍历，否则在 nums1 上归并得到的值会覆盖还未进行归并比较的值。
+	// https://leetcode.com/problems/merge-sorted-array/description/
+	public void merge(int[] nums1, int m, int[] nums2, int n) {
+		int index1 = m - 1, index2 = n - 1;
+		int indexMerge = m + n - 1;
+		while (indexMerge >= 0) {
+			if (index1 < 0) {
+				nums1[indexMerge--] = nums2[index2--];
+			} else if (index2 < 0) {
+				break;
+			} else if (nums1[index1] > nums2[index2]) {
+				// nums1 中因为后面插入了0来补充数组长度，所以改变元素需要交换
+				int temp = nums1[index1];
+				nums1[index1] = nums1[indexMerge];
+				nums1[indexMerge] = temp;
+				indexMerge--;
+				index1--;
+			} else {
+				nums1[indexMerge--] = nums2[index2--];
+			}
+		}
+	}
+
+	// 判断链表是否存在环
+	// 使用双指针，一个指针每次移动一个节点，一个指针每次移动两个节点，如果存在环，那么这两个指针一定会相遇。
+	// https://leetcode.com/problems/linked-list-cycle/description/
+	public boolean hasCycle(ListNode head) {
+		if (head == null) {
+			return false;
+		}
+		ListNode l1 = head, l2 = head.next;
+		while (l1 != null && l2 != null && l2.next != null) {
+			if (l1 == l2) {
+				return true;
+			}
+			l1 = l1.next;
+			l2 = l2.next.next;
+		}
+		return false;
+	}
+
+	// 最长子序列：删除 s 中的一些字符，使得它构成字符串列表 d 中的一个字符串，找出能构成的最长字符串。如果有多个相同长度的结果，返回字典序的最小字符串
+	// 通过删除字符串 s 中的一个字符能得到字符串 t，可以认为 t 是 s 的子序列，我们可以使用双指针来判断一个字符串是否为另一个字符串的子序列。
+	// https://leetcode.com/problems/longest-word-in-dictionary-through-deleting/description/
+	public String findLongestWord(String s, List<String> dictionary) {
+		String longestWord = "";
+		for (String target : dictionary) {
+			int l1 = longestWord.length(), l2 = target.length();
+			if (l1 > l2 || (l1 == l2 && longestWord.compareTo(target) < 0)) {
+				continue;
+			}
+			if (isSubsequence(s, target)) {
+				longestWord = target;
+			}
+		}
+		return longestWord;
+	}
+
+	private boolean isSubsequence(String s, String target) {
+		if (s.length() < target.length()) {
+			return false;
+		}
+		int i = 0;
+		int j = 0;
+		while (j < target.length() && i < s.length()) {
+			if (s.charAt(i) == target.charAt(j)) {
+				i++;
+				j++;
+			} else {
+				i++;
+			}
+		}
+		return j == target.length();
+	}
+
+	// Container With Most Water (11)
+	// 左右指针指向数组两端，遇到高度比之前低的，肯定容积会变小，跳过，并把较低的板子向内侧移动来查找更高的
+	// https://leetcode.com/problems/container-with-most-water
+	public static int maxArea(int[] height) {
+		int max = 0;
+		int maxHeight = 0;
+		int i = 0;
+		int j = height.length - 1;
+		while (i < j) {
+			int currHeight = Math.min(height[i], height[j]);
+			if (maxHeight >= currHeight) {
+				if (height[i] <= height[j]) {
+					i++;
+				} else {
+					j--;
+				}
+				continue;
+			}
+			int currArea = currHeight * (j - i);
+			if (currArea > max) {
+				max = currArea;
+				maxHeight = currHeight;
+			}
+
+			if (height[i] <= height[j]) {
+				i++;
+			} else {
+				j--;
+			}
+		}
+		return max;
+	}
+
+	// Trapping Rain Water (42)
+	// https://leetcode.com/problems/trapping-rain-water/solution/
+	// https://www.youtube.com/watch?v=StH5vntauyQ
+	// 双指针：先求左右边界，然后左右指针循环
+	// 如果左边最大值小，左边现在的节点能积多少水只取决于左边最大值，
+	// 同理，如果右边最大值小，右边现在的节点能积多少水只取决于右边最大值
+	public int trap(int[] height) {
+		int leftBound = 0;
+		int rightBound = height.length - 1;
+		while (leftBound < height.length - 1) {
+			if (height[leftBound] > 0) {
+				break;
+			}
+			leftBound++;
+		}
+		while (rightBound > 0) {
+			if (height[rightBound] > 0 && height[rightBound] > height[rightBound - 1]) {
+				break;
+			}
+			rightBound--;
+		}
+		if (leftBound >= rightBound - 1) {
+			return 0;
+		}
+		int i = leftBound;
+		int j = rightBound;
+		int leftMax = height[leftBound];
+		int rightMax = height[rightBound];
+		int rain = 0;
+		while (i < j) {
+			if (leftMax <= rightMax) {
+				rain += leftMax - height[i];
+				i++;
+				leftMax = Math.max(leftMax, height[i]);
+			} else {
+				rain += rightMax - height[j];
+				j--;
+				rightMax = Math.max(rightMax, height[j]);
+			}
+		}
+		return rain;
+	}
+
+	// DP: 基于brutal force方法
+	// 最简单的想法：当前格子能积多少水，只需要查看左右两边最高的板子即可
+	// 故记录下两个数组，分别存储从左和从右开始算的最大值，然后只需遍历即可
+	public static int trapDP(int[] height) {
+		int[] leftMax = new int[height.length];
+		int[] rightMax = new int[height.length];
+		int max = 0;
+		for (int i = 0; i < height.length; i++) {
+			max = Math.max(max, height[i]);
+			leftMax[i] = max;
+		}
+		max = 0;
+		for (int i = height.length - 1; i >= 0; i--) {
+			max = Math.max(max, height[i]);
+			rightMax[i] = max;
+		}
+
+		int rain = 0;
+		for (int i = 0; i < height.length; i++) {
+			int leftBar = leftMax[i];
+			int rightBar = rightMax[i];
+			int currBucketHeight = Math.min(leftBar, rightBar);
+			if (currBucketHeight > height[i]) {
+				rain += currBucketHeight - height[i];
+			}
+		}
+		return rain;
+	}
+
+	// 283. Move Zeroes
+	// 含0已经排序的数组，要求把非0数字移到队列最后
+	// 双指针分别指向最左的非零和零元素位置，不停交换
 }
