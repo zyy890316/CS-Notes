@@ -109,6 +109,8 @@ public class Solutions {
 	}
 
 	// 课程安排的合法性: 拓扑排序，查看是否有环
+	// 图为单向图，只用考察入度来判断环
+	// https://leetcode.com/problems/course-schedule/description/
 	// https://www.youtube.com/watch?v=fskPWs3Nuhc
 	public boolean canFinish(int numCourses, int[][] prerequisites) {
 		Map<Integer, Set<Integer>> graph = new HashMap<Integer, Set<Integer>>();
@@ -155,7 +157,8 @@ public class Solutions {
 	}
 
 	// 课程安排的顺序
-	// 拓扑排序
+	// 拓扑排序，图为单向图，有可能有环，所有只用考察入度
+	// https://leetcode.com/problems/course-schedule-ii/description/
 	public static int[] findOrder(int numCourses, int[][] prerequisites) {
 		Map<Integer, Set<Integer>> graph = new HashMap<Integer, Set<Integer>>();
 		int[] indegree = new int[numCourses];
@@ -201,5 +204,60 @@ public class Solutions {
 			}
 		}
 		return ordered.stream().mapToInt(Integer::intValue).toArray();
+	}
+
+	// 并查集
+	// 并查集可以动态地连通两个点，并且可以非常快速地判断两个点是否连通。
+	class DSU {
+		int[] parent;
+		int[] rank;
+
+		DSU(int size) {
+			this.parent = new int[size];
+			for (int i = 0; i < size; i++)
+				parent[i] = i;
+			this.rank = new int[size];
+		}
+
+		public int find(int x) {
+			if (parent[x] != x) {
+				parent[x] = find(parent[x]);
+			}
+			return parent[x];
+		}
+
+		public boolean union(int x, int y) {
+			int xParent = find(x);
+			int yParent = find(y);
+			if (xParent == yParent) {
+				return false;
+			}
+			if (rank[xParent] < rank[yParent]) {
+				parent[xParent] = yParent;
+			} else if (rank[xParent] > rank[yParent]) {
+				parent[yParent] = xParent;
+			} else {
+				parent[yParent] = xParent;
+				rank[xParent]++;
+			}
+			return true;
+		}
+	}
+
+	// 并查集：冗余连接
+	// https://leetcode.com/problems/redundant-connection/solution/
+	// 直接使用并查集遍历所有边，在有边之前两点已经连接的话，说明这条边多余
+	public int[] findRedundantConnection(int[][] edges) {
+		int n = edges.length;
+		DSU dsu = new DSU(n + 1);
+		for (int[] edge : edges) {
+			int a = edge[0];
+			int b = edge[1];
+			// a previous edge already connect a and b, then current edge is dup
+			if (!dsu.union(a, b)) {
+				return edge;
+			}
+		}
+		return new int[] { -1, -1 };
 	}
 }
