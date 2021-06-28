@@ -12,7 +12,7 @@ import java.util.Stack;
 import linkedlist.ListNode;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20树.md
-public class Solutions {
+public class TreeSolutions {
 	// 树的高度
 	public int maxDepth(TreeNode root) {
 		if (root == null)

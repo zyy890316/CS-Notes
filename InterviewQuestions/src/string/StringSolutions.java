@@ -3,7 +3,7 @@ package string;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class Solutions {
+public class StringSolutions {
 	public static void main(String[] args) {
 		moveRight("abcd123", 3);
 		reverseWords("I am a student");

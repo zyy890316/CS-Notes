@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
-public class Solutions {
+public class StackAndQueue {
 	// 用两个栈实现队列
 	class MyQueue {
 		final Stack<Integer> in;

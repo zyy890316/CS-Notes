@@ -2,7 +2,7 @@ package metrix;
 
 import java.util.PriorityQueue;
 
-public class Solutions {
+public class Metrix {
 	// 把数组中的 0 移到末尾，并保持非零元素顺序
 	public static void moveZeroes(int[] nums) {
 		for (int i = 0; i < nums.length; i++) {

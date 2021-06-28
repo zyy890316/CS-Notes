@@ -9,7 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
-public class Solutions {
+public class Graph {
 	public static void main(String[] args) {
 		int[][] graph = { { 4, 1 }, { 2, 0 }, { 3, 1 }, { 4, 2 }, { 0, 3 } };
 		int[][] dislikes = { { 1, 2 }, { 3, 4 }, { 1, 3 }, { 1, 4 } };

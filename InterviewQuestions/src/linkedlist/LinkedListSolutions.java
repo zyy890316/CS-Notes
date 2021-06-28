@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Stack;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20链表.md
-public class Solution {
+public class LinkedListSolutions {
 	// 找出两个链表的交点
 	public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 		// 当访问 A 链表的指针访问到链表尾部时，令它从链表 B 的头部开始访问链表 B；

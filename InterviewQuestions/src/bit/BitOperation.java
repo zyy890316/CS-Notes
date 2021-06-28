@@ -1,6 +1,6 @@
 package bit;
 
-public class Solutions {
+public class BitOperation {
 	// https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20位运算.md
 	// https://www.baeldung.com/java-bitwise-operators
 
