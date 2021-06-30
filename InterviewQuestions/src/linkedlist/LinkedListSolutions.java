@@ -7,6 +7,15 @@ import java.util.Stack;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20链表.md
 public class LinkedListSolutions {
+	public static void main(String args[]) {
+		ListNode head = new ListNode(1);
+		head.next = new ListNode(2);
+		head.next.next = new ListNode(3);
+		head.next.next.next = new ListNode(4);
+		head.next.next.next.next = new ListNode(5);
+		reverseBetween(head, 2, 4);
+	}
+
 	// 找出两个链表的交点
 	public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 		// 当访问 A 链表的指针访问到链表尾部时，令它从链表 B 的头部开始访问链表 B；
@@ -46,6 +55,65 @@ public class LinkedListSolutions {
 		return preNode;
 	}
 
+	// 递归链表反转
+	public ListNode reverseListRecursive(ListNode head) {
+		if (head == null || head.next == null)
+			return head;
+
+		ListNode reversed_head = reverseListRecursive(head.next);
+		// reversed_head will be the new head of reversed LinkedList
+		// head.next is not changed.
+		head.next.next = head;
+		head.next = null;
+		return reversed_head;
+	}
+
+	// 反转部分链表
+	// https://leetcode.com/problems/reverse-linked-list-ii/
+	public static ListNode reverseBetween(ListNode head, int left, int right) {
+		if (head == null || head.next == null || left == right)
+			return head;
+		ListNode currNode = head;
+		ListNode leftLeftNode = new ListNode(Integer.MIN_VALUE, head);
+		ListNode leftNode = null;
+		ListNode rightNode = null;
+		ListNode rightRightNode = null;
+		int count = 1;
+		while (currNode != null) {
+			if (count == left - 1) {
+				leftLeftNode = currNode;
+			}
+			if (count == left) {
+				leftNode = currNode;
+			}
+			if (count == right) {
+				rightNode = currNode;
+				break;
+			}
+			currNode = currNode.next;
+			count++;
+		}
+		rightRightNode = rightNode.next;
+		leftLeftNode.next = reverseListTillStop(leftNode, rightNode);
+		leftNode.next = rightRightNode;
+		return left == 1 ? leftLeftNode.next : head;
+	}
+
+	public static ListNode reverseListTillStop(ListNode head, ListNode stop) {
+		if (head.next == stop) {
+			stop.next = head;
+			head.next = null;
+			return stop;
+		}
+
+		ListNode reversed_head = reverseListTillStop(head.next, stop);
+		// reversed_head will be the new head of reversed LinkedList
+		// head.next is not changed.
+		head.next.next = head;
+		head.next = null;
+		return reversed_head;
+	}
+
 	// 归并两个有序的链表
 	public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 		if (l1 == null)
@@ -77,6 +145,22 @@ public class LinkedListSolutions {
 			}
 		}
 		return head;
+	}
+
+	// 链表删除节点，只给了需删除节点，没给头
+	// https://leetcode.com/problems/delete-node-in-a-linked-list/
+	public void deleteNode(ListNode node) {
+		if (node == null)
+			return;
+		if (node.next == null) {
+			node = null;
+			return;
+		}
+
+		node.val = node.next.val;
+		node.next = node.next.next;
+		node = node.next;
+		return;
 	}
 
 	// 删除链表的倒数第 n 个节点
@@ -429,4 +513,7 @@ public class LinkedListSolutions {
 		}
 		return maxChunks;
 	}
+
+	// 25. Reverse Nodes in k-Group
+	// https://leetcode.com/problems/reverse-nodes-in-k-group/
 }

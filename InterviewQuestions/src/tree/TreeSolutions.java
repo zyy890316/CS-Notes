@@ -241,7 +241,6 @@ public class TreeSolutions {
 	private int nodeValue(TreeNode cNode, boolean parentRobbed) {
 		if (cNode == null)
 			return 0;
-
 		int rob = robCache.containsKey(cNode) ? robCache.get(cNode)
 				: cNode.val + nodeValue(cNode.left, true) + nodeValue(cNode.right, true);
 		robCache.put(cNode, rob);

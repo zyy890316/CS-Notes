@@ -7,6 +7,11 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class StackAndQueue {
+	public static void main(String args[]) {
+		decodeString("2[abc]3[cd]ef");
+		largestRectangleArea(new int[] { 2, 1, 5, 6, 2, 3 });
+	}
+
 	// 用两个栈实现队列
 	class MyQueue {
 		final Stack<Integer> in;
@@ -144,6 +149,12 @@ public class StackAndQueue {
 		return dist;
 	}
 
+	// LeetCode 496. Next Greater Element I, 给array，找每个元素下一个比他大的元素的值
+	// 直接遍历数组，用栈找比当前元素大的，找到直接放到hashmap里
+	// https://www.youtube.com/watch?v=MH-9LmOb4gE
+	// https://leetcode.com/problems/next-greater-element-i/
+
+	// 503. Next Greater Element II
 	// 循环数组中，查找比当前元素大的下一个元素
 	// 和上题类似，区别是：数组是循环数组，并且最后要求的不是距离而是下一个元素。
 	public int[] nextGreaterElements(int[] nums) {
@@ -243,5 +254,174 @@ public class StackAndQueue {
 			this.ch = ch;
 			this.count = count;
 		}
+	}
+
+	// 735. Asteroid Collision
+	// https://leetcode.com/problems/asteroid-collision/
+	public int[] asteroidCollision(int[] asteroids) {
+		Stack<Integer> stack = new Stack<Integer>();
+		stack.push(asteroids[0]);
+		for (int i = 1; i < asteroids.length; i++) {
+			int currNum = asteroids[i];
+			while (!stack.isEmpty() && Integer.signum(currNum) != Integer.signum(stack.peek()) && currNum < 0) {
+				int result = asteroids[i] + (int) stack.peek();
+				if (result == 0) {
+					stack.pop();
+					currNum = result;
+					break;
+				} else {
+					currNum = Integer.signum(result) * Math.max(Math.abs(currNum), Math.abs(stack.pop()));
+				}
+			}
+			if (currNum != 0) {
+				stack.push(currNum);
+			}
+		}
+		int[] res = new int[stack.size()];
+		for (int i = res.length - 1; i >= 0; i--) {
+			res[i] = stack.pop();
+		}
+		return res;
+	}
+
+	// 394. Decode String
+	// 用堆栈
+	// https://leetcode.com/problems/decode-string/
+	public static String decodeString(String s) {
+		Stack<EncodeNode> stack = new Stack<EncodeNode>();
+		int n = s.length();
+		for (int i = 0; i < n; i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c)) {
+				int num = c - '0';
+				while (i + 1 < n && Character.isDigit(s.charAt(i + 1))) {
+					num = num * 10 + s.charAt(i + 1) - '0';
+					i++;
+				}
+				stack.push(new EncodeNode(num, false, ""));
+			} else if (Character.isAlphabetic(c)) {
+				StringBuilder temp = new StringBuilder();
+				temp.append(c);
+				while (i + 1 < n && Character.isAlphabetic(s.charAt(i + 1))) {
+					temp.append(s.charAt(i + 1));
+					i++;
+				}
+				pushStringToNodeStack(stack, temp);
+			} else if (c == ']') {
+				EncodeNode node = stack.pop();
+				StringBuilder temp = new StringBuilder();
+				for (int j = 0; j < node.count; j++) {
+					temp.append(node.s);
+				}
+				pushStringToNodeStack(stack, temp);
+			} else { // c == '['
+				continue;
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		while (!stack.isEmpty()) {
+			EncodeNode node = stack.pop();
+			StringBuilder temp = new StringBuilder();
+			for (int j = 0; j < node.count; j++) {
+				temp.append(node.s);
+			}
+			sb.insert(0, temp.toString());
+		}
+		return sb.toString();
+	}
+
+	private static void pushStringToNodeStack(Stack<EncodeNode> stack, StringBuilder temp) {
+		if (!stack.isEmpty()) {
+			EncodeNode nextNode = stack.peek();
+			if (!nextNode.isClosed) {
+				nextNode = stack.pop();
+				nextNode.s += temp.toString();
+				stack.push(nextNode);
+			} else {
+				stack.push(new EncodeNode(1, true, temp.toString()));
+			}
+		} else {
+			stack.push(new EncodeNode(1, true, temp.toString()));
+		}
+	}
+
+	static class EncodeNode {
+		int count;
+		boolean isClosed;
+		String s;
+
+		public EncodeNode(int count, boolean isClosed, String s) {
+			this.count = count;
+			this.isClosed = isClosed;
+			this.s = s;
+		}
+	}
+
+	// 636. Exclusive Time of Functions 程序执行时间，直接用堆栈即可
+	// https://leetcode.com/problems/exclusive-time-of-functions/
+
+	// 84. Largest Rectangle in Histogram
+	// 分别从左右遍历两次，拿到两个index数组，分别对应每个元素向左/右看有多少大于等于当前元素高度的
+	// 利用这个两个index数组，就能得到当前元素作为高度的长方形
+	// https://leetcode.com/problems/largest-rectangle-in-histogram/
+	public static int largestRectangleArea(int[] heights) {
+		Stack<Integer> stack = new Stack<Integer>();
+		int[] indexTillLowerBarFromLeft = new int[heights.length];
+		int[] indexTillLowerBarFromRight = new int[heights.length];
+		stack.push(0);
+		for (int i = 1; i < heights.length; i++) {
+			int height = heights[i];
+			if (!stack.isEmpty()) {
+				while (!stack.isEmpty()) {
+					if (heights[stack.peek()] > height) {
+						int index = stack.pop();
+						indexTillLowerBarFromLeft[index] = i - index;
+					} else {
+						stack.push(i);
+						break;
+					}
+				}
+				if (stack.isEmpty()) {
+					stack.push(i);
+				}
+			} else {
+				stack.push(i);
+			}
+		}
+		while (!stack.isEmpty()) {
+			int index = stack.pop();
+			indexTillLowerBarFromLeft[index] = heights.length - index;
+		}
+
+		for (int i = heights.length - 1; i >= 0; i--) {
+			int height = heights[i];
+			if (!stack.isEmpty()) {
+				while (!stack.isEmpty()) {
+					if (heights[stack.peek()] > height) {
+						int index = stack.pop();
+						indexTillLowerBarFromRight[index] = index - i;
+					} else {
+						stack.push(i);
+						break;
+					}
+				}
+				if (stack.isEmpty()) {
+					stack.push(i);
+				}
+			} else {
+				stack.push(i);
+			}
+		}
+		while (!stack.isEmpty()) {
+			int index = stack.pop();
+			indexTillLowerBarFromRight[index] = index + 1;
+		}
+
+		int maxArea = 0;
+		for (int i = 0; i < indexTillLowerBarFromLeft.length; i++) {
+			int currArea = heights[i] * (indexTillLowerBarFromLeft[i] + indexTillLowerBarFromRight[i] - 1);
+			maxArea = Math.max(currArea, maxArea);
+		}
+		return maxArea;
 	}
 }
