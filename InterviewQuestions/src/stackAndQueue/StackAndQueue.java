@@ -10,6 +10,7 @@ public class StackAndQueue {
 	public static void main(String args[]) {
 		decodeString("2[abc]3[cd]ef");
 		largestRectangleArea(new int[] { 2, 1, 5, 6, 2, 3 });
+		sortColors(new int[] { 2, 0, 1 });
 	}
 
 	// 用两个栈实现队列
@@ -174,8 +175,9 @@ public class StackAndQueue {
 		return next;
 	}
 
-	// Kth Largest Element in an Array
+	// 215. Kth Largest Element in an Array
 	// use minHeap, 只放比栈顶大的，方k个，这样栈顶肯定是kth largest
+	// https://leetcode.com/problems/kth-largest-element-in-an-array/description/
 	public int findKthLargest(int[] nums, int k) {
 		PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>();
 		for (int num : nums) {
@@ -423,5 +425,31 @@ public class StackAndQueue {
 			maxArea = Math.max(currArea, maxArea);
 		}
 		return maxArea;
+	}
+
+	// 按颜色进行排序： 只有 0/1/2 三种颜色
+	// https://leetcode.com/problems/sort-colors
+	public static void sortColors(int[] nums) {
+		int zero = -1;
+		int one = 0;
+		int two = nums.length - 1;
+		while (one <= two) {
+			if (nums[one] == 0) {
+				zero++;
+				swap(nums, zero, one);
+				one++;
+			} else if (nums[one] == 2) {
+				swap(nums, one, two);
+				two--;
+			} else {
+				one++;
+			}
+		}
+	}
+
+	private static void swap(int[] nums, int i, int j) {
+		int t = nums[i];
+		nums[i] = nums[j];
+		nums[j] = t;
 	}
 }
