@@ -1,4 +1,4 @@
-package binarysearch;
+
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,8 +12,6 @@ public class BinarySearch {
 	// 永远是 low = middle + 1 和 high = middle - 1
 
 	public static void main(String[] args) {
-		mySqrt(6);
-		singleNonDuplicate(new int[] { 3, 3, 7, 7, 10, 11, 11 });
 	}
 
 	// 1062. Longest Repeating substring
@@ -132,24 +130,77 @@ public class BinarySearch {
 
 	// 540 有序数组的 Single Element: 一个有序数组只有一个数不出现两次，找出这个数。
 	// 该数组只有一个数字单独出现，总数必为奇数，所以如果当前元素重复，且他之前的总数为偶数，单独元素肯定在后面
-	public static int singleNonDuplicate(int[] nums) {
+	public int singleNonDuplicate(int[] nums) {
 		int low = 0;
 		int high = nums.length - 1;
-		while (low <= high) {
+		while (low < high) {
 			int mid = low + (high - low) / 2;
-			if (nums[mid - 1] != nums[mid] && nums[mid + 1] != nums[mid]) {
-				return nums[mid];
+			if (mid % 2 == 1) {
+				mid--; // 保证 mid 在偶数位
 			}
-			int indexPair = mid;
 			if (nums[mid + 1] == nums[mid]) {
-				indexPair = mid + 1;
-			}
-			if (indexPair % 2 == 1) {
-				low = indexPair + 1;
+				low = mid + 2;
 			} else {
-				high = indexPair - 1;
+				// 因为 h 的赋值表达式为 h = m，那么循环条件也就只能使用 l < h 这种形式。
+				high = mid;
 			}
 		}
 		return nums[low];
+	}
+
+	// 153 旋转有序数组的最小数字
+	public int findMin(int[] nums) {
+		int low = 0;
+		int high = nums.length - 1;
+		int start = nums[0];
+		if (start < nums[high]) {
+			// 说明旋转完回到了原来的有序数组
+			return nums[0];
+		}
+		while (low < high) {
+			int mid = low + (high - low) / 2;
+			if (nums[mid] >= start) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+		return nums[low];
+	}
+
+	// 34 查找区间:给定一个有序数组 nums 和一个目标 target，要求找到 target 在 nums 中的第一个位置和最后一个位置
+	public int[] searchRange(int[] nums, int target) {
+		if (nums.length == 0) {
+			return new int[] { -1, -1 };
+		}
+		int start = 0;
+		int end = 0;
+		int low = 0;
+		int high = nums.length - 1;
+		while (low < high) {
+			int mid = low + (high - low) / 2;
+			if (nums[mid] < target) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+		if (nums[low] != target) {
+			return new int[] { -1, -1 };
+		}
+		start = low;
+
+		high = nums.length - 1;
+		while (low <= high) {
+			int mid = low + (high - low + 1) / 2;
+			if (nums[mid] == target) {
+				low = mid + 1;
+			} else {
+				high = mid - 1;
+			}
+		}
+		end = high;
+
+		return new int[] { start, end };
 	}
 }
