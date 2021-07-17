@@ -20,6 +20,19 @@ public class SearchAndBacktracking {
 		int[][] heights1 = new int[][] { { 1, 2, 3 }, { 8, 9, 4 }, { 7, 6, 5 } };
 		pacificAtlantic(heights);
 		restoreIpAddresses("1111");
+		subsetsWithDup(new int[] { 1, 2, 2 });
+		char[][] board = new char[][] { { '5', '3', '.', '.', '7', '.', '.', '.', '.' },
+				{ '6', '.', '.', '1', '9', '5', '.', '.', '.' }, { '.', '9', '8', '.', '.', '.', '.', '6', '.' },
+				{ '8', '.', '.', '.', '6', '.', '.', '.', '3' }, { '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+				{ '7', '.', '.', '.', '2', '.', '.', '.', '6' }, { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+				{ '.', '.', '.', '4', '1', '9', '.', '.', '5' }, { '.', '.', '.', '.', '8', '.', '.', '7', '9' } };
+		char[][] board1 = new char[][] { { '.', '.', '9', '7', '4', '8', '.', '.', '.' },
+				{ '7', '.', '.', '.', '.', '.', '.', '.', '.' }, { '.', '2', '.', '1', '.', '9', '.', '.', '.' },
+				{ '.', '.', '7', '.', '.', '.', '2', '4', '.' }, { '.', '6', '4', '.', '1', '.', '5', '9', '.' },
+				{ '.', '9', '8', '.', '.', '.', '3', '.', '.' }, { '.', '.', '.', '8', '.', '3', '.', '2', '.' },
+				{ '.', '.', '.', '.', '.', '.', '.', '.', '6' }, { '.', '.', '.', '2', '7', '5', '9', '.', '.' } };
+		solveSudoku(board);
+		solveSudoku(board1);
 	}
 
 	// 1091 计算在网格中从原点到特定点的最短路径长度: 0 表示可以经过某个位置，求解从左上角到右下角的最短路径长度
@@ -572,6 +585,385 @@ public class SearchAndBacktracking {
 				avaliable.add(num);
 			}
 			return;
+		}
+	}
+
+	// 47 含有相同元素求排列: 数组元素可能含有相同的元素，进行排列时就有可能出现重复的排列，要求重复的排列只返回一个
+	// 在实现上，和 Permutations 不同的是要先排序，然后在添加一个元素时，判断这个元素是否等于前一个元素，
+	// 如果等于，并且前一个元素还未访问，那么就跳过这个元素。
+	public List<List<Integer>> permuteUnique(int[] nums) {
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+		Arrays.sort(nums);
+		boolean[] hasVisited = new boolean[nums.length];
+		permuteUnique(path, ans, hasVisited, nums);
+		return ans;
+	}
+
+	private void permuteUnique(Stack<Integer> path, List<List<Integer>> ans, boolean[] visited, final int[] nums) {
+		if (path.size() == nums.length) {
+			ans.add(new ArrayList<>(path)); // 重新构造一个 List
+			return;
+		}
+		for (int i = 0; i < visited.length; i++) {
+			if (visited[i]) {
+				continue;
+			}
+
+			// 和上题唯一区别就是这个判断
+			if (i - 1 >= 0 && nums[i - 1] == nums[i] && visited[i - 1]) {
+				continue; // 防止重复
+			}
+
+			visited[i] = true;
+			path.push(nums[i]);
+			permuteUnique(path, ans, visited, nums);
+			path.pop();
+			visited[i] = false;
+		}
+	}
+
+	// 77 组合
+	public List<List<Integer>> combine(int n, int k) {
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+
+		combine(n, k, ans, path, 1);
+		return ans;
+	}
+
+	public void combine(int n, int k, List<List<Integer>> ans, Stack<Integer> path, int start) {
+		if (path.size() == k) {
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start; i < n + 1; i++) {
+			path.push(i);
+			combine(n, k, ans, path, i + 1); // 剪枝
+			path.pop();
+		}
+	}
+
+	// 39 组合求和
+	public List<List<Integer>> combinationSum(int[] candidates, int target) {
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+		combinationSum(candidates, target, ans, path, 0);
+		return ans;
+	}
+
+	public void combinationSum(int[] candidates, int target, List<List<Integer>> ans, Stack<Integer> path, int start) {
+		if (target == 0) {
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start; i < candidates.length; i++) {
+			int num = candidates[i];
+			if (target - num >= 0) {
+				path.add(num);
+				// 以i=0为例，i=0时意味着第一个数字可以背多次重复使用，这个循环结束后，第一个数字出现的所有可能就都遍历过了
+				combinationSum(candidates, target - num, ans, path, i); // 剪枝
+				path.pop();
+			}
+		}
+	}
+
+	// 40 含有相同元素的组合求和：和上题区别在于，给出的解不能多次用candidates里面某个元素了
+	// 因为有重复元素，所以当前深度相同元素只能取值一次
+	public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+		Arrays.sort(candidates);
+		combinationSum2(candidates, target, ans, path, 0);
+		return ans;
+	}
+
+	public void combinationSum2(int[] candidates, int target, List<List<Integer>> ans, Stack<Integer> path, int start) {
+		if (target == 0) {
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start; i < candidates.length; i++) {
+			int num = candidates[i];
+			// 当前深度相同元素只能取值一次
+			// 不过下一层循环还是可以再取值一次的
+			if (i - 1 >= start && num == candidates[i - 1]) {
+				continue;
+			}
+			if (target - num >= 0) {
+				path.add(num);
+				combinationSum2(candidates, target - num, ans, path, i + 1); // 剪枝
+				path.pop();
+			}
+		}
+	}
+
+	// 216 1-9 数字的组合求和：只能用1-9，每数字用一次，求用k个数得出和n的所有组合
+	// 和上题类似，至是多加了一个最多k个数的限制
+	public List<List<Integer>> combinationSum3(int k, int n) {
+		int[] candidates = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+		combinationSum3(candidates, n, ans, path, 0, k);
+		return ans;
+	}
+
+	public void combinationSum3(int[] candidates, int target, List<List<Integer>> ans, Stack<Integer> path, int start,
+			int deepth) {
+		if (target == 0 && deepth == path.size()) {
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start; i < candidates.length; i++) {
+			int num = candidates[i];
+			if (target - num >= 0) {
+				path.add(num);
+				combinationSum3(candidates, target - num, ans, path, i + 1, deepth); // 剪枝
+				path.pop();
+			}
+		}
+	}
+
+	// 77 找出集合的所有子集，子集不能重复，[1, 2] 和 [2, 1] 这种子集算重复
+	public List<List<Integer>> subsets(int[] nums) {
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+		for (int i = 0; i <= nums.length; i++) {
+			subsets(nums, ans, path, 0, i);
+		}
+		return ans;
+	}
+
+	public void subsets(int[] nums, List<List<Integer>> ans, Stack<Integer> path, int start, int deepth) {
+		if (deepth == path.size()) {
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start; i < nums.length; i++) {
+			int num = nums[i];
+			path.add(num);
+			subsets(nums, ans, path, i + 1, deepth); // 剪枝
+			path.pop();
+		}
+	}
+
+	// 90 含有相同元素求子集
+	// 同 77 题类似，不过给出的元素可能有duplicate
+	public static List<List<Integer>> subsetsWithDup(int[] nums) {
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> path = new Stack<>();
+		Arrays.sort(nums);
+		for (int i = 3; i <= nums.length; i++) {
+			subsetsWithDup(nums, ans, path, 0, i);
+		}
+		return ans;
+	}
+
+	public static void subsetsWithDup(int[] nums, List<List<Integer>> ans, Stack<Integer> path, int start, int deepth) {
+		if (deepth == path.size()) {
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = start; i < nums.length; i++) {
+			int num = nums[i];
+			if (i - 1 >= start && num == nums[i - 1]) {
+				continue;
+			}
+			path.add(num);
+			subsetsWithDup(nums, ans, path, i + 1, deepth); // 剪枝
+			path.pop();
+		}
+	}
+
+	// 131 分割字符串使得每个部分都是回文字符串
+	public List<List<String>> partition(String s) {
+		List<List<String>> ans = new ArrayList<>();
+		Stack<String> path = new Stack<>();
+		partition(s, ans, path);
+		return ans;
+	}
+
+	public List<List<String>> partition(String s, List<List<String>> ans, Stack<String> path) {
+		if (s.length() == 0) {
+			ans.add(new ArrayList<>(path));
+			return ans;
+		}
+		for (int i = 0; i < s.length(); i++) {
+			if (isPalindrome(s, 0, i)) {
+				String current = s.substring(0, i + 1);
+				path.add(current);
+				partition(s.substring(i + 1, s.length()), ans, path);
+				path.pop();
+			}
+		}
+		return ans;
+	}
+
+	private boolean isPalindrome(String s, int begin, int end) {
+		while (begin < end) {
+			if (s.charAt(begin++) != s.charAt(end--)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// 37 数独
+	private static boolean[][] rowsUsed = new boolean[9][10];
+	private static boolean[][] colsUsed = new boolean[9][10];
+	private static boolean[][] cubesUsed = new boolean[9][10];
+
+	public static void solveSudoku(char[][] board) {
+		int n = 9;
+		Stack<Coordinate> path = new Stack<>();
+		List<List<Coordinate>> ans = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+
+				if (board[i][j] == '.') {
+					continue;
+				}
+				int num = board[i][j] - '0';
+				rowsUsed[i][num] = true;
+				colsUsed[j][num] = true;
+				cubesUsed[cubeNum(i, j)][num] = true;
+			}
+		}
+
+		int[] next = getNextEmptyChar(board);
+		if (next[0] >= 0) {
+			getSudoku(board, next[0], next[1], path, ans);
+		}
+		if (ans.size() > 0) {
+			List<Coordinate> result = ans.get(0);
+			for (Coordinate c : result) {
+				board[c.row][c.col] = c.ch;
+			}
+		}
+		return;
+	}
+
+	public static void getSudoku(char[][] board, int row, int col, Stack<Coordinate> path, List<List<Coordinate>> ans) {
+		int[] next;
+		next = getNextEmptyChar(board);
+		if (next[0] < 0) {
+			ans.add(new ArrayList(path));
+			return;
+		}
+
+		for (int i = 1; i <= 9; i++) {
+			if (!rowsUsed[row][i] && !colsUsed[col][i] && !cubesUsed[cubeNum(row, col)][i]) {
+				char ch = Character.forDigit(i, 10);
+				rowsUsed[row][i] = true;
+				colsUsed[col][i] = true;
+				cubesUsed[cubeNum(row, col)][i] = true;
+				board[row][col] = ch;
+				path.push(new Coordinate(row, col, ch));
+
+				next = getNextEmptyChar(board);
+				getSudoku(board, next[0], next[1], path, ans);
+
+				path.pop();
+				rowsUsed[row][i] = false;
+				colsUsed[col][i] = false;
+				cubesUsed[cubeNum(row, col)][i] = false;
+				board[row][col] = '.';
+			}
+		}
+	}
+
+	private static int[] getNextEmptyChar(char[][] board) {
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				if (board[i][j] == '.') {
+					return new int[] { i, j };
+				}
+			}
+		}
+		return new int[] { -1, -1 };
+	}
+
+	private static int cubeNum(int i, int j) {
+		int r = i / 3;
+		int c = j / 3;
+		return r * 3 + c;
+	}
+
+	public static class Coordinate {
+		int row;
+		int col;
+		char ch;
+
+		public Coordinate(int row, int col, char ch) {
+			this.row = row;
+			this.col = col;
+			this.ch = ch;
+		}
+	}
+
+	// 51. N-Queens (Hard) 在 n*n 的矩阵中摆放 n 个皇后，并且每个皇后不能在同一行，同一列，同一对角线上，求所有的 n 皇后的解。
+	// 一行一行地摆放，在确定一行中的那个皇后应该摆在哪一列时，需要用三个标记数组来确定某一列是否合法，
+	// 这三个标记数组分别为：列标记数组、45 度对角线标记数组和 135 度对角线标记数组。
+	// 45 度对角线标记数组的长度为 2 * n - 1, (r, c) 的位置所在的数组下标为 r + c
+	// 135 度对角线标记数组的长度也是 2 * n - 1，(r, c) 的位置所在的数组下标为 n - 1 - (r - c)
+	private List<List<String>> ans;
+	private char[][] nQueens;
+	private boolean[] colUsed;
+	private boolean[] diagonals45Used;
+	private boolean[] diagonals135Used;
+
+	public List<List<String>> solveNQueens(int n) {
+		ans = new ArrayList<>();
+		nQueens = new char[n][n];
+		Stack<Queen> path = new Stack<>();
+		for (int i = 0; i < n; i++) {
+			Arrays.fill(nQueens[i], '.');
+		}
+		colUsed = new boolean[n];
+		diagonals45Used = new boolean[2 * n - 1];
+		diagonals135Used = new boolean[2 * n - 1];
+
+		solveNQueens(0, n, ans, path);
+
+		return ans;
+	}
+
+	public void solveNQueens(int row, int n, List<List<String>> ans, Stack<Queen> path) {
+		if (row >= n) {
+			List<String> list = new ArrayList<>();
+			for (char[] chars : nQueens) {
+				list.add(new String(chars));
+			}
+			ans.add(list);
+			return;
+		}
+
+		for (int i = 0; i < n; i++) {
+			if (!colUsed[i] && !diagonals45Used[row + i] && !diagonals135Used[n - 1 - row + i]) {
+				colUsed[i] = true;
+				diagonals45Used[row + i] = true;
+				diagonals135Used[n - 1 - row + i] = true;
+				path.add(new Queen(row, i));
+				nQueens[row][i] = 'Q';
+
+				solveNQueens(row + 1, n, ans, path);
+
+				colUsed[i] = false;
+				diagonals45Used[row + i] = false;
+				diagonals135Used[n - 1 - row + i] = false;
+				path.pop();
+				nQueens[row][i] = '.';
+			}
+		}
+	}
+
+	class Queen {
+		int row;
+		int col;
+
+		public Queen(int row, int col) {
+			this.row = row;
+			this.col = col;
 		}
 	}
 }

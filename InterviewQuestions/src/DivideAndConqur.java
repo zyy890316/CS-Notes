@@ -1,5 +1,4 @@
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,5 +81,17 @@ public class DivideAndConqur {
 			}
 		}
 		return ans;
+	}
+
+	// 650 复制粘贴字符：最开始只有一个字符 A，问需要多少次操作能够得到 n 个字符 A，每次操作可以复制当前所有的字符，或者粘贴。
+	public int minSteps(int n) {
+		if (n == 1)
+			return 0;
+		for (int i = 2; i <= Math.sqrt(n); i++) {
+			if (n % i == 0) {
+				return i + minSteps(n / i);
+			}
+		}
+		return n;
 	}
 }
