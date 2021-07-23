@@ -1,6 +1,7 @@
 package stackAndQueue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -451,5 +452,61 @@ public class StackAndQueue {
 		int t = nums[i];
 		nums[i] = nums[j];
 		nums[j] = t;
+	}
+
+	// 295. Find Median from Data Stream
+	public static class MedianFinder {
+		Queue<Integer> minHeap; // 存较大的一半数
+		Queue<Integer> maxHeap; // 存较小的一半数
+
+		/** initialize your data structure here. */
+		public MedianFinder() {
+			this.minHeap = new PriorityQueue<>();
+			this.maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+		}
+
+		public void addNum(int num) {
+			if (maxHeap.size() == 0) {
+				maxHeap.add(num);
+			} else if (minHeap.size() == 0) {
+				if (num > maxHeap.peek()) {
+					minHeap.add(num);
+				} else {
+					maxHeap.add(num);
+				}
+			} else {
+				if (num <= maxHeap.peek()) {
+					maxHeap.add(num);
+				} else {
+					minHeap.add(num);
+				}
+			}
+			balance();
+		}
+
+		public void balance() {
+			if (Math.abs(minHeap.size() - maxHeap.size()) <= 1) {
+				return;
+			}
+			while (Math.abs(minHeap.size() - maxHeap.size()) >= 2) {
+				if (minHeap.size() > maxHeap.size()) {
+					maxHeap.add(minHeap.poll());
+				} else {
+					minHeap.add(maxHeap.poll());
+				}
+			}
+		}
+
+		public double findMedian() {
+			if (minHeap.size() == maxHeap.size()) {
+				return (maxHeap.peek() + minHeap.peek()) / 2.0;
+			} else {
+				if (minHeap.size() > maxHeap.size()) {
+					return minHeap.peek();
+				} else {
+					return maxHeap.peek();
+				}
+			}
+		}
 	}
 }

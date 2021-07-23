@@ -475,7 +475,7 @@ public class TreeSolutions {
 		return root;
 	}
 
-	// 二叉树的最近公共祖先
+	// 236 二叉树的最近公共祖先
 	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 		if (root == null)
 			return null;
