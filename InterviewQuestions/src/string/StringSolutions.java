@@ -3,6 +3,7 @@ package string;
 import java.util.Arrays;
 import java.util.Collections;
 
+// https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20字符串.md
 public class StringSolutions {
 	public static void main(String[] args) {
 		moveRight("abcd123", 3);
@@ -85,7 +86,7 @@ public class StringSolutions {
 		return true;
 	}
 
-	// 最长回文substing
+	// 最长回文substring
 	// https://www.youtube.com/watch?v=g3R-pjUNa3k
 	public String longestPalindrome(String s) {
 		int start = 0;

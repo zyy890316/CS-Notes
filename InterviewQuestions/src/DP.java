@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
 
+// 残酷刷题群算法小讲座：动态规划的套路 - https://www.youtube.com/watch?v=FLbqgyJ-70I
 public class DP {
 	public static void main(String[] args) {
 		int[] test = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -209,7 +210,8 @@ public class DP {
 		return Arrays.stream(dp).sum();
 	}
 
-	// 343 按完全平方数分割整数的最大乘积
+	// 343 分割整数的最大乘积
+	// https://leetcode.com/problems/integer-break/
 	public int integerBreak(int n) {
 		int[] dp = new int[n + 1];
 		for (int i = 1; i <= n; i++) {
@@ -221,6 +223,38 @@ public class DP {
 			}
 		}
 		return dp[n];
+	}
+
+	// 279 组成整数的最小平方数数量
+	// 题目描述given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, return 2
+	// because 13 = 4 + 9.
+	// 此题用搜索更简单一点
+	public int numSquares(int n) {
+		List<Integer> squareList = generateSquareList(n);
+		int[] dp = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			int min = Integer.MAX_VALUE;
+			for (int square : squareList) {
+				if (square > i) {
+					break;
+				}
+				min = Math.min(min, dp[i - square] + 1);
+			}
+			dp[i] = min;
+		}
+		return dp[n];
+	}
+
+	private List<Integer> generateSquareList(int n) {
+		List<Integer> squareList = new ArrayList<>();
+		int diff = 3;
+		int square = 1;
+		while (square <= n) {
+			squareList.add(square);
+			square += diff;
+			diff += 2;
+		}
+		return squareList;
 	}
 
 	// 91. Decode Ways (Medium)
