@@ -810,4 +810,13 @@ public class DP {
 		}
 		return dp[m][n];
 	}
+
+	// 464 can I win
+	// https://www.bilibili.com/video/BV1KW411o7m2
+	// 状态压缩dp，N为可选数字范围，用一个N位二进制数字表示某个数字是否被选过
+	// 这样f(i)代表i状态下，是否可以赢
+
+	// 486 predict winner
+	// 区间dp，f[i][j]表示在区间i到j范围内，第一个player能得到的最高分
+	// https://www.bilibili.com/video/BV1Lb411w7X4?p=1
 }

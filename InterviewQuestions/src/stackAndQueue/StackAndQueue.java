@@ -2,6 +2,7 @@ package stackAndQueue;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -508,5 +509,34 @@ public class StackAndQueue {
 				}
 			}
 		}
+	}
+
+	// 239 滑动窗口最大值
+	// https://github.com/MisterBooo/LeetCodeAnimation/blob/master/notes/LeetCode%E7%AC%AC239%E5%8F%B7%E9%97%AE%E9%A2%98%EF%BC%9A%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.md
+	// 利用一个 双端队列，在队列中存储元素在数组中的位置， 并且维持队列的严格递减,，也就说维持队首元素是 **最大的 **
+	// 当遍历到一个新元素时, 如果队列里有比当前元素小的，就将其移除队列，以保证队列的递减。当队列元素位置之差大于 k，就将队首元素移除
+	public int[] maxSlidingWindow(int[] nums, int k) {
+		if (nums == null || nums.length < k || k == 0)
+			return new int[0];
+
+		int[] res = new int[nums.length - k + 1];
+		// 双端队列
+		Deque<Integer> deque = new LinkedList<>();
+		for (int i = 0; i < nums.length; i++) {
+			// 在尾部添加元素，并保证左边元素都比尾部大
+			while (!deque.isEmpty() && nums[deque.getLast()] < nums[i]) {
+				deque.removeLast();
+			}
+			deque.addLast(i);
+			// 在头部移除元素
+			if (deque.getFirst() == i - k) {
+				deque.removeFirst();
+			}
+			// 输出结果
+			if (i >= k - 1) {
+				res[i - k + 1] = nums[deque.getFirst()];
+			}
+		}
+		return res;
 	}
 }

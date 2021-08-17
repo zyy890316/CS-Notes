@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
+// 图数据结构和算法：https://space.bilibili.com/1369507485/favlist?fid=1302158485
 public class Graph {
 	public static void main(String[] args) {
 		int[][] graph = { { 4, 1 }, { 2, 0 }, { 3, 1 }, { 4, 2 }, { 0, 3 } };

@@ -1,5 +1,4 @@
 
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -365,4 +364,7 @@ public class DoublePointers {
 	// 283. Move Zeroes
 	// 含0已经排序的数组，要求把非0数字移到队列最后
 	// 双指针分别指向最左的非零和零元素位置，不停交换
+
+	// LeetCode 30. Substring with Concatenation of All Words | 串联所有单词的子串
+	// https://www.bilibili.com/video/BV1up4y1h7AC
 }

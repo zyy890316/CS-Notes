@@ -33,6 +33,7 @@ public class SearchAndBacktracking {
 				{ '.', '.', '.', '.', '.', '.', '.', '.', '6' }, { '.', '.', '.', '2', '7', '5', '9', '.', '.' } };
 		solveSudoku(board);
 		solveSudoku(board1);
+		permuteUnique(new int[] { 1, 1, 2 });
 	}
 
 	// 1091 计算在网格中从原点到特定点的最短路径长度: 0 表示可以经过某个位置，求解从左上角到右下角的最短路径长度
@@ -591,7 +592,7 @@ public class SearchAndBacktracking {
 	// 47 含有相同元素求排列: 数组元素可能含有相同的元素，进行排列时就有可能出现重复的排列，要求重复的排列只返回一个
 	// 在实现上，和 Permutations 不同的是要先排序，然后在添加一个元素时，判断这个元素是否等于前一个元素，
 	// 如果等于，并且前一个元素还未访问，那么就跳过这个元素。
-	public List<List<Integer>> permuteUnique(int[] nums) {
+	public static List<List<Integer>> permuteUnique(int[] nums) {
 		List<List<Integer>> ans = new ArrayList<>();
 		Stack<Integer> path = new Stack<>();
 		Arrays.sort(nums);
@@ -600,7 +601,8 @@ public class SearchAndBacktracking {
 		return ans;
 	}
 
-	private void permuteUnique(Stack<Integer> path, List<List<Integer>> ans, boolean[] visited, final int[] nums) {
+	private static void permuteUnique(Stack<Integer> path, List<List<Integer>> ans, boolean[] visited,
+			final int[] nums) {
 		if (path.size() == nums.length) {
 			ans.add(new ArrayList<>(path)); // 重新构造一个 List
 			return;
@@ -611,7 +613,8 @@ public class SearchAndBacktracking {
 			}
 
 			// 和上题唯一区别就是这个判断
-			if (i - 1 >= 0 && nums[i - 1] == nums[i] && visited[i - 1]) {
+			// 当前元素等于前一个元素，前一个没访问过，说明当前轮次，前一个已经被使用了，后续的相同元素都要跳过
+			if (i - 1 >= 0 && nums[i - 1] == nums[i] && !visited[i - 1]) {
 				continue; // 防止重复
 			}
 
@@ -966,4 +969,12 @@ public class SearchAndBacktracking {
 			this.col = col;
 		}
 	}
+
+	// 526 Beautiful Arrangement
+	// https://www.youtube.com/watch?v=xf8qAkqDr8Y
+	// 用DFS搜索所有组合
+
+	// 131. Palindrome Partitioning
+	// dfs 搜索，每次从当前index开始的可以形成Palindrome的部分
+	// https://www.youtube.com/watch?v=UFdSC_ml4TQ
 }
