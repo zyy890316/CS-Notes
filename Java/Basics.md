@@ -20,3 +20,7 @@ https://www.youtube.com/playlist?list=PLhfHPmPYPPRk6yMrcbfafFGSbE2EPK_A6ß
 
 # Spring Core
 https://www.youtube.com/watch?v=ZwcHeLhvuq4
+
+# HashMap vs LinkedHashMap vs TreeMap
+https://www.youtube.com/watch?v=TTdheF15nIU
+HashMap retain no order, LinkedHashMap maintain insert order (good for LRU cache), TreeMap maintain nature order
