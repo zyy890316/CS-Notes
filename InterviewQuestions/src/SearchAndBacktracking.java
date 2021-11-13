@@ -591,7 +591,7 @@ public class SearchAndBacktracking {
 
 	// 47 含有相同元素求排列: 数组元素可能含有相同的元素，进行排列时就有可能出现重复的排列，要求重复的排列只返回一个
 	// 在实现上，和 Permutations 不同的是要先排序，然后在添加一个元素时，判断这个元素是否等于前一个元素，
-	// 如果等于，并且前一个元素还未访问，那么就跳过这个元素。
+	// 如果等于，并且前一个元素还未访问，那么就跳过这个元素，这样就能保证相同元素的相对顺序不变。
 	public static List<List<Integer>> permuteUnique(int[] nums) {
 		List<List<Integer>> ans = new ArrayList<>();
 		Stack<Integer> path = new Stack<>();
@@ -977,4 +977,44 @@ public class SearchAndBacktracking {
 	// 131. Palindrome Partitioning
 	// dfs 搜索，每次从当前index开始的可以形成Palindrome的部分
 	// https://www.youtube.com/watch?v=UFdSC_ml4TQ
+
+	// 419. Battleships in a Board
+	public int countBattleships(char[][] board) {
+		int m = board.length;
+		int n = board[0].length;
+		int ans = 0;
+		boolean[][] visited = new boolean[m][n];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (!visited[i][j] && board[i][j] == 'X') {
+					countBattleshipsDFS(board, i, j, visited);
+					ans++;
+				}
+			}
+		}
+		return ans;
+	}
+
+	public void countBattleshipsDFS(char[][] board, int i, int j, boolean[][] visited) {
+		int[][] directions = new int[][] { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+		int m = board.length;
+		int n = board[0].length;
+
+		if (i < 0 || i >= m || j < 0 || j >= n || visited[i][j]) {
+			return;
+		}
+		visited[i][j] = true;
+
+		for (int[] d : directions) {
+			int nextM = i + d[0];
+			int nextN = j + d[1];
+			if (nextM < 0 || nextM >= m || nextN < 0 || nextN >= n) {
+				continue;
+			}
+			if (!visited[nextM][nextN] && board[nextM][nextN] == 'X') {
+				countBattleshipsDFS(board, nextM, nextN, visited);
+			}
+		}
+		return;
+	}
 }

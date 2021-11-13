@@ -1,5 +1,4 @@
 
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +35,7 @@ public class BinarySearch {
 		Set<String> seen = new HashSet<String>();
 		for (int i = 0; i <= s.length() - length; i++) {
 			String currS = s.substring(i, i + length);
-			if (seen.contains(s)) {
+			if (seen.contains(currS)) {
 				return true;
 			}
 			seen.add(currS);

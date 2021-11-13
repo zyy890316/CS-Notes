@@ -24,3 +24,14 @@ https://www.youtube.com/watch?v=ZwcHeLhvuq4
 # HashMap vs LinkedHashMap vs TreeMap
 https://www.youtube.com/watch?v=TTdheF15nIU
 HashMap retain no order, LinkedHashMap maintain insert order (good for LRU cache), TreeMap maintain nature order
+
+# 常用util
+* ```Arrays.sort(array, comparator)```
+* ```Arrays.stream(array).sum()```
+* ```Arrays.stream(array).max().getAsInt()```
+* ```new PriorityQueue<>(Collections.reverseOrder())```
+* ```Collections.reverse()```
+* ```new StringBuilder(result).reverse().toString();```
+
+# LinkedList and ArrayList
+LinkedList and ArrayList are two different implementations of the List interface. LinkedList implements it with a doubly-linked list. ArrayList implements it with a dynamically re-sizing array.
