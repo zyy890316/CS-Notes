@@ -1,13 +1,18 @@
 package string;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20字符串.md
 public class StringSolutions {
 	public static void main(String[] args) {
 		moveRight("abcd123", 3);
 		reverseWords("I am a student");
+		groupAnagrams(new String[] { "eat", "tea", "tan", "ate", "nat", "bat" });
 	}
 
 	// 字符串循环移位, 将字符串向右循环移动 k 位
@@ -187,5 +192,26 @@ public class StringSolutions {
 			count += Math.min(group[i], group[i + 1]);
 		}
 		return count;
+	}
+
+	// 49. Group Anagrams
+	public static List<List<String>> groupAnagrams(String[] strs) {
+		Map<String, List<String>> map = new HashMap<>();
+		List<List<String>> ans = new ArrayList<>();
+		for (String str : strs) {
+			char[] c = str.toCharArray();
+			Arrays.sort(c);
+			String key = String.valueOf(c);
+			List<String> values = map.get(key);
+			if (values == null) {
+				values = new ArrayList<>();
+			}
+			values.add(str);
+			map.put(key, values);
+		}
+		for (List<String> value : map.values()) {
+			ans.add(value);
+		}
+		return ans;
 	}
 }

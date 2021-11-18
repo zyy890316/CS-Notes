@@ -1017,4 +1017,51 @@ public class SearchAndBacktracking {
 		}
 		return;
 	}
+
+	// 15. 3Sum 从nums中取三数，要求其和为0
+	// 从小到大取数，取两数之后，可以按照哈希表直接找剩下的数里有没有需要的
+	public List<List<Integer>> threeSum(int[] nums) {
+		Arrays.sort(nums);
+		Map<Integer, Integer> counts = new HashMap<>();
+		for (int num : nums) {
+			int count = counts.getOrDefault(num, 0);
+			counts.put(num, count + 1);
+		}
+		boolean[] used = new boolean[nums.length];
+		List<List<Integer>> ans = new ArrayList<>();
+		Stack<Integer> stack = new Stack<>();
+		threeSumDfs(nums, 0, 0, 0, stack, ans, used, counts);
+		return ans;
+	}
+
+	public void threeSumDfs(int[] nums, int depth, int index, int sum, Stack<Integer> stack, List<List<Integer>> ans,
+			boolean[] used, Map<Integer, Integer> counts) {
+		// -sum 即为需要找的数，stack.peek()是之前取的最大的数，因为要去掉重复的，所以不能找比它小的了
+		if (depth == 2 && counts.get(-sum) != null && counts.get(-sum) > 0 && -sum >= stack.peek()) {
+			stack.add(-sum);
+			ans.add(new ArrayList(stack));
+			stack.pop();
+			return;
+		}
+		if (depth == 2) {
+			return;
+		}
+
+		for (int i = index; i < nums.length; i++) {
+			if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+				continue;
+			}
+			if (used[i])
+				continue;
+
+			used[i] = true;
+			counts.put(nums[i], counts.get(nums[i]) - 1);
+			stack.add(nums[i]);
+			threeSumDfs(nums, depth + 1, i, sum + nums[i], stack, ans, used, counts);
+			stack.pop();
+			counts.put(nums[i], counts.get(nums[i]) + 1);
+			used[i] = false;
+		}
+		return;
+	}
 }

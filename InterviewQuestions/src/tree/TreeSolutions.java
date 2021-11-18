@@ -621,4 +621,81 @@ public class TreeSolutions {
 
 	// 寻找二叉查找树中出现次数最多的值
 	// 中序遍历，过程中检查出现次数就好
+
+	// 173. Binary Search Tree Iterator
+	class BSTIterator {
+		private final Stack<TreeNode> stack;
+
+		public BSTIterator(TreeNode root) {
+			stack = new Stack<TreeNode>();
+			TreeNode currNode = root;
+			while (currNode != null) {
+				stack.add(currNode);
+				currNode = currNode.left;
+			}
+		}
+
+		public int next() {
+			TreeNode currNode = stack.pop();
+			int res = currNode.val;
+			currNode = currNode.right;
+			while (currNode != null) {
+				stack.add(currNode);
+				currNode = currNode.left;
+			}
+			return res;
+		}
+
+		public boolean hasNext() {
+			return stack.size() > 0;
+		}
+	}
+
+	// 98. Validate Binary Search Tree
+	public boolean isValidBST(TreeNode root) {
+		long min = Long.MIN_VALUE;
+		long max = Long.MAX_VALUE;
+
+		return isValidBSTDfs(root, min, max);
+	}
+
+	private boolean isValidBSTDfs(TreeNode root, long min, long max) {
+		if (root == null)
+			return true;
+		boolean ans = false;
+		if (root.val > min && root.val < max) {
+			ans = true;
+		}
+		if (root.left != null) {
+			ans = ans && isValidBSTDfs(root.left, min, root.val);
+		}
+		if (root.right != null) {
+			ans = ans && isValidBSTDfs(root.right, root.val, max);
+		}
+		return ans;
+	}
+
+	// 116. Populating Next Right Pointers in Each Node
+	public Node connect(Node root) {
+		Queue<Node> queue = new LinkedList<Node>();
+		if (root == null)
+			return root;
+		queue.add(root);
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+			for (int i = 0; i < size; i++) {
+				Node currNode = queue.poll();
+				if (queue.isEmpty() || i == size - 1) {
+					currNode.next = null;
+				} else {
+					currNode.next = queue.peek();
+				}
+				if (currNode.left != null)
+					queue.add(currNode.left);
+				if (currNode.right != null)
+					queue.add(currNode.right);
+			}
+		}
+		return root;
+	}
 }

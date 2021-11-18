@@ -39,6 +39,8 @@ https://www.youtube.com/watch?v=-jiOPKt7avE
 ## Redis (key-value) as NoSQL Cache Solution
 * In memory
 * NoSQL but more than just key value map
+* Implements Redis Sentinel as configuration service
+
 ### Use case
 * Optimization for Cache
 * Use as in memory database
@@ -54,6 +56,9 @@ https://www.youtube.com/watch?v=LNsqFf7Pu4I&list=PL9nWRykSBSFhv9Ptvl8Bu8CpxedGpH
 https://www.youtube.com/watch?v=JalUUBKdcA0
 ## Short Polling vs Long Polling vs WebSockets
 https://www.youtube.com/watch?v=ZBM28ZPlin8
+
+## Elasticsearch
+Elasticsearch is a search engine based on the Apache Lucene library. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents.
 
 # Quorum
 * Quorum is achieved when nodes follow the below protocol: R+W>N

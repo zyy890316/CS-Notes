@@ -16,7 +16,7 @@ ArrayList<Type> arrL = new ArrayList<Type>();
 * List: The List is a child interface of Collection. It is an ordered collection of objects in which duplicate values can be stored. Since List preserves the insertion order, it allows positional access and insertion of elements. List interface is implemented by the classes of ArrayList, LinkedList, Vector and Stack.
 
 # Java Concurrency
-https://www.youtube.com/playlist?list=PLhfHPmPYPPRk6yMrcbfafFGSbE2EPK_A6ß
+https://www.youtube.com/playlist?list=PLhfHPmPYPPRk6yMrcbfafFGSbE2EPK_A6
 
 # Spring Core
 https://www.youtube.com/watch?v=ZwcHeLhvuq4
@@ -24,14 +24,17 @@ https://www.youtube.com/watch?v=ZwcHeLhvuq4
 # HashMap vs LinkedHashMap vs TreeMap
 https://www.youtube.com/watch?v=TTdheF15nIU
 HashMap retain no order, LinkedHashMap maintain insert order (good for LRU cache), TreeMap maintain nature order
+* TreeMap.lowerKey(key): Returns the greatest key strictly less than the given key, or null if there is no such key.
+* TreeMap.higherKey(key): Returns the least key strictly greater than the given key, or null if there is no such key.
 
 # 常用util
-* ```Arrays.sort(array, comparator)```
+* ```Arrays.sort(array, Comparator.comparingInt(o -> o[1]))```
 * ```Arrays.stream(array).sum()```
 * ```Arrays.stream(array).max().getAsInt()```
 * ```new PriorityQueue<>(Collections.reverseOrder())```
 * ```Collections.reverse()```
 * ```new StringBuilder(result).reverse().toString();```
+* ```Map.computeIfAbsent & Map.getOrDefault```
 
 # LinkedList and ArrayList
 LinkedList and ArrayList are two different implementations of the List interface. LinkedList implements it with a doubly-linked list. ArrayList implements it with a dynamically re-sizing array.

@@ -11,8 +11,9 @@ import java.util.Stack;
 
 // 图数据结构和算法：https://space.bilibili.com/1369507485/favlist?fid=1302158485
 // https://space.bilibili.com/21630984/channel/detail?cid=162962&ctype=0
-// MST: Prim 从一点起始，或从最小边起始 https://www.youtube.com/watch?v=xq3ABa-px_g
+// MST: Prim 从一点起始，或从最小边起始 https://www.youtube.com/watch?v=jsmMtJpPnhU
 // 单元最短路径： Dijkstra 和Prim类似,greedy从起点开始扩展 https://www.youtube.com/watch?v=GazC3A4OQTE
+// 单元最短路径：A*: Dijkstra is a special case for A* (when the heuristics is zero).
 // 单元最短路径： Bellman-Ford 跑n-1个循环，执行两次可查negative cycles https://www.youtube.com/watch?v=lyw4FaxrwHg
 // 多元最短路径： Floyd-Warshall, 基于dp更新所有节点间最小距离 https://www.youtube.com/watch?v=4NQ3HnhyNfQ
 // 强连通分量：Tarjan 用stack逐个查可联通的最小id https://www.youtube.com/watch?v=wUgWX0nc4NY

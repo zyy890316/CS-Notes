@@ -4,11 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BinarySearch {
-	// https://www.geeksforgeeks.org/variants-of-binary-search/
-	// while 永远是 while(left <= right)
-	// 精确搜索，是否contain：mid = low + (high - low) / 2;
-	// 模糊搜素：第一次或最后一次occurrence/最接近某个值 mid = low + (high - low + 1) / 2;
-	// 永远是 low = middle + 1 和 high = middle - 1
+	// https://www.acwing.com/blog/content/31/
+	// while 永远是 while(l < f)
+	// 两者都是通过缩小区间，当l == r时 ， 找到目标值。
+	// 两种分法都是追求在l = r - 1时，仍能继续缩小范围：
+	// [l, r]划分成[l, mid]和[mid + 1, r], mid = l + r >> 1
+	// [l, r]划分成[l, mid - 1]和[mid, r]，mid = l + r + 1 >> 1
 
 	public static void main(String[] args) {
 	}

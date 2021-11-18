@@ -819,4 +819,51 @@ public class DP {
 	// 486 predict winner
 	// 区间dp，f[i][j]表示在区间i到j范围内，第一个player能得到的最高分
 	// https://www.bilibili.com/video/BV1Lb411w7X4?p=1
+
+	// 334. Increasing Triplet Subsequence
+	// Given an integer array nums, return true if there exists a triple of indices
+	// (i, j, k) such that i < j < k and nums[i] < nums[j] < nums[k]
+	// 看能否找出三个数为升序即可
+	public boolean increasingTripletDP(int[] nums) {
+		int[] dp = new int[nums.length];
+		dp[0] = 1;
+		for (int i = 1; i < nums.length; i++) {
+			int max = 0;
+			for (int j = 0; j < i; j++) {
+				if (nums[i] > nums[j]) {
+					max = Math.max(max, dp[j] + 1);
+				}
+			}
+		}
+		return dp[nums.length] >= 3;
+	}
+
+	// 此题还可用nlog(n)方法做
+	public boolean increasingTriplet(int[] nums) {
+		List<Integer> lis = new ArrayList<>();
+		lis.add(nums[0]);
+		for (int i = 1; i < nums.length; i++) {
+			if (lis.get(lis.size() - 1) < nums[i]) {
+				lis.add(nums[i]);
+			}
+			if (lis.get(lis.size() - 1) > nums[i]) {
+				lis.set(increasingTripletBS(lis, nums[i]), nums[i]);
+			}
+		}
+		return lis.size() >= 3;
+	}
+
+	public int increasingTripletBS(List<Integer> lis, int num) {
+		int low = 0;
+		int high = lis.size() - 1;
+		while (low <= high) {
+			int mid = low + (high - low + 1) / 2;
+			if (lis.get(mid) >= num) {
+				high = mid;
+			} else {
+				low = mid;
+			}
+		}
+		return low;
+	}
 }
