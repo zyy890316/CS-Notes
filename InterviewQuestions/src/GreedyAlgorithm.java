@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class GreedyAlgorithm {
 	public static void main(String args[]) {
@@ -222,5 +224,65 @@ public class GreedyAlgorithm {
 			}
 		}
 		return queue;
+	}
+
+	// 621. Task Scheduler
+	// https://leetcode.com/problems/task-scheduler/discuss/259218/java-solution-using-priority-queue-with-explanation
+	public int leastInterval(char[] tasks, int n) {
+		int[] frequency = new int[26];
+		Queue<Task> pq = new PriorityQueue<>(new Comparator<Task>() {
+			@Override
+			public int compare(Task o1, Task o2) {
+				return o2.frequency - o1.frequency;
+			}
+		});
+		for (char task : tasks) {
+			frequency[task - 'A']++;
+		}
+		for (int i = 0; i < 26; i++) {
+			char id = (char) ('A' + i);
+			if (frequency[i] > 0) {
+				pq.add(new Task(id, frequency[i]));
+			}
+		}
+
+		// 总共需要的cpu时间
+		int intervals = 0;
+		while (!pq.isEmpty()) {
+			// groupSize是每组task的数量， groupCount是共分成多少组task
+			int groupSize = n + 1;
+			List<Task> temp = new ArrayList<>();
+			// 分配一组task，分配过的task加到temp里面，保证每组内无重复task
+			while (groupSize > 0 && !pq.isEmpty()) {
+				Task currTask = pq.poll();
+				currTask.frequency--;
+				temp.add(currTask);
+				groupSize--;
+				intervals++;
+			}
+			for (Task tempTask : temp) {
+				if (tempTask.frequency > 0) {
+					pq.add(tempTask);
+				}
+			}
+			// 全部分配完成，可以直接结束
+			if (pq.isEmpty())
+				break;
+			// 当前组没有填满，需要加idle时间
+			if (groupSize > 0) {
+				intervals += groupSize;
+			}
+		}
+		return intervals;
+	}
+
+	class Task {
+		char id;
+		int frequency;
+
+		public Task(char id, int frequency) {
+			this.id = id;
+			this.frequency = frequency;
+		}
 	}
 }

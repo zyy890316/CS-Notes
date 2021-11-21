@@ -7,6 +7,27 @@ https://vonng.gitbooks.io/ddia-cn/content/ch1.html
 # 一篇文章解决所有system design面试
 https://blog.csdn.net/AuburnTigers/article/details/102601151
 
+# Restful API Design:
+* Endpoint: https://api_domain/version/collection/
+* Method:
+** POST:	Create	201 (Created),404 (Not Found), 409 (Conflict) if resource already exists
+** GET	Read	200 (OK)
+** PUT	Update/Replace 200 (OK) or 204 (No Content). 404 (Not Found)
+** PATCH Update/Modify
+** DELETE 200 (OK). 404 (Not Found), if ID not found or invalid.
+
+* Request Header:
+** Authorization: access_token
+** Accept: To request for response in a specified content-type
+** Content-Type: Content type for the request body
+* Request Parameters
+** Filtering: type=news,photo&days=sunday
+** Sorting: sort=create_time,-creator
+** Paging: offset=100&limit=100
+** Search/Query: q=AI
+** Access Token: access_token=
+
+
 # Steps
 1. Functional Requirements (APIs)
   * Define input parameters and return values

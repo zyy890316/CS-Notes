@@ -3,7 +3,6 @@ package linkedlist;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20链表.md
 public class LinkedListSolutions {
@@ -203,48 +202,20 @@ public class LinkedListSolutions {
 		return dummyHead.next;
 	}
 
-	// 两链表求和
+	// 2. Add Two Numbers
 	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-		Stack<Integer> stack1 = new Stack<Integer>();
-		Stack<Integer> stack2 = new Stack<Integer>();
+		return addTwoNumbers(l1, l2, 0);
+	}
 
-		while (l1 != null) {
-			stack1.add(l1.val);
-			l1 = l1.next;
+	public ListNode addTwoNumbers(ListNode l1, ListNode l2, int carry) {
+		if (l1 == null && l2 == null && carry == 0) {
+			return null;
 		}
-		while (l2 != null) {
-			stack2.add(l2.val);
-			l2 = l2.next;
-		}
-
-		Stack<Integer> result = new Stack<Integer>();
-		int carry = 0;
-		while (!stack1.isEmpty() || !stack2.isEmpty()) {
-			int x = stack1.isEmpty() ? 0 : stack1.pop();
-			int y = stack2.isEmpty() ? 0 : stack2.pop();
-			int sum = x + y + carry;
-			if (sum > 9) {
-				carry = 1;
-			} else {
-				carry = 0;
-			}
-			result.add(sum % 10);
-		}
-
-		if (carry > 0) {
-			result.add(carry);
-		}
-
-		ListNode head = new ListNode(-1);
-		ListNode cNode = head;
-		while (!result.isEmpty()) {
-			cNode.val = result.pop();
-			if (result.isEmpty())
-				break;
-			cNode.next = new ListNode(-1);
-			cNode = cNode.next;
-		}
-		return head;
+		int val = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;
+		ListNode nextNode = new ListNode(val % 10);
+		carry = val / 10;
+		nextNode.next = addTwoNumbers(l1 == null ? null : l1.next, l2 == null ? null : l2.next, carry);
+		return nextNode;
 	}
 
 	// 判断回文链表

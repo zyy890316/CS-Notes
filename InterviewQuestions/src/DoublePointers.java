@@ -1,7 +1,9 @@
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import linkedlist.ListNode;
@@ -10,6 +12,7 @@ public class DoublePointers {
 	public static void main(String[] args) {
 		maxArea(new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 });
 		trapDP(new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 });
+		minWindow("ADOBECODEBANC", "ABC");
 	}
 
 	// 反转string
@@ -367,4 +370,58 @@ public class DoublePointers {
 
 	// LeetCode 30. Substring with Concatenation of All Words | 串联所有单词的子串
 	// https://www.bilibili.com/video/BV1up4y1h7AC
+
+	// 76. Minimum Window Substring
+	public static String minWindow(String s, String t) {
+		int m = s.length();
+		int n = t.length();
+		String ans = "";
+		int minLength = Integer.MAX_VALUE;
+		Map<Character, Integer> target = new HashMap<>();
+		// remaining表示还需要多少个char才能满足条件
+		int remaining = n;
+		for (char c : t.toCharArray()) {
+			target.put(c, target.getOrDefault(c, 0) + 1);
+		}
+		// i指向当前区间的头，j指向尾
+		int i = 0;
+		int j = 0;
+		// 如果移动了j，说明上一个循环新加入了一个char，需要用这个flag判断一下加入之后是否remaining会有变化
+		boolean newCharAddws = true;
+		while (j < m) {
+			System.out.println("i:" + i);
+			System.out.println("j:" + j);
+			char c = s.charAt(j);
+			if (target.containsKey(c) && newCharAddws) {
+				int count = target.get(c);
+				if (count > 0) {
+					remaining--;
+				}
+				target.put(c, count - 1);
+			}
+
+			if (remaining == 0) {
+				int length = j - i;
+				if (length < minLength) {
+					ans = s.substring(i, j + 1);
+					minLength = length;
+				}
+				char first = s.charAt(i);
+				if (target.containsKey(first)) {
+					target.put(first, target.get(first) + 1);
+					if (target.get(first) > 0) {
+						remaining++;
+					}
+				}
+				i++;
+				newCharAddws = false;
+			} else {
+				j++;
+				newCharAddws = true;
+			}
+			System.out.println("remaining:" + remaining);
+
+		}
+		return ans;
+	}
 }

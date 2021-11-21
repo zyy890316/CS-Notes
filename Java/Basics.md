@@ -29,12 +29,20 @@ HashMap retain no order, LinkedHashMap maintain insert order (good for LRU cache
 
 # 常用util
 * ```Arrays.sort(array, Comparator.comparingInt(o -> o[1]))```
+* ```Arrays.sort(twoDim, new Comparator<int[]>() {
+    @Override
+    public int compare(int[] o1, int[] o2) {
+        return Integer.compare(o2[0], o1[0]);
+    }
+});
+```
 * ```Arrays.stream(array).sum()```
 * ```Arrays.stream(array).max().getAsInt()```
 * ```new PriorityQueue<>(Collections.reverseOrder())```
 * ```Collections.reverse()```
 * ```new StringBuilder(result).reverse().toString();```
 * ```Map.computeIfAbsent & Map.getOrDefault```
+* ```random = new Random();``` ```random.nextInt(list.size());```
 
 # LinkedList and ArrayList
 LinkedList and ArrayList are two different implementations of the List interface. LinkedList implements it with a doubly-linked list. ArrayList implements it with a dynamically re-sizing array.

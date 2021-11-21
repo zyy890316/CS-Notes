@@ -89,21 +89,20 @@ public class BinarySearch {
 	// 69 求开方
 	// 对于 x = 8，它的开方是 2.82842...，最后应该返回 2 而不是 3。在循环条件为l <= h且循环退出时，h 总是比 l 小1,
 	// 也就是说 h = 2，l = 3，因此最后的返回值应该为 h 而不是 l。
-	public static int mySqrt(int x) {
+	public int mySqrt(int x) {
 		if (x <= 1) {
 			return x;
 		}
 		int low = 1;
 		int high = x;
-		while (low <= high) {
-			int mid = low + (high - low) / 2;
-			int sqrt = x / mid;
-			if (sqrt < mid) {
-				high = mid - 1;
-			} else if (sqrt == mid) {
+		while (low < high) {
+			int mid = low + (high - low + 1) / 2;
+			if ((long) mid * mid < x) {
+				low = mid;
+			} else if (mid * mid == x) {
 				return mid;
 			} else {
-				low = mid + 1;
+				high = mid - 1;
 			}
 		}
 		return high;

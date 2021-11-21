@@ -34,6 +34,7 @@ public class SearchAndBacktracking {
 		solveSudoku(board);
 		solveSudoku(board1);
 		permuteUnique(new int[] { 1, 1, 2 });
+		generateParenthesis(3);
 	}
 
 	// 1091 计算在网格中从原点到特定点的最短路径长度: 0 表示可以经过某个位置，求解从左上角到右下角的最短路径长度
@@ -410,6 +411,43 @@ public class SearchAndBacktracking {
 		return ans;
 	}
 
+	// 22. Generate Parentheses
+	private static final char[] parentheses = new char[] { '(', ')' };
+
+	public static List<String> generateParenthesis(int n) {
+		List<String> ans = new ArrayList<>();
+		Stack<Character> path = new Stack<>();
+		generateParenthesisDFS(n * 2, ans, path, 0);
+		return ans;
+	}
+
+	public static void generateParenthesisDFS(int n, List<String> ans, Stack<Character> path, int sum) {
+		if (path.size() == n && sum == 0) {
+			List<Character> result = new ArrayList<>(path);
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < result.size(); i++) {
+				sb.append(result.get(i));
+			}
+			ans.add(sb.toString());
+		}
+
+		int remain = n - path.size();
+		// already invalid if right parenthesis present too much
+		if (sum < 0)
+			return;
+		// too many left or right parenthesis
+		if (sum > remain)
+			return;
+
+		for (char p : parentheses) {
+			path.add(p);
+			generateParenthesisDFS(n, ans, path, p == '(' ? sum + 1 : sum - 1);
+			path.pop();
+		}
+
+		return;
+	}
+
 	// 93: IP 地址划分
 	// divide and conquer
 	public static List<String> restoreIpAddresses(String s) {
@@ -727,7 +765,7 @@ public class SearchAndBacktracking {
 		}
 	}
 
-	// 77 找出集合的所有子集，子集不能重复，[1, 2] 和 [2, 1] 这种子集算重复
+	// 78 找出集合的所有子集，子集不能重复，[1, 2] 和 [2, 1] 这种子集算重复
 	public List<List<Integer>> subsets(int[] nums) {
 		List<List<Integer>> ans = new ArrayList<>();
 		Stack<Integer> path = new Stack<>();
@@ -1064,4 +1102,7 @@ public class SearchAndBacktracking {
 		}
 		return;
 	}
+
+	// 212. Word Search II
+	// DFS + Trie, 用trie来来加速搜索，这样如果有很多前缀一致的单词可以更快搜到
 }

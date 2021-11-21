@@ -1,4 +1,7 @@
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20数学.md
 public class MathMatics {
@@ -147,4 +150,114 @@ public class MathMatics {
 	// 628 找出数组中的乘积最大的三个数
 	// 两种情况，三个最大的正数，或最大的正数和两个最小的负数
 	// 可直接排序，或一次扫描找出最大的三个值和最小的两个值
+
+	// 50. Pow(x, n)
+	public double myPow(double x, int n) {
+		double ans = pow(x, Math.abs(n));
+		if (ans == 0.0)
+			return ans;
+		return n >= 0 ? ans : 1 / ans;
+	}
+
+	public double pow(double x, int n) {
+		if (n == 0) {
+			return 1;
+		}
+		double ans = pow(x, n / 2);
+		ans *= ans;
+		if (n % 2 != 0) { // if n is odd
+			ans *= x;
+		}
+
+		return ans;
+	}
+
+	// 150. Evaluate Reverse Polish Notation
+	public int evalRPN(String[] tokens) {
+		Stack<Integer> nums = new Stack<>();
+		for (String token : tokens) {
+			if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) {
+				int ans = 0;
+				int a = nums.pop();
+				int b = nums.pop();
+				if (token.equals("+")) {
+					ans = b + a;
+				}
+				if (token.equals("-")) {
+					ans = b - a;
+				}
+				if (token.equals("*")) {
+					ans = b * a;
+				}
+				if (token.equals("/")) {
+					ans = b / a;
+				}
+				nums.push(ans);
+			} else {
+				nums.push(Integer.parseInt(token));
+			}
+		}
+		return nums.pop();
+	}
+
+	// 29. Divide Two Integers
+	// https://leetcode.com/problems/divide-two-integers/discuss/13467/Very-detailed-step-by-step-explanation-(Java-solution)
+	// 所有正数都能用2的次方的和来表示
+
+	// 166. Fraction to Recurring Decimal
+	public String fractionToDecimal(int numerator, int denominator) {
+		if (numerator == 0)
+			return "0";
+		Map<Long, Integer> map = new HashMap<>();
+		StringBuilder sb = new StringBuilder();
+		boolean sign = (numerator < 0) == (denominator < 0);
+		if (!sign) {
+			sb.append("-");
+		}
+
+		long divsor = Math.abs((long) denominator);
+		long remainder = Math.abs((long) numerator) % divsor;
+		long beforeDecimal = Math.abs((long) numerator) / divsor;
+		sb.append(beforeDecimal);
+		if (remainder == 0)
+			return sb.toString();
+
+		sb.append(".");
+
+		while (remainder != 0) {
+			remainder = remainder * 10;
+			if (map.containsKey(remainder)) {
+				sb.insert(map.get(remainder), "(");
+				sb.append(")");
+				return sb.toString();
+			}
+			map.put(remainder, sb.length());
+			long next = remainder / divsor;
+			sb.append(next);
+			remainder = remainder % divsor;
+		}
+		return sb.toString();
+	}
+
+	// 454. 4Sum II
+	// 两两一组，分别求和，用hashmap看是否出现过
+	public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+		Map<Integer, Integer> sumMap = new HashMap<>();
+		for (int a : nums1) {
+			for (int b : nums2) {
+				int sum = a + b;
+				sumMap.put(-sum, sumMap.getOrDefault(-sum, 0) + 1);
+			}
+		}
+		int count = 0;
+		for (int c : nums3) {
+			for (int d : nums4) {
+				int sum = c + d;
+				if (sumMap.containsKey(sum)) {
+					count += sumMap.get(sum);
+				}
+			}
+		}
+		return count;
+	}
 }

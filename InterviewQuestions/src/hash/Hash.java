@@ -26,7 +26,7 @@ public class Hash {
 	// 所有数字放入hashmap中，key为数字，value为出现次数
 	// 遍历hashmap可得结果
 
-	// 最长连续序列
+	// 128. Longest Consecutive Sequence 最长连续序列
 	public int longestConsecutive(int[] nums) {
 		Map<Integer, Integer> countForNum = new HashMap<>();
 		for (int num : nums) {

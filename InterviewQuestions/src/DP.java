@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Stack;
 
 // 残酷刷题群算法小讲座：动态规划的套路 - https://www.youtube.com/watch?v=FLbqgyJ-70I
 public class DP {
@@ -22,30 +21,15 @@ public class DP {
 
 	// 70. 上楼梯：有 N 阶楼梯，每次可以上一阶或者两阶，求有多少种上楼梯的方法。
 	public int climbStairs(int n) {
-		List<List<Integer>> paths = new ArrayList<>();
-		Stack<Integer> path = new Stack<>();
-		int[] memo = new int[n + 1];
-		return climbStairs(n, memo, path, paths);
-	}
-
-	public int climbStairs(int n, int[] memo, Stack<Integer> path, List<List<Integer>> paths) {
-		if (n == 0) {
-			paths.add(path);
+		if (n == 1)
 			return 1;
+		int dp[] = new int[n + 1];
+		dp[0] = 1;
+		dp[1] = 1;
+		for (int i = 2; i <= n; i++) {
+			dp[i] = dp[i - 1] + dp[i - 2];
 		}
-		if (n == 1) {
-			path.push(1);
-			paths.add(path);
-			path.pop();
-			return 1;
-		}
-		if (memo[n] > 0) {
-			return memo[n];
-		}
-
-		int ans = climbStairs(n - 1, memo, path, paths) + climbStairs(n - 2, memo, path, paths);
-		memo[n] = ans;
-		return ans;
+		return dp[n];
 	}
 
 	// 198. House Robber (Easy) 抢劫一排住户，但是不能抢邻近的住户，求最大抢劫量。
@@ -865,5 +849,22 @@ public class DP {
 			}
 		}
 		return low;
+	}
+
+	// 746. Min Cost Climbing Stairs
+	public int minCostClimbingStairs(int[] cost) {
+		int[] dp = new int[cost.length + 1];
+		if (cost.length <= 1)
+			return 0;
+		if (cost.length == 2)
+			return Math.min(cost[0], cost[1]);
+
+		dp[0] = 0;
+		dp[1] = 0;
+		for (int i = 2; i < cost.length; i++) {
+			dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+		}
+
+		return Math.min(dp[cost.length - 1] + cost[cost.length - 1], dp[cost.length - 2] + cost[cost.length - 2]);
 	}
 }

@@ -1,11 +1,17 @@
 package stackAndQueue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Stack;
 
 public class StackAndQueue {
@@ -538,5 +544,71 @@ public class StackAndQueue {
 			}
 		}
 		return res;
+	}
+
+	// 56. Merge Intervals
+	public int[][] merge(int[][] intervals) {
+		Arrays.sort(intervals, new Comparator<int[]>() {
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				Integer.compare(o2[0], o1[0]);
+				return o1[0] - o2[0];
+			}
+		});
+		List<int[]> ans = new ArrayList<int[]>();
+		int[] preInterval = intervals[0];
+		for (int i = 1; i < intervals.length; i++) {
+			int[] nextInterval = intervals[i];
+			if (preInterval[1] < nextInterval[0]) {
+				ans.add(preInterval);
+				preInterval = nextInterval;
+			} else {
+				preInterval[0] = Math.min(preInterval[0], nextInterval[0]);
+				preInterval[1] = Math.max(preInterval[1], nextInterval[1]);
+			}
+		}
+		ans.add(preInterval);
+		int[][] formatedAns = new int[ans.size()][intervals[0].length];
+		return ans.toArray(formatedAns);
+	}
+
+	// 380. Insert Delete GetRandom O(1)
+	class RandomizedSet {
+		final Map<Integer, Integer> map;
+		final List<Integer> list;
+		final Random random;
+
+		public RandomizedSet() {
+			map = new HashMap<>();
+			list = new ArrayList<>();
+			random = new Random();
+		}
+
+		public boolean insert(int val) {
+			if (map.containsKey(val)) {
+				return false;
+			}
+			map.put(val, list.size());
+			list.add(val);
+			return true;
+		}
+
+		public boolean remove(int val) {
+			if (!map.containsKey(val)) {
+				return false;
+			}
+			int index = map.get(val);
+			int lastElement = list.get(list.size() - 1);
+			map.put(lastElement, index);
+			list.set(index, lastElement);
+			list.remove(list.size() - 1);
+			map.remove(val);
+			return true;
+		}
+
+		public int getRandom() {
+			int rand = random.nextInt(list.size());
+			return list.get(rand);
+		}
 	}
 }
