@@ -1105,4 +1105,10 @@ public class SearchAndBacktracking {
 
 	// 212. Word Search II
 	// DFS + Trie, 用trie来来加速搜索，这样如果有很多前缀一致的单词可以更快搜到
+
+	// 301. Remove Invalid Parentheses
+	// 此题关键是找出到底最少需要删掉多少左括号，多少右括号，知道这个信息，然后dfs即可
+	// 核心在于先扫描一遍string，如果遇到'('，left++，因为这个'('可能会和后面的某个右括号匹配。left只会>=0。
+	// 遇到')'：如果left>0，直接left--。如果left==0，那么说明这个右括号一定需要移除，right++，。
+	// 扫描完的left和right分别代表总共需要移除的左括号和右括号数量。
 }

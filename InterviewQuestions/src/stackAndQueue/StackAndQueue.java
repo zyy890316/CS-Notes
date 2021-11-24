@@ -19,6 +19,7 @@ public class StackAndQueue {
 		decodeString("2[abc]3[cd]ef");
 		largestRectangleArea(new int[] { 2, 1, 5, 6, 2, 3 });
 		sortColors(new int[] { 2, 0, 1 });
+		find132pattern(new int[] { 2, 4, 3, 1 });
 	}
 
 	// 用两个栈实现队列
@@ -610,5 +611,24 @@ public class StackAndQueue {
 			int rand = random.nextInt(list.size());
 			return list.get(rand);
 		}
+	}
+
+	// 456. 132 Pattern: 能否找到这个pattern: i < j < k and nums[i] < nums[k] < nums[j]
+	// 此题关键是把k找到，让k为次大值
+	// 从后往前扫描数组，用一个递减单调栈，只要元素出栈，一定说明迫使该元素出栈的值更大，那么迫使该元素出栈的就是j，出栈的元素就是k
+	// 之后扫描过程中只要遇到一个比k小的，就找到了
+	public static boolean find132pattern(int[] nums) {
+		Stack<Integer> stack = new Stack<>();
+		int secondMax = Integer.MIN_VALUE;
+		for (int i = nums.length - 1; i >= 0; i--) {
+			if (nums[i] < secondMax)
+				return true;
+
+			while (!stack.isEmpty() && nums[i] > stack.peek()) {
+				secondMax = Math.max(secondMax, stack.pop());
+			}
+			stack.add(nums[i]);
+		}
+		return false;
 	}
 }

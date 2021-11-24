@@ -17,6 +17,7 @@ public class DP {
 		String[] test2 = new String[] { "leet", "code" };
 		wordBreak("leetcode", Arrays.asList(test2));
 		combinationSum4(new int[] { 1, 2, 3 }, 4);
+		maxProduct(new int[] { 2,3,-2,4 })
 	}
 
 	// 70. 上楼梯：有 N 阶楼梯，每次可以上一阶或者两阶，求有多少种上楼梯的方法。
@@ -866,5 +867,63 @@ public class DP {
 		}
 
 		return Math.min(dp[cost.length - 1] + cost[cost.length - 1], dp[cost.length - 2] + cost[cost.length - 2]);
+	}
+
+	// 44. Wildcard Matching
+	public boolean isMatch(String s, String p) {
+		boolean dp[][] = new boolean[s.length() + 1][p.length() + 1];
+		dp[0][0] = true;
+		for (int j = 1; j <= p.length(); j++) {
+			if (p.charAt(j - 1) == '*') {
+				dp[0][j] = dp[0][j - 1];
+			}
+		}
+
+		for (int i = 1; i <= s.length(); i++) {
+			for (int j = 1; j <= p.length(); j++) {
+				char a = s.charAt(i - 1);
+				char b = p.charAt(j - 1);
+				if (a == b || b == '?') {
+					dp[i][j] = dp[i - 1][j - 1];
+				} else if (b == '*') {
+					boolean curr = false;
+					// k = i 时代表*作为空字符也可以match
+					for (int k = 0; k <= i; k++) {
+						curr = curr || dp[k][j - 1];
+					}
+					dp[i][j] = curr;
+				}
+			}
+		}
+		return dp[s.length()][p.length()];
+	}
+
+	// 152. Maximum Product Subarray
+	public int maxProduct(int[] nums) {
+		if (nums.length == 1)
+			return nums[0];
+		int n = nums.length;
+		int[][] dp = new int[n + 1][2];
+
+		for (int i = 1; i <= n; i++) {
+			int prevPositive = dp[i - 1][0];
+			int prevNegative = dp[i - 1][1];
+			int curr = nums[i - 1];
+			if (curr > 0) {
+				dp[i][0] = Math.max(curr, prevPositive * curr);
+				dp[i][1] = Math.min(0, prevNegative * curr);
+			} else if (curr < 0) {
+				dp[i][0] = Math.max(0, prevNegative * curr);
+				dp[i][1] = Math.min(curr, prevPositive * curr);
+			} else {
+				dp[i][0] = 0;
+				dp[i][1] = 0;
+			}
+		}
+		int ans = Integer.MIN_VALUE;
+		for (int i = 1; i <= n; i++) {
+			ans = Math.max(ans, dp[i][0]);
+		}
+		return ans;
 	}
 }

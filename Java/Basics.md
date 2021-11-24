@@ -39,6 +39,8 @@ HashMap retain no order, LinkedHashMap maintain insert order (good for LRU cache
 * ```Arrays.stream(array).sum()```
 * ```Arrays.stream(array).max().getAsInt()```
 * ```new PriorityQueue<>(Collections.reverseOrder())```
+* ```PriorityQueue<Element> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+pq.offer(int), pq.poll```
 * ```Collections.reverse()```
 * ```new StringBuilder(result).reverse().toString();```
 * ```Map.computeIfAbsent & Map.getOrDefault```
