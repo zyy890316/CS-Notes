@@ -1,11 +1,8 @@
-# System design aggregated github articles
-https://github.com/donnemartin/system-design-primer
-
-# DDIA
-https://vonng.gitbooks.io/ddia-cn/content/ch1.html
-
-# 一篇文章解决所有system design面试
-https://blog.csdn.net/AuburnTigers/article/details/102601151
+# System Design Learning:
+* Distributed Systems in One Lesson: https://learning.oreilly.com/videos/distributed-systems-in/9781491924914/
+* System design aggregated github articles: https://github.com/donnemartin/system-design-primer
+* DDIA: https://vonng.gitbooks.io/ddia-cn/content/ch1.html
+* 一篇文章解决所有system design面试: https://blog.csdn.net/AuburnTigers/article/details/102601151
 
 # Restful API Design:
 * Endpoint: https://api_domain/version/collection/
@@ -27,8 +24,7 @@ https://blog.csdn.net/AuburnTigers/article/details/102601151
 ** Search/Query: q=AI
 ** Access Token: access_token=
 
-
-# Steps
+# System Design Steps
 1. Functional Requirements (APIs)
   * Define input parameters and return values
   * make several iterations about additional functionalities and future use
@@ -92,3 +88,10 @@ Elasticsearch is a search engine based on the Apache Lucene library. It provides
 # Data replication
 * Probabilistic protocols for eventual consistency: Gossip, Epidemic broadcast
 * Consensus protocols for strong consistency: 2/3 phase commit, chain replication
+
+# Consensus Protocol: Paxos
+* Core idea: Each propose have a sequence number, acceptor only accept higher sequence than what they see so far
+* Other protocol: Raft, blockchain(like Paxos, but have node lying to caller)
+* Use case:
+** lightweight transactions in Cassandra``` INSERT ... IF NOT EXISTS```
+** Master Election

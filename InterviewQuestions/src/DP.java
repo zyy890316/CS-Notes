@@ -17,7 +17,7 @@ public class DP {
 		String[] test2 = new String[] { "leet", "code" };
 		wordBreak("leetcode", Arrays.asList(test2));
 		combinationSum4(new int[] { 1, 2, 3 }, 4);
-		maxProduct(new int[] { 2,3,-2,4 })
+		isMatch2("aa", "a*");
 	}
 
 	// 70. 上楼梯：有 N 阶楼梯，每次可以上一阶或者两阶，求有多少种上楼梯的方法。
@@ -925,5 +925,51 @@ public class DP {
 			ans = Math.max(ans, dp[i][0]);
 		}
 		return ans;
+	}
+
+	// 312. Burst Balloons
+	// https://www.youtube.com/watch?v=VFskby7lUbw
+	public int maxCoins(int[] nums) {
+		int n = nums.length;
+		int[][] dp = new int[n][n];
+		return maxCoinsDFS(nums, 0, n - 1, dp);
+	}
+
+	public int maxCoinsDFS(int[] nums, int l, int r, int[][] dp) {
+		if (l > r || l < 0 || r >= nums.length) {
+			return 0;
+		}
+		if (dp[l][r] > 0) {
+			return dp[l][r];
+		}
+		// 最后戳破第i个气球
+		// dp[l][r] = nums[l-1] * nums[i] * nums[r+1] + dp[i+1][r] + dp[l][i-1]
+		int left = l - 1 < 0 ? 1 : nums[l - 1];
+		int right = r + 1 >= nums.length ? 1 : nums[r + 1];
+		for (int i = l; i <= r; i++) {
+			dp[l][r] = Math.max(dp[l][r],
+					maxCoinsDFS(nums, l, i - 1, dp) + maxCoinsDFS(nums, i + 1, r, dp) + left * nums[i] * right);
+		}
+		return dp[l][r];
+	}
+
+	// 10. Regular Expression Matching
+	// https://www.acwing.com/solution/content/736/
+	public static boolean isMatch2(String s, String p) {
+		// dp[i][j]表示p从j开始到结尾，是否能匹配s从i开始到结尾
+		boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+		dp[s.length()][p.length()] = true;
+
+		for (int i = s.length(); i >= 0; i--) {
+			for (int j = p.length() - 1; j >= 0; j--) {
+				boolean first_match = (i < s.length() && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.'));
+				if (j + 1 < p.length() && p.charAt(j + 1) == '*') {
+					dp[i][j] = dp[i][j + 2] || first_match && dp[i + 1][j];
+				} else {
+					dp[i][j] = first_match && dp[i + 1][j + 1];
+				}
+			}
+		}
+		return dp[0][0];
 	}
 }

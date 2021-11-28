@@ -92,34 +92,24 @@ public class SearchAndBacktracking {
 	// 可以将每个整数看成图中的一个节点，如果两个整数之差为一个平方数，那么这两个整数所在的节点就有一条边。
 	// 要求解最小的平方数数量，就是求解从节点 n 到节点 0 的最短路径。
 	public int numSquares(int n) {
-		List<Integer> squares = generateSquares(n);
-		Queue<Integer> queue = new LinkedList<>();
-		boolean[] marked = new boolean[n + 1];
-		queue.add(n);
-		marked[n] = true;
 		int level = 0;
+		Queue<Integer> queue = new LinkedList<>();
+		queue.add(n);
 		while (!queue.isEmpty()) {
-			int size = queue.size();
 			level++;
-			while (size-- > 0) {
-				int cur = queue.poll();
-				for (int s : squares) {
-					int next = cur - s;
-					if (next < 0) {
-						break;
-					}
-					if (next == 0) {
+			int size = queue.size();
+			for (int i = 0; i < size; i++) {
+				int curr = queue.poll();
+				for (int j = 1; j * j <= curr; j++) {
+					int remain = curr - j * j;
+					if (remain == 0) {
 						return level;
 					}
-					if (marked[next]) {
-						continue;
-					}
-					marked[next] = true;
-					queue.add(next);
+					queue.add(remain);
 				}
 			}
 		}
-		return n;
+		return level;
 	}
 
 	/**

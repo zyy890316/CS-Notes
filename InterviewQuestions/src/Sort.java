@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Sort {
 	// 324. Wiggle Sort II
@@ -22,5 +23,32 @@ public class Sort {
 		for (int m = 0; m < nums.length; m++) {
 			nums[m] = temp[m];
 		}
+	}
+
+	// 179. Largest Number
+	// 转成String 排序即可
+	public String largestNumber(int[] nums) {
+		String[] sNums = new String[nums.length];
+		for (int i = 0; i < nums.length; i++) {
+			sNums[i] = String.valueOf(nums[i]);
+		}
+		Arrays.sort(sNums, new Comparator<String>() {
+			@Override
+			public int compare(String a, String b) {
+				String s1 = a + b;
+				String s2 = b + a;
+				return s2.compareTo(s1);
+			}
+		});
+
+		// 如果给的nums全都是0，返回一个0就好
+		if (sNums[0].equals("0"))
+			return "0";
+
+		StringBuilder sb = new StringBuilder();
+		for (String s : sNums) {
+			sb.append(s);
+		}
+		return sb.toString();
 	}
 }
