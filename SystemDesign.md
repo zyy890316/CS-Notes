@@ -71,25 +71,33 @@ https://www.youtube.com/watch?v=LNsqFf7Pu4I&list=PL9nWRykSBSFhv9Ptvl8Bu8CpxedGpH
 
 ## Kafka
 https://www.youtube.com/watch?v=JalUUBKdcA0
+
 ## Short Polling vs Long Polling vs WebSockets
 https://www.youtube.com/watch?v=ZBM28ZPlin8
 
+## ZooKeeper:
+https://learning.oreilly.com/videos/distributed-systems-in/9781491924914/9781491924914-video215282/
+in memory metadata storage with leader follower pattern, follower accept read and write, write will be redirected to leader node.
+* Use case:
+** Leader Elections: follower register themselves in a ZNode and watch for result, usually in 10s range, not fast
+** Distributed locks
+
 ## Elasticsearch
 Elasticsearch is a search engine based on the Apache Lucene library. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents.
+Kibana is a proprietary data visualization dashboard software for Elasticsearch.
 
-# Quorum
+## Quorum
 * Quorum is achieved when nodes follow the below protocol: R+W>N
 ** N = nodes in the quorum group
 ** W = minimum write nodes
 ** R = minimum read nodes
 * Best performance (throughput/availability) when 1<r<w<n, because reads are more frequent than writes in most applications
 
-
-# Data replication
+## Data replication
 * Probabilistic protocols for eventual consistency: Gossip, Epidemic broadcast
 * Consensus protocols for strong consistency: 2/3 phase commit, chain replication
 
-# Consensus Protocol: Paxos
+## Consensus Protocol: Paxos
 * Core idea: Each propose have a sequence number, acceptor only accept higher sequence than what they see so far
 * Other protocol: Raft, blockchain(like Paxos, but have node lying to caller)
 * Use case:

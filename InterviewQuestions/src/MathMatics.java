@@ -260,4 +260,27 @@ public class MathMatics {
 		}
 		return count;
 	}
+
+	// 264. Ugly Number II
+	public int nthUglyNumber(int n) {
+		int i = 0;
+		int j = 0;
+		int k = 0;
+		int[] ugly = new int[n + 1];
+		ugly[0] = 1;
+
+		for (int m = 0; m < n; m++) {
+			int next = Math.min(2 * ugly[i], 3 * ugly[j]);
+			next = Math.min(5 * ugly[k], next);
+			if (next == 2 * ugly[i])
+				i++;
+			if (next == 3 * ugly[j])
+				j++;
+			if (next == 5 * ugly[k])
+				k++;
+			ugly[m + 1] = next;
+		}
+
+		return ugly[n - 1];
+	}
 }
