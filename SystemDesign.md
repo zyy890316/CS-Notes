@@ -25,6 +25,11 @@
 ** Access Token: access_token=
 
 # System Design Steps
+0. General Requirements Clarification:
+  * User: Who/How the system will be used?
+  * Scale(read and write): how many read/write, TPS, traffic spike
+  * Performance: latency, write-to-read delay?
+  * Cost: development cost vs maintenance cost
 1. Functional Requirements (APIs)
   * Define input parameters and return values
   * make several iterations about additional functionalities and future use
@@ -49,7 +54,7 @@ https://www.youtube.com/watch?v=-jiOPKt7avE
 * Token Bucket: Allow Burst
 * Leaky Bucket: Smooth Burst
 
-## Fault Tolarent
+## Fault Tolerant
 * Bulkhead: isolation between different down streams
 * Circuit breaker
 
@@ -103,3 +108,14 @@ Kibana is a proprietary data visualization dashboard software for Elasticsearch.
 * Use case:
 ** lightweight transactions in Cassandra``` INSERT ... IF NOT EXISTS```
 ** Master Election
+
+## Algorithms for convergence:
+Diff from Consensus: Consensus focusing on choosing one end result, convergence want to merge the conflict
+* Operational Transformation (OT): Google Doc, requires a central server
+* Conflict-free replicated data types (CRDT): Atom Editor
+
+## Rendezvous hashing:
+h(S, O) = W, h is the hashing function, S is a set of options, given an input O, out put a weighted list W, can be used for LB
+
+## Failure Detection: SWIM protocol can generate member list (uber has open source implementation ringpop)
+https://www.youtube.com/watch?v=1TIzPL4878Q&list=PLcb8lnLqm6_pn_fnHgRNlVAxNIXdYX4tK&index=17&t=777s
