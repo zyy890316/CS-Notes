@@ -45,6 +45,7 @@
   * how data stored in the system
 4. Detailed Design: it is all about data (storage, transfer, processing)
 5. Bottlenecks and tradeoffs
+6. Monitoring and maintenance
 
 # Key Point
 ## Bloom Filter
@@ -90,6 +91,7 @@ in memory metadata storage with leader follower pattern, follower accept read an
 ## Elasticsearch
 Elasticsearch is a search engine based on the Apache Lucene library. It provides a distributed, multitenant-capable full-text search engine with an HTTP web interface and schema-free JSON documents.
 Kibana is a proprietary data visualization dashboard software for Elasticsearch.
+ELK: Logstash + Kibana + Elasticsearch
 
 ## Quorum
 * Quorum is achieved when nodes follow the below protocol: R+W>N
@@ -106,7 +108,7 @@ Kibana is a proprietary data visualization dashboard software for Elasticsearch.
 * Core idea: Each propose have a sequence number, acceptor only accept higher sequence than what they see so far
 * Other protocol: Raft, blockchain(like Paxos, but have node lying to caller)
 * Use case:
-** lightweight transactions in Cassandra``` INSERT ... IF NOT EXISTS```
+** lightweight transactions in Cassandra```INSERT ... IF NOT EXISTS```
 ** Master Election
 
 ## Algorithms for convergence:
@@ -119,3 +121,6 @@ h(S, O) = W, h is the hashing function, S is a set of options, given an input O,
 
 ## Failure Detection: SWIM protocol can generate member list (uber has open source implementation ringpop)
 https://www.youtube.com/watch?v=1TIzPL4878Q&list=PLcb8lnLqm6_pn_fnHgRNlVAxNIXdYX4tK&index=17&t=777s
+
+## The Four Golden Signals for monitoring:
+Latency, Traffic, Errors, Saturation
