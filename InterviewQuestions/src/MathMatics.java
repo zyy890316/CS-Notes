@@ -283,4 +283,17 @@ public class MathMatics {
 
 		return ugly[n - 1];
 	}
+
+	// 1823. Find the Winner of the Circular Game, Joseph Ring, 约瑟夫环
+	public int findTheWinner(int n, int k) {
+		// +1 is for converting 0-based indexing to 1-based indexing
+		return findTheWinnerRecursive(n, k) + 1;
+	}
+
+	public int findTheWinnerRecursive(int n, int k) {
+		if (n <= 1) {
+			return 0;
+		}
+		return (findTheWinnerRecursive(n - 1, k) + k) % n;
+	}
 }

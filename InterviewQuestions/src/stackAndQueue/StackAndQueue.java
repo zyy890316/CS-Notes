@@ -275,7 +275,7 @@ public class StackAndQueue {
 		for (int i = 1; i < asteroids.length; i++) {
 			int currNum = asteroids[i];
 			while (!stack.isEmpty() && Integer.signum(currNum) != Integer.signum(stack.peek()) && currNum < 0) {
-				int result = asteroids[i] + (int) stack.peek();
+				int result = asteroids[i] + stack.peek();
 				if (result == 0) {
 					stack.pop();
 					currNum = result;
