@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // 残酷刷题群算法小讲座：动态规划的套路 - https://www.youtube.com/watch?v=FLbqgyJ-70I
 public class DP {
@@ -112,6 +114,63 @@ public class DP {
 			memoNoRob[start] = maxValue;
 		}
 		return canRob ? memoCanRob[start] : memoNoRob[start];
+	}
+
+	// 740. Delete and Earn
+	// 转换成house rob即可：几号数字即为几号房子，拿了该数字的分数，该数字两侧的分数就都不能拿
+	public int deleteAndEarn(int[] nums) {
+		Map<Integer, Integer> points = new HashMap<>();
+		int max = Integer.MIN_VALUE;
+		// 把数组转化成 房子和对应分数的mapping
+		for (int i : nums) {
+			if (points.containsKey(i)) {
+				points.put(i, points.get(i) + i);
+			} else {
+				points.put(i, i);
+			}
+			max = Math.max(i, max);
+		}
+		int[] dp = new int[max + 1];
+		dp[0] = 0;
+		dp[1] = points.getOrDefault(1, 0);
+		for (int i = 2; i <= max; i++) {
+			dp[i] = Math.max(dp[i - 1], dp[i - 2] + points.getOrDefault(i, 0));
+		}
+		return dp[max];
+	}
+
+	// 55. Jump Game
+	public boolean canJump(int[] nums) {
+		int n = nums.length;
+		// min steps to rech n-1 from i
+		boolean[] dp = new boolean[n];
+		dp[n - 1] = true;
+		for (int i = n - 2; i >= 0; i--) {
+			for (int j = 1; j <= nums[i]; j++) {
+				// 剪枝，i+j太大就没必要算了
+				if (i + j > n - 1)
+					break;
+				int jumpFromIndex = Math.min(i + j, n - 1);
+				dp[i] = dp[i] || dp[jumpFromIndex];
+			}
+		}
+		return dp[0];
+	}
+
+	// 45. Jump Game II
+	public int jump(int[] nums) {
+		int n = nums.length;
+		// min steps to rech n-1 from i
+		int[] dp = new int[n];
+		Arrays.fill(dp, n);
+		dp[n - 1] = 0;
+		for (int i = n - 2; i >= 0; i--) {
+			for (int j = 1; j <= nums[i]; j++) {
+				int jumpFromIndex = Math.min(i + j, n - 1);
+				dp[i] = Math.min(dp[i], dp[jumpFromIndex] + 1);
+			}
+		}
+		return dp[0];
 	}
 
 	// 64. Minimum Path Sum (Medium) 求从矩阵的左上角到右下角的最小路径和，每次只能向右和向下移动。

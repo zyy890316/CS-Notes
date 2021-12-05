@@ -99,10 +99,12 @@ public class TreeSolutions {
 	public int pathSum(TreeNode root, int targetSum) {
 		if (root == null)
 			return 0;
+		// root + left + right
 		return pathSumFromRoot(root, targetSum) + pathSum(root.left, targetSum) + pathSum(root.right, targetSum);
 	}
 
 	private int pathSumFromRoot(TreeNode root, int targetSum) {
+		// 此函数只考虑包含当前root的情况
 		if (root == null)
 			return 0;
 		int count = 0;

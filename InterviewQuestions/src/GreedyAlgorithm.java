@@ -194,6 +194,24 @@ public class GreedyAlgorithm {
 		return max;
 	}
 
+	// 918. Maximum Sum Circular Subarray
+	// 两种情况：数组可分为三部分，prefix + mid + suffix
+	// 情况1： mid最大，这样即可转为53题球子数组的最大和
+	// 情况2: prefix+suffix最大，这样最大值即为数组总和sum，剪掉mid的最小值，也就是sum+maxSubArray(-nums)
+	public int maxSubarraySumCircular(int[] nums) {
+		int n = nums.length;
+		int[] negNums = new int[n];
+		int sum = 0;
+		for (int i = 0; i < n; i++) {
+			negNums[i] = -nums[i];
+			sum += nums[i];
+		}
+		int negMid = maxSubArray(negNums);
+		int mid = maxSubArray(nums);
+		// corner case：mid < 0说明元数组全部为负，这种情况下返回mid即可，mid即为元数组中最大的一个值
+		return mid < 0 ? mid : Math.max(sum + negMid, mid);
+	}
+
 	// 763 分隔字符串使同种字符出现在一起
 	// 存下每个字符最后一次出现的位置
 	// https://leetcode.com/problems/partition-labels/description/
