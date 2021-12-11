@@ -268,4 +268,57 @@ public class Graph {
 		}
 		return new int[] { -1, -1 };
 	}
+
+	// 269. Alien Dictionary
+	public String alienOrder(String[] words) {
+		if (words.length == 0 || words == null)
+			return "";
+		Map<Character, Set<Character>> graph = new HashMap<>();
+		int[] indegree = new int[26];
+		// build graph
+		for (int i = 1; i < words.length; i++) {
+			String first = words[i - 1];
+			String second = words[i];
+			for (int j = 0; j < Math.min(first.length(), second.length()); j++) {
+				char fromFirst = first.charAt(j);
+				char fromSecond = second.charAt(j);
+				if (fromFirst != fromSecond) {
+					Set<Character> indegreeSet = new HashSet<>();
+					if (graph.containsKey(fromSecond)) {
+						indegreeSet = graph.get(fromSecond);
+					}
+					if (!indegreeSet.contains(fromFirst)) {
+						indegreeSet.add(fromFirst);
+						indegree[fromSecond - 'a']++;
+						break;
+					}
+				}
+			}
+		}
+		// BFS to find order
+		StringBuilder sb = new StringBuilder();
+		Queue<Character> queue = new LinkedList<>();
+		for (char c : graph.keySet()) {
+			if (indegree[c - 'a'] == 0) {
+				sb.append(c);
+				queue.add(c);
+			}
+		}
+		while (!queue.isEmpty()) {
+			char curr = queue.poll();
+			for (char c : graph.keySet()) {
+				Set<Character> indegreeSet = graph.get(c);
+				if (indegreeSet.contains(curr)) {
+					indegree[c - 'a']--;
+					indegreeSet.remove(curr);
+					if (indegree[c - 'a'] == 0) {
+						queue.add(c);
+						sb.append(c);
+					}
+				}
+			}
+		}
+		String result = sb.toString();
+		return result.length() == graph.size() ? result : "";
+	}
 }
