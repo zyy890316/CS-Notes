@@ -44,13 +44,9 @@ public class DoublePointers {
 		while (fast < nums.length) {
 			if (nums[slow] > nums[slow - 1]) {
 				slow++;
-				fast++;
-				continue;
 			} else if (nums[fast] > nums[slow - 1]) {
 				nums[slow] = nums[fast];
 				slow++;
-				fast++;
-				continue;
 			}
 			fast++;
 		}
@@ -58,7 +54,8 @@ public class DoublePointers {
 	}
 
 	// Remove Duplicates From Sorted Array II (80)
-	// 已经排序的数组，重复元素最多出现2次
+	// 已经排序的数组，去除重复2次以上的element，例如：Input: nums = [0,0,1,1,1,1,2,3,3]
+	// Output: 7, nums = [0,0,1,1,2,3,3,_,_]
 	// https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
 	// slow的意义:第一个意义是下一个valid的number应该被填在slow的位置
 	// 第二个意义是slow以前的array是一个符合题意的valid的array，
@@ -389,8 +386,6 @@ public class DoublePointers {
 		// 如果移动了j，说明上一个循环新加入了一个char，需要用这个flag判断一下加入之后是否remaining会有变化
 		boolean newCharAddws = true;
 		while (j < m) {
-			System.out.println("i:" + i);
-			System.out.println("j:" + j);
 			char c = s.charAt(j);
 			if (target.containsKey(c) && newCharAddws) {
 				int count = target.get(c);
@@ -419,7 +414,6 @@ public class DoublePointers {
 				j++;
 				newCharAddws = true;
 			}
-			System.out.println("remaining:" + remaining);
 
 		}
 		return ans;

@@ -235,9 +235,6 @@ public class DP {
 		return pathSum[m][n];
 	}
 
-	// 303. Range Sum Query - Immutable (Easy)
-	// 求区间 i ~ j 的和，可以转换为 sum[j + 1] - sum[i]，其中 sum[i] 为 0 ~ i - 1 的和。
-
 	// 413. Arithmetic Slices 数组中等差子区间的个数
 	public int numberOfArithmeticSlices(int[] nums) {
 		// dp[i] 表示以 nums[i] 为结尾的等差子区间的个数

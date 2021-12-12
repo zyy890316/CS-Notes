@@ -17,7 +17,6 @@ public class SearchAndBacktracking {
 		shortestPathBinaryMatrix(new int[][] { { 0, 1 }, { 1, 0 } });
 		int[][] heights = new int[][] { { 1, 2, 2, 3, 5 }, { 3, 2, 3, 4, 4 }, { 2, 4, 5, 3, 1 }, { 6, 7, 1, 4, 5 },
 				{ 5, 1, 1, 2, 4 } };
-		int[][] heights1 = new int[][] { { 1, 2, 3 }, { 8, 9, 4 }, { 7, 6, 5 } };
 		pacificAtlantic(heights);
 		restoreIpAddresses("1111");
 		subsetsWithDup(new int[] { 1, 2, 2 });
@@ -117,7 +116,7 @@ public class SearchAndBacktracking {
 	 * 
 	 * @return 1,4,9,...
 	 */
-	private List<Integer> generateSquares(int n) {
+	public List<Integer> generateSquares(int n) {
 		List<Integer> squares = new ArrayList<>();
 		int square = 1;
 		int diff = 3;
@@ -878,7 +877,7 @@ public class SearchAndBacktracking {
 		int[] next;
 		next = getNextEmptyChar(board);
 		if (next[0] < 0) {
-			ans.add(new ArrayList(path));
+			ans.add(new ArrayList<Coordinate>(path));
 			return;
 		}
 
@@ -1002,10 +1001,6 @@ public class SearchAndBacktracking {
 	// https://www.youtube.com/watch?v=xf8qAkqDr8Y
 	// 用DFS搜索所有组合
 
-	// 131. Palindrome Partitioning
-	// dfs 搜索，每次从当前index开始的可以形成Palindrome的部分
-	// https://www.youtube.com/watch?v=UFdSC_ml4TQ
-
 	// 419. Battleships in a Board
 	public int countBattleships(char[][] board) {
 		int m = board.length;
@@ -1067,7 +1062,7 @@ public class SearchAndBacktracking {
 		// -sum 即为需要找的数，stack.peek()是之前取的最大的数，因为要去掉重复的，所以不能找比它小的了
 		if (depth == 2 && counts.get(-sum) != null && counts.get(-sum) > 0 && -sum >= stack.peek()) {
 			stack.add(-sum);
-			ans.add(new ArrayList(stack));
+			ans.add(new ArrayList<Integer>(stack));
 			stack.pop();
 			return;
 		}

@@ -82,20 +82,4 @@ public class DivideAndConqur {
 		}
 		return ans;
 	}
-
-	// 650 复制粘贴字符：最开始只有一个字符 A，问需要多少次操作能够得到 n 个字符 A，每次操作可以复制当前所有的字符，或者粘贴。
-	// https://www.bilibili.com/medialist/play/7836741?from=space&business=space_channel&business_id=92900&desc=1
-	// 最小操作数就是所有可分成的质数的成绩，即其质因数的和
-	public int minSteps(int n) {
-		if (n == 1)
-			return 0;
-		for (int i = 2; i <= Math.sqrt(n); i++) {
-			// n能被i整除，i一定是质数
-			// 否则从小到大枚举，i的质因数一定之前被枚举过，而n未被其整除，也不可能被i整除
-			if (n % i == 0) {
-				return i + minSteps(n / i);
-			}
-		}
-		return n;
-	}
 }
