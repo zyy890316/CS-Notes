@@ -20,6 +20,7 @@ public class DP {
 		wordBreak("leetcode", Arrays.asList(test2));
 		combinationSum4(new int[] { 1, 2, 3 }, 4);
 		isMatch2("aa", "a*");
+		increasingTripletDP(new int[] { 4, 5, 2147483647, 1, 2 });
 	}
 
 	// 70. 上楼梯：有 N 阶楼梯，每次可以上一阶或者两阶，求有多少种上楼梯的方法。
@@ -315,10 +316,6 @@ public class DP {
 		}
 
 		if (c.length() == 1) {
-			if (c.charAt(0) == '0') {
-				memo[start] = 0;
-				return memo[start];
-			}
 			memo[start] = 1;
 			return memo[start];
 		}
@@ -522,7 +519,8 @@ public class DP {
 		int target = sum / 2;
 		boolean[] dp = new boolean[target + 1];
 		dp[0] = true;
-		for (int i = 1; i < nums.length; i++) {
+		for (int i = 0; i < nums.length; i++) {
+			// 需从后往前遍历，否则假设nums[i]为1，从前往后遍历的话所有dp值均为true
 			for (int j = target; j >= nums[i]; j--) {
 				dp[j] = dp[j] || dp[j - nums[i]];
 			}
@@ -556,6 +554,8 @@ public class DP {
 	}
 
 	// 474. 01字符构成最多的字符串
+	// Return the size of the largest subset of strs such that there are at most m
+	// 0's and n 1's in the subset.
 	public int findMaxForm(String[] strs, int m, int n) {
 		if (strs == null || strs.length == 0) {
 			return 0;
@@ -865,18 +865,19 @@ public class DP {
 	// Given an integer array nums, return true if there exists a triple of indices
 	// (i, j, k) such that i < j < k and nums[i] < nums[j] < nums[k]
 	// 看能否找出三个数为升序即可
-	public boolean increasingTripletDP(int[] nums) {
+	public static boolean increasingTripletDP(int[] nums) {
 		int[] dp = new int[nums.length];
 		dp[0] = 1;
 		for (int i = 1; i < nums.length; i++) {
-			int max = 0;
+			int max = 1;
 			for (int j = 0; j < i; j++) {
 				if (nums[i] > nums[j]) {
 					max = Math.max(max, dp[j] + 1);
 				}
 			}
+			dp[i] = max;
 		}
-		return dp[nums.length] >= 3;
+		return Arrays.stream(dp).max().getAsInt() >= 3;
 	}
 
 	// 此题还可用nlog(n)方法做
@@ -894,6 +895,7 @@ public class DP {
 		return lis.size() >= 3;
 	}
 
+	// Binary seach find the right position to insert
 	public int increasingTripletBS(List<Integer> lis, int num) {
 		int low = 0;
 		int high = lis.size() - 1;
@@ -987,6 +989,7 @@ public class DP {
 	// https://www.youtube.com/watch?v=VFskby7lUbw
 	public int maxCoins(int[] nums) {
 		int n = nums.length;
+		// dp[l][r] 表示从l到r这个区间得分最大值
 		int[][] dp = new int[n][n];
 		return maxCoinsDFS(nums, 0, n - 1, dp);
 	}

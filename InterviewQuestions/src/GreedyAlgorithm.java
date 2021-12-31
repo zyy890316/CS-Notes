@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -93,7 +94,7 @@ public class GreedyAlgorithm {
 				return a[1] - b[1];
 			return b[0] - a[0];
 		});
-		List<int[]> queue = new ArrayList<>();
+		List<int[]> queue = new LinkedList<>();
 		for (int[] p : people) {
 			queue.add(p[1], p);
 		}
@@ -120,6 +121,7 @@ public class GreedyAlgorithm {
 	public boolean canPlaceFlowers(int[] flowerbed, int n) {
 		int len = flowerbed.length;
 		int count = 0;
+		// 前一朵花的位置
 		int preFlower = -2;
 		for (int i = 0; i < len; i++) {
 			if (flowerbed[i] == 1) {

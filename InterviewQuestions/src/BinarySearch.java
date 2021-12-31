@@ -202,4 +202,29 @@ public class BinarySearch {
 
 		return new int[] { start, end };
 	}
+
+	// 找出数组中重复的数，数组值在 [1, n] 之间
+	// 利用规律：如果没有重复数字，那么小于等于x的元素个数应为x
+	// https://www.youtube.com/watch?v=u_gg0uVZdsE
+	public int findDuplicate(int[] nums) {
+		int n = nums.length;
+		int l = 1;
+		int r = n - 1;
+		int ans = -1;
+
+		while (l <= r) {
+			int mid = (r + l) / 2;
+			int count = 0;
+			for (int num : nums) {
+				count += num <= mid ? 1 : 0;
+			}
+			if (count > mid) {
+				r = mid - 1;
+				ans = mid;
+			} else {
+				l = mid + 1;
+			}
+		}
+		return ans;
+	}
 }

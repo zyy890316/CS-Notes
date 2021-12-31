@@ -342,7 +342,7 @@ public class LinkedListSolutions {
 		return slow;
 	}
 
-	// 数组相邻差值的个数
+	// 使得数组相邻差值的个数为k
 	// https://leetcode.com/problems/beautiful-arrangement-ii/submissions/
 	public int[] constructArray(int n, int k) {
 		int[] ans = new int[n];
