@@ -79,8 +79,9 @@ public class MathMatics {
 	}
 
 	// 172 统计阶乘尾部有多少个 0
-// 尾部的 0 由 2 * 5 得来，2 的数量明显多于 5 的数量，因此只要统计有多少个 5 即可。
-// 对于一个数 N，它所包含 5 的个数为：N/5 + N/5^2 + N/5^3 + ...，其中 N/5 表示不大于 N 的数中 5 的倍数贡献一个 5，N/5^2 表示不大于 N 的数中 5^2 的倍数再贡献一个 5 ...。
+	// 尾部的 0 由 2 * 5 得来，2 的数量明显多于 5 的数量，因此只要统计有多少个 5 即可。
+	// 对于一个数 N，它所包含 5 的个数为：N/5 + N/5^2 + N/5^3 + ...，其中 N/5 表示不大于 N 的数中 5 的倍数贡献一个
+	// 5，N/5^2 表示不大于 N 的数中 5^2 的倍数再贡献一个 5 ...。
 	public int trailingZeroes(int n) {
 		return n < 5 ? 0 : n / 5 + trailingZeroes(n / 5);
 	}
@@ -88,7 +89,7 @@ public class MathMatics {
 	// 462 改变数组元素使所有的数组元素都相等
 	// https://www.youtube.com/watch?v=oiLw3d4qAKg
 	// 关键是找到中位数，所有都移动到中位数是最优解
-	// 还可以使用快速选择找到中位数，时间复杂度 O(N)
+	// 还可以使用quick sort找到中位数，时间复杂度 O(N)
 	public int minMoves2(int[] nums) {
 		Arrays.sort(nums);
 		int median = nums[nums.length / 2];

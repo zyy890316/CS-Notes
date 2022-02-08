@@ -214,4 +214,63 @@ public class StringSolutions {
 		}
 		return ans;
 	}
+
+	// String to Integer (atoi)
+	public static int myAtoi(String s) {
+		long ans = 0;
+		s = s.trim();
+		boolean isNegative = false;
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (i == 0 && s.charAt(i) == '-') {
+				isNegative = true;
+				continue;
+			}
+			if (i == 0 && s.charAt(i) == '+') {
+				isNegative = false;
+				continue;
+			}
+			if (Character.isDigit(c)) {
+				ans = ans * 10 + (c - '0');
+				if (ans >= Integer.MAX_VALUE) {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		ans = isNegative ? -ans : ans;
+		if (ans > Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		}
+		if (ans < Integer.MIN_VALUE) {
+			return Integer.MIN_VALUE;
+		}
+		return (int) ans;
+	}
+
+	// Roman to Integer
+	// 从后往前容易
+	public static int romanToInt(String s) {
+		Map<Character, Integer> map = new HashMap<>();
+		map.put('I', 1);
+		map.put('V', 5);
+		map.put('X', 10);
+		map.put('L', 50);
+		map.put('C', 100);
+		map.put('D', 500);
+		map.put('M', 1000);
+		int ans = 0;
+		int preValue = 0;
+		for (int i = s.length() - 1; i >= 0; i--) {
+			int currValue = map.get(s.charAt(i));
+			if (preValue > currValue) {
+				ans -= currValue;
+			} else {
+				ans += currValue;
+			}
+			preValue = currValue;
+		}
+		return ans;
+	}
 }

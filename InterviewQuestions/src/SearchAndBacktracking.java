@@ -653,6 +653,55 @@ public class SearchAndBacktracking {
 		}
 	}
 
+	// Next Permutation
+	public static void nextPermutation(int[] nums) {
+		if (nums.length == 1)
+			return;
+		// 从右开始找何时终止升序，一直升序说明已经是最大的排列了
+		// 找到升序终止点，说明i-1处需要替换为一个较小值：
+		// 比如124653， 653从右开始升序，说明之前的4需要替换才能拿到更大值
+		int index = nums.length - 1;
+		while (index > 0) {
+			if (nums[index] <= nums[index - 1]) {
+				index--;
+				continue;
+			} else {
+				index--;
+				break;
+			}
+		}
+		// 没找到升序终止，说明已经到了最大的组合，下一个只能是最小的，反转整个array
+		if (index == 0 && nums[0] > nums[1]) {
+			reverse(nums, 0, nums.length - 1);
+			return;
+		}
+		// 找到升序终止，开始找可替换的最小值
+		// 比如124653, index指向4,4应替换为5
+		for (int i = nums.length - 1; i > index; i--) {
+			if (nums[i] > nums[index]) {
+				int temp = nums[index];
+				nums[index] = nums[i];
+				nums[i] = temp;
+				break;
+			}
+		}
+		// 现在数组为125643，需要把643反转，这是一个降序，应反转为346
+		reverse(nums, index + 1, nums.length - 1);
+	}
+
+	public static void reverse(int[] data, int left, int right) {
+		while (left < right) {
+			// swap the values at the left and right indices
+			int temp = data[left];
+			data[left] = data[right];
+			data[right] = temp;
+
+			// move the left and right index pointers in toward the center
+			left++;
+			right--;
+		}
+	}
+
 	// 77 组合
 	public List<List<Integer>> combine(int n, int k) {
 		List<List<Integer>> ans = new ArrayList<>();
