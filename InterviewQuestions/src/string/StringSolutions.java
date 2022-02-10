@@ -91,7 +91,7 @@ public class StringSolutions {
 		return true;
 	}
 
-	// 最长回文substring
+	// 最长回文substring, Longest Palindromic Substring
 	// https://www.youtube.com/watch?v=g3R-pjUNa3k
 	public String longestPalindrome(String s) {
 		int start = 0;

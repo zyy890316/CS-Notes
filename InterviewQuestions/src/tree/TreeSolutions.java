@@ -700,4 +700,70 @@ public class TreeSolutions {
 		}
 		return root;
 	}
+
+	// Flatten Binary Tree to Linked List
+	public void flatten(TreeNode root) {
+		if (root == null)
+			return;
+		if (root.left == null) {
+			flatten(root.right);
+			return;
+		}
+		if (root.right == null) {
+			flatten(root.left);
+			root.right = root.left;
+			root.left = null;
+			return;
+		}
+		flatten(root.left);
+		flatten(root.right);
+
+		// 左子树最终端现在应指向右子树起始位置
+		TreeNode currNode = root.left;
+		while (currNode != null && currNode.right != null) {
+			currNode = currNode.right;
+		}
+		currNode.right = root.right;
+		root.right = root.left;
+		root.left = null;
+	}
+
+	// Convert Binary Search Tree to Sorted Doubly Linked List
+	// the smallest (first) and the largest (last) nodes
+	Node first = null;
+	Node last = null;
+
+	public Node treeToDoublyList(Node root) {
+		if (root == null)
+			return root;
+		treeToDoublyListDFS(root);
+		// close DLL
+		last.right = first;
+		first.left = last;
+		return first;
+	}
+
+	public void treeToDoublyListDFS(Node node) {
+		if (node != null) {
+			// left
+			treeToDoublyListDFS(node.left);
+			// node
+			if (last != null) {
+				// link the previous node (last)
+				// with the current one (node)
+				last.right = node;
+				node.left = last;
+			} else {
+				// keep the smallest node
+				// to close DLL later on
+				first = node;
+			}
+			last = node;
+			// right
+			treeToDoublyListDFS(node.right);
+		}
+	}
+
+	// Binary Tree Vertical Order Traversal
+	// BFS, 每次入栈的时候根据当前节点添加子节点的col值
 }

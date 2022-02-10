@@ -1031,4 +1031,47 @@ public class DP {
 		}
 		return dp[0][0];
 	}
+
+	// 32. Longest Valid Parentheses
+	public int longestValidParentheses(String s) {
+		int sum = 0;
+		int startIndex = 0;
+		int max = 0;
+		// left to right scan
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c == '(') {
+				sum++;
+			} else {
+				sum--;
+			}
+			if (sum == 0) {
+				max = Math.max(max, i - startIndex + 1);
+			}
+			if (sum < 0) {
+				sum = 0;
+				startIndex = i + 1;
+			}
+		}
+
+		// right to left scan
+		int endIndex = s.length() - 1;
+		sum = 0;
+		for (int i = s.length() - 1; i >= 0; i--) {
+			char c = s.charAt(i);
+			if (c == ')') {
+				sum++;
+			} else {
+				sum--;
+			}
+			if (sum == 0) {
+				max = Math.max(max, endIndex - i + 1);
+			}
+			if (sum < 0) {
+				sum = 0;
+				endIndex = i - 1;
+			}
+		}
+		return max;
+	}
 }

@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 
 public class Sort {
 	// 324. Wiggle Sort II
@@ -76,5 +77,23 @@ public class Sort {
 		int t = nums[i];
 		nums[i] = nums[j];
 		nums[j] = t;
+	}
+
+	// 349. Intersection of Two Arrays
+	public int[] intersection(int[] nums1, int[] nums2) {
+		HashSet<Integer> set1 = new HashSet<Integer>();
+		for (Integer n : nums1)
+			set1.add(n);
+		HashSet<Integer> set2 = new HashSet<Integer>();
+		for (Integer n : nums2)
+			set2.add(n);
+
+		set1.retainAll(set2);
+
+		int[] output = new int[set1.size()];
+		int idx = 0;
+		for (int s : set1)
+			output[idx++] = s;
+		return output;
 	}
 }

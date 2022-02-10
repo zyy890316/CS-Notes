@@ -1,9 +1,12 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -214,7 +217,7 @@ public class Graph {
 		return ordered.stream().mapToInt(Integer::intValue).toArray();
 	}
 
-	// 并查集
+	// 并查集 Disjoint Set Union (Union-Find)
 	// 并查集可以动态地连通两个点，并且可以非常快速地判断两个点是否连通。
 	class DSU {
 		int[] parent;
@@ -250,6 +253,59 @@ public class Graph {
 			}
 			return true;
 		}
+	}
+
+	// Account Merge
+	// https://leetcode.com/problems/accounts-merge/
+	// DSU, 每个email先连到当前账户index上，然后
+	public List<List<String>> accountsMerge(List<List<String>> accountList) {
+		int accountListSize = accountList.size();
+		DSU dsu = new DSU(accountListSize);
+
+		// Maps email to their component index
+		Map<String, Integer> emailGroup = new HashMap<>();
+
+		for (int i = 0; i < accountListSize; i++) {
+			int accountSize = accountList.get(i).size();
+
+			for (int j = 1; j < accountSize; j++) {
+				String email = accountList.get(i).get(j);
+
+				// If this is the first time seeing this email then
+				// assign component group as the account index
+				if (!emailGroup.containsKey(email)) {
+					emailGroup.put(email, i);
+				} else {
+					// If we have seen this email before then union this
+					// group with the previous group of the email
+					dsu.union(i, emailGroup.get(email));
+				}
+			}
+		}
+
+		// Store emails corresponding to the component's representative
+		Map<Integer, List<String>> components = new HashMap<Integer, List<String>>();
+		for (String email : emailGroup.keySet()) {
+			int group = emailGroup.get(email);
+			int groupRep = dsu.find(group);
+
+			if (!components.containsKey(groupRep)) {
+				components.put(groupRep, new ArrayList<String>());
+			}
+
+			components.get(groupRep).add(email);
+		}
+
+		// Sort the components and add the account name
+		List<List<String>> mergedAccounts = new ArrayList<>();
+		for (int group : components.keySet()) {
+			List<String> component = components.get(group);
+			Collections.sort(component);
+			component.add(0, accountList.get(group).get(0));
+			mergedAccounts.add(component);
+		}
+
+		return mergedAccounts;
 	}
 
 	// 并查集：冗余连接
@@ -320,5 +376,45 @@ public class Graph {
 		}
 		String result = sb.toString();
 		return result.length() == graph.size() ? result : "";
+	}
+
+	// Clone Graph
+	// 边DFS边clone
+	private HashMap<Node, Node> cloned = new HashMap<>();
+
+	public Node cloneGraph(Node node) {
+		if (node == null)
+			return null;
+
+		if (cloned.containsKey(node)) {
+			return cloned.get(node);
+		}
+		// 做好新节点马上放入map中，防止死循环
+		Node newNode = new Node(node.val, new ArrayList<Node>());
+		cloned.put(node, newNode);
+		for (Node neightbor : node.neighbors) {
+			newNode.neighbors.add(cloneGraph(neightbor));
+		}
+		return newNode;
+	}
+
+	class Node {
+		public int val;
+		public List<Node> neighbors;
+
+		public Node() {
+			val = 0;
+			neighbors = new ArrayList<Node>();
+		}
+
+		public Node(int _val) {
+			val = _val;
+			neighbors = new ArrayList<Node>();
+		}
+
+		public Node(int _val, ArrayList<Node> _neighbors) {
+			val = _val;
+			neighbors = _neighbors;
+		}
 	}
 }
