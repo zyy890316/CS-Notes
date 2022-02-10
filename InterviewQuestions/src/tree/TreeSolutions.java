@@ -1,6 +1,7 @@
 package tree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -766,4 +767,38 @@ public class TreeSolutions {
 
 	// Binary Tree Vertical Order Traversal
 	// BFS, 每次入栈的时候根据当前节点添加子节点的col值
+
+	// 297. Serialize and Deserialize Binary Tree
+	// Encodes a tree to a single string.
+	private static final String SEPARATOR = ",";
+
+	public String serialize(TreeNode root) {
+		if (root == null)
+			return "null";
+		StringBuilder sb = new StringBuilder();
+		sb.append(root.val);
+		sb.append(SEPARATOR);
+		sb.append(serialize(root.left));
+		sb.append(SEPARATOR);
+		sb.append(serialize(root.right));
+		return sb.toString();
+	}
+
+	// Decodes your encoded data to tree.
+	public TreeNode deserialize(String data) {
+		Queue<String> queue = new LinkedList<>();
+		queue.addAll(Arrays.asList(data.split(SEPARATOR)));
+		return deserial(queue);
+	}
+
+	private TreeNode deserial(Queue<String> queue) {
+		String item = queue.poll();
+		if ("null".equals(item)) {
+			return null;
+		}
+		TreeNode root = new TreeNode(Integer.parseInt(item));
+		root.left = deserial(queue);
+		root.right = deserial(queue);
+		return root;
+	}
 }
