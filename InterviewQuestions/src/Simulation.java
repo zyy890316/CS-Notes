@@ -77,4 +77,8 @@ public class Simulation {
 		}
 		return sum;
 	}
+
+	// Next Closest Time
+	// 给定一个时间 "HH:MM"，用当前数字求下一个最近时间是几点几分
+	// 直接枚举从当前时间开始的每个时间，看是否可以用现在的数字组成，可以即返回
 }

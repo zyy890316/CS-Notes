@@ -1149,4 +1149,7 @@ public class SearchAndBacktracking {
 	// Strobogrammatic Number II
 	// 0 1 8 反转180度仍为自己
 	// 6 9 会互换位置，所以如果需要奇数长度的值，中间位置只能放0/1/8
+
+	// 282. Expression Add Operators
+	// 每步有四个选择：用 */+/-连接数字，或者不用字符：1*2 1+2 1-2 或当作12来处理
 }

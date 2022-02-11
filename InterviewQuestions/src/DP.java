@@ -1074,4 +1074,7 @@ public class DP {
 		}
 		return max;
 	}
+
+	// 329. Longest Increasing Path in a Matrix
+	// 做dfs,并用一个cache矩阵记录每个找过的位置的最长链长度避免重复
 }
