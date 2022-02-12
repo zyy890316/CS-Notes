@@ -1152,4 +1152,10 @@ public class SearchAndBacktracking {
 
 	// 282. Expression Add Operators
 	// 每步有四个选择：用 */+/-连接数字，或者不用字符：1*2 1+2 1-2 或当作12来处理
+
+	// 489. Robot Room Cleaner
+	// 只向右转，如果当前位置所有可去的位置全部走完了，那么按来时的路返回
+
+	// 425. Word Squares
+	// 通过dfs穷举可能的组合，何以使用Trie来加速查找
 }

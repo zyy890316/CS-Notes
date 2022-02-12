@@ -28,6 +28,7 @@ public class Graph {
 		possibleBipartition(4, dislikes);
 		int[][] courses = { { 1, 0 } };
 		findOrder(2, courses);
+		crackSafe(2, 2);
 	}
 
 	// 判断是否为二分图
@@ -417,4 +418,50 @@ public class Graph {
 			neighbors = _neighbors;
 		}
 	}
+
+	// 399. Evaluate Division
+	// 用weighted graph: HashMap<String, HashMap<String, Double>> graph
+
+	// Cracking the Safe
+	// 总密码数为k^n个，直接graph做dfs即可
+	public static String crackSafe(int n, int k) {
+		char[] start = new char[n];
+		for (int i = 0; i < n; i++) {
+			start[i] = '0';
+		}
+		Set<String> visited = new HashSet<>();
+		StringBuilder sb = new StringBuilder();
+		String startString = String.valueOf(start);
+		sb.append(startString);
+		visited.add(startString);
+		return crackSafeBackTracking(n, k, visited, startString, sb) ? sb.toString() : "";
+	}
+
+	public static boolean crackSafeBackTracking(int n, int k, Set<String> visited, String preString, StringBuilder sb) {
+		int totalPasswords = (int) Math.pow(k, n);
+		if (visited.size() == totalPasswords)
+			return true;
+
+		String prefix = preString.substring(1, n);
+		for (int i = 0; i < k; i++) {
+			String next = prefix + i;
+			if (visited.contains(next)) {
+				continue;
+			}
+			sb.append(i);
+			visited.add(next);
+			if (crackSafeBackTracking(n, k, visited, next, sb)) {
+				return true;
+			}
+			visited.remove(next);
+			sb.setLength(sb.length() - 1);
+		}
+		return false;
+	}
+
+	// Most Stones Removed with Same Row or Column
+	// https://www.youtube.com/watch?v=796HQmL5CO8
+	// 最终的无法移除的石头一定位于不同行和不同列
+	// 使用DSU,表示不同的行/列坐标，每个石头的横纵坐标可视为连通在一起的
+	// 可移除石头数量 = 石头总数 - 连通分量个数
 }

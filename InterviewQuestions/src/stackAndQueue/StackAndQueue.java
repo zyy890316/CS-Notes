@@ -604,4 +604,8 @@ public class StackAndQueue {
 		}
 		return false;
 	}
+
+	// 857. Minimum Cost to Hire K Workers
+	// 假设工人的薪资能力比值 x[i]= wage[i]/quality[i],按照x[i]从小到大陪序之后，就可按照顺序枚举x[i]
+	// x[i]最小时，说明所有的工人都能选择，这时可用一个maxheap找到quality最低的k个工人。
 }
