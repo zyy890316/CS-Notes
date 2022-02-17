@@ -3,6 +3,7 @@ import java.util.Stack;
 public class Simulation {
 	public static void main(String[] args) {
 		gameOfLife(new int[][] { { 0, 1, 0 }, { 0, 0, 1 }, { 1, 1, 1 }, { 0, 0, 0 } });
+		calculate("(1+(4+5+2)-3)+(6+8)");
 	}
 
 	// 289. Game of Life
@@ -36,11 +37,73 @@ public class Simulation {
 		}
 	}
 
+	// 224. Basic Calculator
+	public static int calculate(String s) {
+		Stack<CalculatorNode> stack = new Stack<>();
+		int num = 0;
+		int sign = 1;
+		for (int i = 0; i < s.length(); i++) {
+			char ch = s.charAt(i);
+			if (Character.isDigit(ch)) {
+				num = num * 10 + (int) (ch - '0');
+			} else if (ch != ' ') {
+				if (num != 0) {
+					// Save the operand on the stack
+					// As we encounter some non-digit.
+					stack.push(new CalculatorNode(num, false, sign));
+					num = 0;
+					sign = 1;
+				}
+				if (ch == '(') {
+					// parenthesis node needs to have a sign
+					stack.push(new CalculatorNode(0, true, sign));
+					sign = 1;
+				} else if (ch == ')') {
+					int tempSum = 0;
+					while (!stack.isEmpty()) {
+						CalculatorNode node = stack.pop();
+						if (node.isParaenthesis) {
+							stack.push(new CalculatorNode(tempSum, false, node.sign));
+							break;
+						} else {
+							tempSum += node.val * node.sign;
+						}
+					}
+				} else if (ch == '+') {
+					sign = 1;
+				} else {
+					sign = -1;
+				}
+			}
+		}
+		if (num != 0) {
+			stack.push(new CalculatorNode(num, false, sign));
+		}
+		int sum = 0;
+		while (!stack.isEmpty()) {
+			CalculatorNode node = stack.pop();
+			sum += node.val * node.sign;
+		}
+		return sum;
+	}
+
+	static class CalculatorNode {
+		int val;
+		boolean isParaenthesis;
+		int sign;
+
+		public CalculatorNode(int val, boolean isParaenthesis, int sign) {
+			this.val = val;
+			this.isParaenthesis = isParaenthesis;
+			this.sign = sign;
+		}
+	}
+
 	// Leetcode 227 & 772 Basic Calculator II & III
 	// https://www.youtube.com/watch?v=7rmxDqXf5vQ
 	// 需要保持前一个符号和数字，来处理乘除法优先的情况，推迟加减法
 	// 227. Basic Calculator II
-	public int calculate(String s) {
+	public int calculate2(String s) {
 		Stack<Integer> stack = new Stack<>();
 		int number = 0;
 		char sign = '+';

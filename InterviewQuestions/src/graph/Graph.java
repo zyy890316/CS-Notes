@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -464,4 +465,78 @@ public class Graph {
 	// 最终的无法移除的石头一定位于不同行和不同列
 	// 使用DSU,表示不同的行/列坐标，每个石头的横纵坐标可视为连通在一起的
 	// 可移除石头数量 = 石头总数 - 连通分量个数
+
+	// 1761. Minimum Degree of a Connected Trio in a Graph
+	public int minTrioDegree(int n, int[][] edges) {
+		int min = Integer.MAX_VALUE;
+		Map<Integer, HashSet<Integer>> graph = new HashMap<Integer, HashSet<Integer>>();
+		for (int[] edge : edges) {
+			HashSet<Integer> setA = graph.getOrDefault(edge[0], new HashSet<Integer>());
+			setA.add(edge[1]);
+			graph.put(edge[0], setA);
+			HashSet<Integer> setB = graph.getOrDefault(edge[1], new HashSet<Integer>());
+			setB.add(edge[0]);
+			graph.put(edge[1], setB);
+		}
+
+		for (int i = 1; i <= n; i++) {
+			for (int j = i + 1; j <= n; j++) {
+				HashSet<Integer> setI = graph.getOrDefault(i, new HashSet<Integer>());
+				// 剪枝
+				if (setI.contains(j)) {
+					HashSet<Integer> setJ = graph.getOrDefault(j, new HashSet<Integer>());
+					for (int k = j + 1; k <= n; k++) {
+						HashSet<Integer> setK = graph.getOrDefault(k, new HashSet<Integer>());
+						// found a trio
+						if (setK.contains(i) && setK.contains(j)) {
+							min = Math.min(setI.size() + setJ.size() + setK.size() - 6, min);
+						}
+					}
+				}
+			}
+		}
+		if (min == Integer.MAX_VALUE)
+			return -1;
+		return min;
+	}
+
+	// 286. Walls and Gates
+	static int[][] directions = new int[][] { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+
+	public void wallsAndGates(int[][] rooms) {
+		int m = rooms.length;
+		int n = rooms[0].length;
+		boolean[][] visited = new boolean[m][n];
+		Queue<int[]> queue = new ArrayDeque<>();
+		// BFS start with all gates
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (rooms[i][j] == 0) {
+					queue.add(new int[] { i, j });
+				}
+			}
+		}
+		int length = 0;
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+			for (int i = 0; i < size; i++) {
+				int[] node = queue.poll();
+				int a = node[0];
+				int b = node[1];
+				if (visited[a][b]) {
+					continue;
+				}
+				visited[a][b] = true;
+				rooms[a][b] = Math.min(rooms[a][b], length);
+				for (int[] d : directions) {
+					int nextA = a + d[0];
+					int nextB = b + d[1];
+					if (nextA < m && nextB < n && nextA >= 0 && nextB >= 0 && rooms[nextA][nextB] != -1) {
+						queue.add(new int[] { nextA, nextB });
+					}
+				}
+			}
+			length++;
+		}
+	}
 }

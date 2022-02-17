@@ -3,6 +3,9 @@
 * System design aggregated github articles: https://github.com/donnemartin/system-design-primer
 * DDIA: https://vonng.gitbooks.io/ddia-cn/content/ch1.html
 * 一篇文章解决所有system design面试: https://blog.csdn.net/AuburnTigers/article/details/102601151
+* System Design: Designing a distributed Job Scheduler:
+https://leetcode.com/discuss/general-discussion/1082786/System-Design%3A-Designing-a-distributed-Job-Scheduler-or-Many-interesting-concepts-to-learn
+https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
 
 # Restful API Design:
 * Endpoint: https://api_domain/version/collection/

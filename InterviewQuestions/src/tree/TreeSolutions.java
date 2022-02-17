@@ -14,6 +14,7 @@ import linkedlist.ListNode;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20树.md
 public class TreeSolutions {
+
 	// 树的高度
 	public int maxDepth(TreeNode root) {
 		if (root == null)
@@ -30,7 +31,7 @@ public class TreeSolutions {
 	}
 
 	// 两节点的最长路径
-	int max = 0;
+	int max = Integer.MIN_VALUE;
 
 	public int diameterOfBinaryTree(TreeNode root) {
 		if (root == null)
@@ -229,6 +230,42 @@ public class TreeSolutions {
 		best = Math.max(best, currBest);
 
 		return currBest;
+	}
+
+	// 124. Binary Tree Maximum Path Sum
+	public int maxPathSum(TreeNode root) {
+		if (root == null)
+			return 0;
+		maxPathSumDFS(root);
+		return max;
+	}
+
+	public int maxPathSumDFS(TreeNode root) {
+		max = Math.max(root.val, max);
+		if (root.left == null && root.right == null) {
+			return root.val;
+		}
+		if (root.left != null && root.right == null) {
+			int left = maxPathSumDFS(root.left);
+			max = Math.max(left, max);
+			max = Math.max(root.val + left, max);
+			return Math.max(root.val + left, root.val);
+		}
+		if (root.right != null && root.left == null) {
+			int right = maxPathSumDFS(root.right);
+			max = Math.max(right, max);
+			max = Math.max(root.val + right, max);
+			return Math.max(root.val + right, root.val);
+		} else {
+			int left = maxPathSumDFS(root.left);
+			int right = maxPathSumDFS(root.right);
+			int currMax = Math.max(left, right);
+			max = Math.max(currMax, max);
+			max = Math.max(left + right + root.val, max);
+			max = Math.max(currMax + root.val, max);
+			max = Math.max(root.val, max);
+			return Math.max(currMax + root.val, root.val);
+		}
 	}
 
 	// 间隔遍历，只能检测不相连节点

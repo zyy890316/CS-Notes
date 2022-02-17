@@ -1077,4 +1077,79 @@ public class DP {
 
 	// 329. Longest Increasing Path in a Matrix
 	// 做dfs,并用一个cache矩阵记录每个找过的位置的最长链长度避免重复
+
+	// 1235. Maximum Profit in Job Scheduling
+	// 根据结束时间对所有工作排序
+	// dp[i]表示只考虑前i个工作的情况下，最大的profit是多少
+	// 可以用binary search来看在dp[i]的时候，哪个dp[j]可以支持当前的job
+	public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+		List<List<Integer>> jobs = new ArrayList<>();
+
+		// storing job's details into one list
+		// this will help in sorting the jobs while maintaining the other parameters
+		int length = profit.length;
+		int[] dp = new int[length];
+		for (int i = 0; i < length; i++) {
+			ArrayList<Integer> currJob = new ArrayList<>();
+			currJob.add(startTime[i]);
+			currJob.add(endTime[i]);
+			currJob.add(profit[i]);
+			jobs.add(currJob);
+		}
+		jobs.sort(Comparator.comparingInt(a -> a.get(1)));
+		dp[0] = jobs.get(0).get(2);
+		for (int i = 1; i < length; i++) {
+			int currStart = jobs.get(i).get(0);
+			int currProfit = jobs.get(i).get(2);
+			dp[i] = Math.max(dp[i - 1], currProfit); // 有可能只做当前工作
+			int latestPreviousJob = jobSchedulingBS(0, i, jobs, currStart);
+			if (jobs.get(latestPreviousJob).get(1) <= currStart) {
+				dp[i] = Math.max(dp[i], dp[latestPreviousJob] + currProfit);
+			}
+		}
+		return Arrays.stream(dp).max().getAsInt();
+	}
+
+	public int jobSchedulingBS(int l, int r, List<List<Integer>> jobs, int startTime) {
+		while (l < r) {
+			int mid = l + (r - l) / 2 + 1;
+			int currEndTime = jobs.get(mid).get(1);
+			if (startTime >= currEndTime) {
+				l = mid;
+			} else {
+				r = mid - 1;
+			}
+		}
+		return r;
+	}
+
+	// 1359. Count All Valid Pickup and Delivery Options
+	public int countOrders(int n) {
+		long[][] dp = new long[n + 1][n + 1];
+
+		for (int unpicked = 0; unpicked <= n; unpicked++) {
+			for (int undelivered = unpicked; undelivered <= n; undelivered++) {
+				// If all orders are picked and delivered then,
+				// for remaining '0' orders we have only one way.
+				if (unpicked == 0 && undelivered == 0) {
+					dp[unpicked][undelivered] = 1;
+					continue;
+				}
+
+				// There are some unpicked elements left.
+				// We have choice to pick any one of those orders.
+				if (unpicked > 0) {
+					dp[unpicked][undelivered] += unpicked * dp[unpicked - 1][undelivered];
+				}
+
+				// Number of deliveries done is less than picked orders.
+				// We have choice to deliver any one of (undelivered - unpicked) orders.
+				if (undelivered > unpicked) {
+					dp[unpicked][undelivered] += (undelivered - unpicked) * dp[unpicked][undelivered - 1];
+				}
+			}
+		}
+
+		return (int) dp[n][n];
+	}
 }
