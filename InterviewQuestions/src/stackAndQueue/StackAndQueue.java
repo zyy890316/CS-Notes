@@ -615,4 +615,8 @@ public class StackAndQueue {
 
 	// 1472. Design Browser History
 	// 用两个stack分别存back和forward history即可
+
+	// 402. Remove K Digits
+	// 去掉k位，使得数字最小
+	// greedy,用单调栈，从左边最高位开始扫描，只要当前数字比之前的小，之前的就出栈，保证是单调栈
 }

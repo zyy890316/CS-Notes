@@ -9,6 +9,11 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 public class Doordash {
+	// System design:
+	// 1. donation system: https://www.youtube.com/watch?v=mNiHK_WK5KM
+	// 2. review system
+	// 3. news feed
+	// 4. distributed logging system
 	public static void main(String[] args) {
 		Map<Integer, List<Integer>> map = new HashMap<>();
 		// from/to/weight
@@ -362,4 +367,8 @@ public class Doordash {
 	// https://leetcode.com/discuss/interview-question/392780/Doordash-or-Phone-Screen-or-Longest-path-duplicate-numbers-within-a-Matrix
 	// 从每个点出发做dfs，注意此题与longest path for increasing
 	// number不同，是不能用cache记录结果的，假设[1][1][1]三个点，最左边的点最长路径为3，在中间点dfs不能说中间点长度为左边长度+1
+
+	// validate order path
+	// https://leetcode.com/discuss/interview-question/846916/Validate-Orders-Path-(Doordash)
+	// follow up: find the longest validate order path, 双指针？
 }
