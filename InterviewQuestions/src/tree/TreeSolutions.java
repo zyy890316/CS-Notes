@@ -14,6 +14,8 @@ import linkedlist.ListNode;
 
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20树.md
 public class TreeSolutions {
+	public static void main(String[] args) {
+	}
 
 	// 树的高度
 	public int maxDepth(TreeNode root) {

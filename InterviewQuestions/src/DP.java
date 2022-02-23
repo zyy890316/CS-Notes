@@ -617,7 +617,7 @@ public class DP {
 		return dp[amount];
 	}
 
-	// 139 字符串按单词列表分割
+	// 139 Word Break
 	// 背包问题
 	public static boolean wordBreak(String s, List<String> wordDict) {
 		int n = s.length();
