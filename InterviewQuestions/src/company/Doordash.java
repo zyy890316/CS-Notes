@@ -371,4 +371,29 @@ public class Doordash {
 	// validate order path
 	// https://leetcode.com/discuss/interview-question/846916/Validate-Orders-Path-(Doordash)
 	// follow up: find the longest validate order path, 双指针？
+
+	// 826. Most Profit Assigning Work
+	// 暴力排序，可以继续优化，用一个数组存储直到当前难度为止的最大利润，然后用binary search查找某个工人能做什么
+	public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+		List<int[]> jobs = new ArrayList<>();
+		for (int i = 0; i < difficulty.length; i++) {
+			jobs.add(new int[] { difficulty[i], profit[i] });
+		}
+		// 按difficulty排序
+		Collections.sort(jobs, (a, b) -> a[0] - b[0]);
+		Arrays.sort(worker);
+		int maxProfit = 0;
+		for (int w : worker) {
+			int maxProfitForCurrWorker = 0;
+			for (int[] job : jobs) {
+				if (w >= job[0]) {
+					maxProfitForCurrWorker = Math.max(maxProfitForCurrWorker, job[1]);
+				} else {
+					break;
+				}
+			}
+			maxProfit += maxProfitForCurrWorker;
+		}
+		return maxProfit;
+	}
 }

@@ -539,4 +539,77 @@ public class Graph {
 			length++;
 		}
 	}
+
+	// 317. Shortest Distance from All Buildings
+	// BFS from buildings one by one
+	public int shortestDistance(int[][] grid) {
+		int m = grid.length;
+		int n = grid[0].length;
+		// check if a point can reach all the buildings
+		int[][] canReach = new int[m][n];
+		int[][] totalDistance = new int[m][n];
+		int minDistance = Integer.MAX_VALUE;
+		int totalBuildings = 0;
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				boolean isBuilding = grid[i][j] == 1;
+				if (isBuilding) {
+					totalBuildings++;
+					shortestDistanceBFS(grid, i, j, canReach, totalDistance);
+				}
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				boolean isEmptyLand = grid[i][j] == 0;
+				if (canReach[i][j] == totalBuildings && isEmptyLand) {
+					minDistance = Math.min(minDistance, totalDistance[i][j]);
+				}
+			}
+		}
+
+		return minDistance == Integer.MAX_VALUE ? -1 : minDistance;
+	}
+
+	private void shortestDistanceBFS(int[][] grid, int r, int c, int[][] canReach, int[][] totalDistance) {
+		int m = grid.length;
+		int n = grid[0].length;
+		Queue<int[]> queue = new LinkedList<>();
+		boolean[][] visited = new boolean[m][n];
+		queue.add(new int[] { r, c });
+		int distance = 0;
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+			for (int i = 0; i < size; i++) {
+				int[] currPoint = queue.poll();
+				if (visited[currPoint[0]][currPoint[1]]) {
+					continue;
+				}
+				visited[currPoint[0]][currPoint[1]] = true;
+				canReach[currPoint[0]][currPoint[1]]++;
+				totalDistance[currPoint[0]][currPoint[1]] += distance;
+				for (int[] direction : directions) {
+					int rr = currPoint[0] + direction[0];
+					int cc = currPoint[1] + direction[1];
+					if (isValid(grid, visited, rr, cc)) {
+						queue.add(new int[] { rr, cc });
+					}
+				}
+			}
+			distance++;
+		}
+	}
+
+	private boolean isValid(int[][] grid, boolean[][] visited, int r, int c) {
+		if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length)
+			return false;
+		if (visited[r][c])
+			return false;
+		if (grid[r][c] == 2 || grid[r][c] == 1) {
+			return false;
+		}
+		return true;
+	}
 }
