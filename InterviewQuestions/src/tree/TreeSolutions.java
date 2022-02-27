@@ -12,6 +12,17 @@ import java.util.Stack;
 
 import linkedlist.ListNode;
 
+// range query 用segment tree：
+// https://www.youtube.com/watch?v=rYBtViWXYeI
+/* SegmentTreeNode{
+ * 	int startIndex;
+ *  int endIndex;
+ *  int sum/max/min;
+ *  SegnentTreeNode left;
+ *  SegmentTreeNode right;
+ * }
+ */
+
 // https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20树.md
 public class TreeSolutions {
 	public static void main(String[] args) {

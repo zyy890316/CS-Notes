@@ -1126,6 +1126,7 @@ public class DP {
 	// 1359. Count All Valid Pickup and Delivery Options
 	public int countOrders(int n) {
 		long[][] dp = new long[n + 1][n + 1];
+		int MOD = 1_000_000_007;
 
 		for (int unpicked = 0; unpicked <= n; unpicked++) {
 			for (int undelivered = unpicked; undelivered <= n; undelivered++) {
@@ -1147,9 +1148,9 @@ public class DP {
 				if (undelivered > unpicked) {
 					dp[unpicked][undelivered] += (undelivered - unpicked) * dp[unpicked][undelivered - 1];
 				}
+				dp[unpicked][undelivered] %= MOD;
 			}
 		}
-
 		return (int) dp[n][n];
 	}
 }
