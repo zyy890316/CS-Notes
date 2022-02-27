@@ -4,14 +4,18 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 // 图数据结构和算法：https://space.bilibili.com/1369507485/favlist?fid=1302158485
 // https://space.bilibili.com/21630984/channel/detail?cid=162962&ctype=0
@@ -30,6 +34,11 @@ public class Graph {
 		int[][] courses = { { 1, 0 } };
 		findOrder(2, courses);
 		crackSafe(2, 2);
+		String[][] dataSet = new String[][] { { "EZE", "AXA" }, { "TIA", "ANU" }, { "ANU", "JFK" }, { "JFK", "ANU" },
+				{ "ANU", "EZE" }, { "TIA", "ANU" }, { "AXA", "TIA" }, { "TIA", "JFK" }, { "ANU", "TIA" },
+				{ "JFK", "TIA" } };
+		List<List<String>> list = Arrays.stream(dataSet).map(Arrays::asList).collect(Collectors.toList());
+		findItinerary(list);
 	}
 
 	// 判断是否为二分图
@@ -611,5 +620,112 @@ public class Graph {
 			return false;
 		}
 		return true;
+	}
+
+	// 778. Swim in Rising Water
+	// 本质上是找到一条路线，使其路径上的最大值点尽可能小
+	// 因此直接使用Dijkstra,每个点的值是当前路径下的最大点的值
+	public int swimInWater(int[][] grid) {
+		// int[]: x, y, max on the path so far
+		PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
+			public int compare(int[] a, int[] b) {
+				return a[2] - b[2];
+			}
+		});
+		int m = grid.length;
+		int n = grid[0].length;
+		int[][] paths = new int[m][n];
+		for (int[] row : paths) {
+			Arrays.fill(row, -1);
+		}
+		pq.add(new int[] { 0, 0, grid[0][0] });
+		while (!pq.isEmpty()) {
+			int[] currNode = pq.poll();
+			int currMax = currNode[2];
+			int currX = currNode[0];
+			int currY = currNode[1];
+			// first time reaching end, means we found solution
+			if (currX == m - 1 && currY == n - 1) {
+				return currMax;
+			}
+			// a better path to currNode is found
+			if ((paths[currX][currY] > currMax && paths[currX][currY] > 0) || paths[currX][currY] < 0) {
+				paths[currX][currY] = currMax;
+				for (int[] direction : directions) {
+					int newX = currX + direction[0];
+					int newY = currY + direction[1];
+					if (isValidPath(paths, newX, newY)) {
+						int newValue = Math.max(currMax, grid[newX][newY]);
+						if ((paths[newX][newY] > newValue && paths[newX][newY] > 0) || paths[newX][newY] < 0) {
+							pq.add(new int[] { newX, newY, newValue });
+						}
+					}
+				}
+			} else {
+				continue;
+			}
+		}
+		return -1;
+	}
+
+	public boolean isValidPath(int[][] paths, int x, int y) {
+		int m = paths.length;
+		int n = paths[0].length;
+		if (x < 0 || x >= m || y < 0 || y >= n) {
+			return false;
+		}
+		// never visited this point before
+		if (paths[x][y] < 0) {
+			return true;
+		}
+		return false;
+	}
+
+	// 332. Reconstruct Itinerary
+	public static List<String> findItinerary(List<List<String>> tickets) {
+		String start = "JFK";
+		// each ticket can only be used once, should use all tickets at end
+		Map<String, Integer> canUse = new HashMap<>();
+		Map<String, TreeSet<String>> graph = new HashMap<>();
+		for (List<String> ticket : tickets) {
+			String currStart = ticket.get(0);
+			String currEnd = ticket.get(1);
+			int ticketNum = canUse.getOrDefault(currStart + currEnd, 0);
+			canUse.put(currStart + currEnd, ticketNum + 1);
+			TreeSet<String> currEnds = graph.getOrDefault(currStart, new TreeSet<>());
+			currEnds.add(currEnd);
+			graph.put(currStart, currEnds);
+		}
+
+		// dfs because we want to find smallest lexical order
+		Stack<String> paths = new Stack<>();
+		List<List<String>> ans = new ArrayList<>();
+		paths.add(start);
+		findItineraryDFS(paths, start, graph, canUse, ans);
+		return ans.get(0);
+	}
+
+	public static boolean findItineraryDFS(Stack<String> paths, String start, Map<String, TreeSet<String>> graph,
+			Map<String, Integer> canUse, List<List<String>> ans) {
+		int sum = canUse.values().stream().reduce(0, Integer::sum);
+		if (sum == 0) {
+			ans.add(new ArrayList<String>(paths));
+			return true;
+		}
+		TreeSet<String> currEnds = graph.getOrDefault(start, new TreeSet<>());
+		for (String end : currEnds) {
+			String currTicket = start + end;
+			if (canUse.containsKey(currTicket) && canUse.get(currTicket) > 0) {
+				int ticketRemaining = canUse.get(currTicket);
+				paths.push(end);
+				canUse.put(currTicket, ticketRemaining - 1);
+				if (findItineraryDFS(paths, end, graph, canUse, ans)) {
+					return true;
+				}
+				canUse.put(currTicket, ticketRemaining);
+				paths.pop();
+			}
+		}
+		return false;
 	}
 }

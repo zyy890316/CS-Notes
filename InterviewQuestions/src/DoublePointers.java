@@ -418,4 +418,35 @@ public class DoublePointers {
 		}
 		return ans;
 	}
+
+	// 1004. Max Consecutive Ones III
+	public int longestOnes(int[] nums, int k) {
+		if (nums.length == 1 && k > 0) {
+			return 1;
+		}
+		int left = 0, right, max = 0;
+		for (right = 0; right < nums.length; right++) {
+			// If we included a zero in the window we reduce the value of k.
+			// Since k is the maximum zeros allowed in a window.
+			if (nums[right] == 0) {
+				k--;
+			}
+			// A negative k denotes we have consumed all allowed flips and window has
+			// more than allowed zeros, thus increment left pointer by 1 to keep the window
+			// size same.
+			while (k < 0 && left < right) {
+				// If the left element to be thrown out is zero we increase k.
+				if (nums[left] == 0) {
+					left++;
+					k++;
+				} else {
+					left++;
+				}
+			}
+			if (right > left) {
+				max = Math.max(max, right - left + 1);
+			}
+		}
+		return max;
+	}
 }

@@ -34,6 +34,7 @@ public class SearchAndBacktracking {
 		solveSudoku(board1);
 		permuteUnique(new int[] { 1, 1, 2 });
 		generateParenthesis(3);
+		nextGreaterElement(2147483486);
 	}
 
 	// 1091 计算在网格中从原点到特定点的最短路径长度: 0 表示可以经过某个位置，求解从左上角到右下角的最短路径长度
@@ -653,7 +654,7 @@ public class SearchAndBacktracking {
 		}
 	}
 
-	// Next Permutation
+	// 31. Next Permutation
 	public static void nextPermutation(int[] nums) {
 		if (nums.length == 1)
 			return;
@@ -700,6 +701,51 @@ public class SearchAndBacktracking {
 			left++;
 			right--;
 		}
+	}
+
+	// 556. Next Greater Element III
+	// 类似 31. Next Permutation
+	public static int nextGreaterElement(int n) {
+		char[] ch = ("" + n).toCharArray();
+		int nums[] = new int[ch.length];
+		for (int i = 0; i < ch.length; i++) {
+			nums[i] = ch[i] - '0';
+		}
+		if (nums.length == 1) {
+			return -1;
+		}
+		int index = nums.length - 1;
+		while (index > 0) {
+			if (nums[index] <= nums[index - 1]) {
+				index--;
+				continue;
+			} else {
+				index--;
+				break;
+			}
+		}
+		if (index == 0 && nums[0] > nums[1]) {
+			return -1;
+		}
+		// 找到升序终止，开始找可替换的最小值
+		// 比如124653, index指向4,4应替换为5
+		for (int i = nums.length - 1; i > index; i--) {
+			if (nums[i] > nums[index]) {
+				int temp = nums[index];
+				nums[index] = nums[i];
+				nums[i] = temp;
+				break;
+			}
+		}
+		reverse(nums, index + 1, nums.length - 1);
+		long ans = 0;
+		for (int i = 0; i < nums.length; i++) {
+			ans *= 10;
+			ans += nums[i];
+		}
+		if ((int) ans == n)
+			return -1;
+		return ans > Integer.MAX_VALUE ? -1 : (int) ans;
 	}
 
 	// 77 组合

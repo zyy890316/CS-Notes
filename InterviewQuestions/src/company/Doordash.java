@@ -1,12 +1,19 @@
 package company;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class Doordash {
 	// System design:
@@ -26,6 +33,7 @@ public class Doordash {
 		map.put(6, Arrays.asList(5, 3, 1));
 		List<Integer> cities = Arrays.asList(1, 2, 3, 4, 5);
 		shortestPath(map, cities);
+		kSimilarity("bccaba", "abacbc");
 	}
 
 	// 返回横或纵坐标相同的最近城市
@@ -395,5 +403,166 @@ public class Doordash {
 			maxProfit += maxProfitForCurrWorker;
 		}
 		return maxProfit;
+	}
+
+	// 854. K-Similar Strings
+	// BFS
+	public static int kSimilarity(String s1, String s2) {
+		Queue<String> queue = new LinkedList<>();
+		Set<String> seen = new HashSet<>();
+		queue.add(s1);
+		int level = 0;
+
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+			for (int queueIndex = 0; queueIndex < size; queueIndex++) {
+				String currentS = queue.poll();
+				if (currentS.equals(s2)) {
+					return level;
+				}
+				if (seen.contains(currentS)) {
+					continue;
+				}
+				seen.add(currentS);
+				for (int i = 0; i < currentS.length(); i++) {
+					char c1 = currentS.charAt(i);
+					char c2 = s2.charAt(i);
+					if (c1 != c2) {
+						for (int j = i + 1; j < currentS.length(); j++) {
+							char newC1 = currentS.charAt(j);
+							char newC2 = s2.charAt(j);
+							if (newC1 == c2 && newC2 != s1.charAt(j)) {
+								StringBuilder sb = new StringBuilder(currentS);
+								sb.setCharAt(i, c2);
+								sb.setCharAt(j, c1);
+								String newS1 = sb.toString();
+								if (!seen.contains(newS1)) {
+									queue.add(newS1);
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+			level++;
+		}
+		return -1;
+	}
+
+	// 859. Buddy Strings
+	// 1. If strings are the same, they're buddies if it has duplicate chars which
+	// can be swapped
+	// 2. For all other cases, there should be exactly 2 different chars and they
+	// swap to be make the strings equal
+	public boolean buddyStrings(String s, String goal) {
+		if (s.length() != goal.length())
+			return false;
+		if (s.equals(goal) && hasDuplicateChars(s))
+			return true;
+
+		Deque<Integer> diffs = findDiffs(s, goal);
+		return diffs.size() == 2 && s.charAt(diffs.getFirst()) == goal.charAt(diffs.getLast())
+				&& s.charAt(diffs.getLast()) == goal.charAt(diffs.getFirst());
+	}
+
+	private boolean hasDuplicateChars(String s) {
+		var chars = new HashSet<Character>();
+		return IntStream.range(0, s.length()).anyMatch(i -> !chars.add(s.charAt(i)));
+	}
+
+	private Deque<Integer> findDiffs(String s, String goal) {
+		var diffs = new ArrayDeque<Integer>();
+
+		for (var i = 0; i < s.length(); i++)
+			if (s.charAt(i) != goal.charAt(i)) {
+				diffs.add(i);
+				if (diffs.size() > 2)
+					break;
+			}
+
+		return diffs;
+	}
+
+	// 839. Similar String Groups
+	// 用 union find
+	// 用 dfs也可以
+	public int numSimilarGroups(String[] strs) {
+		int size = strs.length;
+		UF uf = new UF(size);
+		for (int i = 0; i < size; i++) {
+			for (int j = i + 1; j < size; j++) {
+				if (isSimilar(strs[i], strs[j])) {
+					uf.union(i, j);
+				}
+			}
+		}
+		return uf.getSize();
+	}
+
+	private boolean isSimilar(String s1, String s2) {
+		int n = s1.length();
+		for (int i = 0; i < n; i++) {
+			if (s1.charAt(i) != s2.charAt(i)) {
+				for (int p = i + 1; p < n; p++) {
+					if (s1.charAt(p) == s2.charAt(i)) {
+						// swap
+						StringBuilder sb = new StringBuilder(s1);
+						char temp = s1.charAt(i);
+						sb.setCharAt(p, temp);
+						sb.setCharAt(i, s2.charAt(i));
+						String tempStr = sb.toString();
+						if (tempStr.substring(i + 1).equals(s2.substring(i + 1))) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static class UF {
+		int[] parent;
+		int[] rank;
+
+		public UF(int size) {
+			this.parent = new int[size];
+			for (int i = 0; i < size; i++) {
+				this.parent[i] = i;
+			}
+			this.rank = new int[size];
+		}
+
+		public void union(int i, int j) {
+			int pi = find(i);
+			int pj = find(j);
+			if (pi != pj) {
+				if (rank[pi] > rank[pj]) {
+					parent[pj] = i;
+				} else if (rank[pi] < rank[pj]) {
+					parent[pi] = pj;
+				} else {
+					parent[pj] = pi;
+					rank[pi]++;
+				}
+			}
+		}
+
+		public int find(int a) {
+			if (this.parent[a] != a) {
+				this.parent[a] = find(this.parent[a]);
+			}
+			return this.parent[a];
+		}
+
+		public int getSize() {
+			Set<Integer> group = new HashSet<>();
+			for (int i = 0; i < parent.length; i++) {
+				group.add(find(parent[i]));
+			}
+			return group.size();
+		}
 	}
 }
