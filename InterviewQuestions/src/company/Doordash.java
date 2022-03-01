@@ -270,6 +270,7 @@ public class Doordash {
 	 * input : 8:30am | pickup 9:10am | dropoff 10:20am| pickup 12:15pm| pickup
 	 * 12:45pm| dropoff 2:25pm | dropoff
 	 */
+	@SuppressWarnings("unused")
 	private static int getActiveTimes(List<String> activity) {
 		int timer = 0;
 		int startTime = 0;
@@ -378,7 +379,7 @@ public class Doordash {
 
 	// validate order path
 	// https://leetcode.com/discuss/interview-question/846916/Validate-Orders-Path-(Doordash)
-	// follow up: find the longest validate order path, 双指针？
+	// follow up: find the longest validate order path, binary search？双指针？
 
 	// 826. Most Profit Assigning Work
 	// 暴力排序，可以继续优化，用一个数组存储直到当前难度为止的最大利润，然后用binary search查找某个工人能做什么

@@ -273,6 +273,7 @@ public class SearchAndBacktracking {
 			return;
 		}
 		grid[r][c] = 0;
+		grid[c][r] = 0;
 		for (int i = 0; i < n; i++) {
 			dfsFindCircleNum(grid, r, i);
 			dfsFindCircleNum(grid, i, c);

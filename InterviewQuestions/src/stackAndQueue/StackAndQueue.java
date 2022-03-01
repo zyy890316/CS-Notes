@@ -381,22 +381,11 @@ public class StackAndQueue {
 		stack.push(0);
 		for (int i = 1; i < heights.length; i++) {
 			int height = heights[i];
-			if (!stack.isEmpty()) {
-				while (!stack.isEmpty()) {
-					if (heights[stack.peek()] > height) {
-						int index = stack.pop();
-						indexTillLowerBarFromLeft[index] = i - index;
-					} else {
-						stack.push(i);
-						break;
-					}
-				}
-				if (stack.isEmpty()) {
-					stack.push(i);
-				}
-			} else {
-				stack.push(i);
+			while (!stack.isEmpty() && heights[stack.peek()] > height) {
+				int index = stack.pop();
+				indexTillLowerBarFromLeft[index] = i - index;
 			}
+			stack.push(i);
 		}
 		while (!stack.isEmpty()) {
 			int index = stack.pop();
@@ -405,22 +394,11 @@ public class StackAndQueue {
 
 		for (int i = heights.length - 1; i >= 0; i--) {
 			int height = heights[i];
-			if (!stack.isEmpty()) {
-				while (!stack.isEmpty()) {
-					if (heights[stack.peek()] > height) {
-						int index = stack.pop();
-						indexTillLowerBarFromRight[index] = index - i;
-					} else {
-						stack.push(i);
-						break;
-					}
-				}
-				if (stack.isEmpty()) {
-					stack.push(i);
-				}
-			} else {
-				stack.push(i);
+			while (!stack.isEmpty() && heights[stack.peek()] > height) {
+				int index = stack.pop();
+				indexTillLowerBarFromRight[index] = index - i;
 			}
+			stack.push(i);
 		}
 		while (!stack.isEmpty()) {
 			int index = stack.pop();

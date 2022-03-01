@@ -1,5 +1,8 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Array {
@@ -165,4 +168,27 @@ public class Array {
 	// 给数组里每个孩子糖果，最少给一个，index高的需要比相邻的拿得多，问最少需要多少糖果
 	// 本质上就是看上升和下降区间分别多长，可以两个数组，一个left2rigth，一个right2left
 	// 分别从两边扫描，都只关注上升区间，不上升的就设为1，最后两个数组去最大值得出结果数组
+
+	// 498. Diagonal Traverse
+	// 矩阵对角线上的元素坐标和相加都相等，利用这个性质遍历矩阵，就能得到map，key为对角线坐标和，value为该对角线上的所有元素
+	public int[] findDiagonalOrder(int[][] matrix) {
+		if (matrix == null || matrix.length == 0)
+			return new int[0];
+		Map<Integer, List<Integer>> map = new HashMap<>();
+		int[] res = new int[matrix.length * matrix[0].length];
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[0].length; j++) {
+				map.computeIfAbsent(i + j, x -> new ArrayList<>()).add(matrix[i][j]);
+			}
+		}
+		int idx = 0;
+		for (int i = 0; i <= matrix.length + matrix[0].length - 2; i++) {
+			List<Integer> temp = map.get(i);
+			if (i % 2 == 0)
+				Collections.reverse(temp);
+			for (int num : temp)
+				res[idx++] = num;
+		}
+		return res;
+	}
 }
