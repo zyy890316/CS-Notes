@@ -19,10 +19,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-import com.amazon.homepage.annotation.HomepageThreadPool;
-import com.amazon.homepage.layout.JavaScriptLayout;
-import com.amazon.homepage.service.request.AfterRequestTask;
-import com.amazon.homepage.service.request.RequestStore;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 
