@@ -469,6 +469,10 @@ public class StackAndQueue {
 		}
 	}
 
+	// 480. Sliding Window Median
+	// 跟295类似，可以用两个PriorityQueue，其中用到的remove和priority大小时间成正比。
+	// 优化的话需要一个额外的hashmap，存储应该移除的元素和个数，用来lazy remove和balance两个queue
+
 	// 239 滑动窗口最大值
 	// https://github.com/MisterBooo/LeetCodeAnimation/blob/master/notes/LeetCode%E7%AC%AC239%E5%8F%B7%E9%97%AE%E9%A2%98%EF%BC%9A%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.md
 	// 利用一个 双端队列，在队列中存储元素在数组中的位置， 并且维持队列的严格递减,，也就说维持队首元素是 **最大的 **
