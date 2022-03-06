@@ -1153,4 +1153,46 @@ public class DP {
 		}
 		return (int) dp[n][n];
 	}
+
+	// 718. Maximum Length of Repeated Subarray
+	public int findLength(int[] A, int[] B) {
+		int ans = 0;
+		int[][] dp = new int[A.length][B.length];
+		for (int i = 0; i < A.length; i++) {
+			for (int j = 0; j < B.length; j++) {
+				if (A[i] == B[j]) {
+					if (i == 0 || j == 0) {
+						dp[i][j] = 1;
+					} else {
+						dp[i][j] = dp[i - 1][j - 1] + 1;
+					}
+					if (ans < dp[i][j]) {
+						ans = dp[i][j];
+					}
+				} else {
+					dp[i][j] = 0;
+				}
+			}
+		}
+		return ans;
+	}
+
+	// 1155. Number of Dice Rolls With Target Sum
+	public int numRollsToTarget(int n, int k, int target) {
+		int[][] dp = new int[n + 1][target + 1];
+		for (int i = 1; i <= Math.min(k, target); i++) {
+			dp[1][i] = 1;
+		}
+		for (int i = 2; i <= n; i++) {
+			for (int j = i; j <= target; j++) {
+				for (int num = 1; num <= k; num++) {
+					if (j - num >= i - 1) {
+						dp[i][j] += dp[i - 1][j - num];
+						dp[i][j] %= 1_000_000_007;
+					}
+				}
+			}
+		}
+		return dp[n][target];
+	}
 }

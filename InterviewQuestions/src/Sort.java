@@ -96,4 +96,50 @@ public class Sort {
 			output[idx++] = s;
 		return output;
 	}
+
+	// 215. Kth Largest Element in an Array
+	// quicksort解法 https://www.youtube.com/watch?v=Hoixgm4-P4M
+	public int findKthLargest(int[] nums, int k) {
+		return findKthLargest(nums, 0, nums.length - 1, k);
+	}
+
+	public int findKthLargest(int[] nums, int l, int r, int k) {
+		int pIndex = partation(nums, l, r);
+		if (pIndex == k) {
+			return pIndex;
+		}
+		if (pIndex < k) {
+			return findKthLargest(nums, pIndex, r, k);
+		} else {
+			return findKthLargest(nums, l, pIndex, k);
+		}
+	}
+
+	public void quickSort(int[] nums, int l, int r) {
+		if (l >= r)
+			return;
+		int indexP = partation(nums, l, r);
+		quickSort(nums, l, indexP - 1);
+		quickSort(nums, indexP + 1, r);
+		return;
+	}
+
+	public int partation(int[] nums, int l, int r) {
+		int pivot = nums[(l + r) / 2];
+		int i = l;
+		int j = r;
+		while (i < j) {
+			while (nums[i] < pivot) {
+				i++;
+			}
+			while (nums[j] > pivot) {
+				j++;
+			}
+			if (i < j) {
+				swap(nums, i, j);
+			}
+		}
+		// 此时i == j
+		return i;
+	}
 }
