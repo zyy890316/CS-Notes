@@ -51,8 +51,8 @@ public class FutureFactory implements AfterRequestTask {
 	private final ScheduledTaskProvider delayer;
 
 	@Inject
-	public FutureFactory(@HomepageThreadPool Executor threadPool, HomepageInstrumentationProvider instrumentation,
-			RequestStore store, ScheduledTaskProvider delayer) {
+	public FutureFactory(Executor threadPool, HomepageInstrumentationProvider instrumentation, RequestStore store,
+			ScheduledTaskProvider delayer) {
 		this(threadPool, () -> instrumentation.get()::addCount, store, delayer);
 	}
 

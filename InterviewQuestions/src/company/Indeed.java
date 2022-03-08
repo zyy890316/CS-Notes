@@ -1,5 +1,7 @@
 package company;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Deque;
@@ -11,22 +13,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.Stack;
 
 // system design:
 // 1. job ad, click remove balance
 // 2. design review page
 // 3. job alert
-// 4. job search
+// 4. job/resume search
 
 // https://github.com/interviewdiscussion/files/tree/master/Indeed%20Onsite%E8%AE%B0%E5%BD%95
 public class Indeed {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		String rawTitle = "senior software engineer";
 		String[] cleanTitles = { "software engineer", "mechanical engineer", "senior software engineer" };
 
 		String result = getHighestTitle(rawTitle, cleanTitles);
 		System.out.println(result);
+		query("a | b");
 	}
 
 	// Given m sorted lists, find out the elements more than k times. If an element
@@ -486,5 +491,212 @@ public class Indeed {
 			}
 		}
 		return res;
+	}
+
+	// 判断一段Python代码是否是合法
+	// 1.第一行不能缩进。2.一行冒号结尾的code，下一行必须比这一行缩进的多。
+	// stack一下就行，遇到伸出头的就一路弹出
+	public boolean validate(String[] lines) {
+		// 就用stack来存之前的line就行
+		Stack<String> stack = new Stack<>();
+		for (String line : lines) {
+			int level = getIndent(line);
+			// 先检查是不是第一行
+			if (stack.isEmpty()) {
+				if (level != 0) {
+					System.out.println(line);
+					return false;
+				}
+			}
+			// 再检查上一行是不是control statement
+			else if (stack.peek().charAt(stack.peek().length() - 1) == ':') {
+				if (getIndent(stack.peek()) + 1 != level) {
+					System.out.println(line);
+					return false;
+				}
+			} else {
+				while (!stack.isEmpty() && getIndent(stack.peek()) > level) {
+					stack.pop();
+				}
+				if (getIndent(stack.peek()) != level) {
+					System.out.println(line);
+					return false;
+				}
+			}
+			stack.push(line);
+		}
+		return true;
+	}
+
+	// 这里如果它说n个空格算一次tab的话，就最后返回的时候res/n好了。
+	public int getIndent(String line) {
+		String trimedLine = line.trim();
+		return line.length() - trimedLine.length();
+	}
+
+	// fuzzy search
+	public static List<Integer> query(String q) throws FileNotFoundException {
+		// https://stackoverflow.com/questions/17105299/regex-to-split-string-based-on-operators-and-retain-operator-in-answer
+		String[] queryTokens = q.split("\\s+");
+		List<String> cleanTokens = new ArrayList<>();
+		boolean isAnd = false;
+		boolean isOr = false;
+		for (String token : queryTokens) {
+			if (token.equals("&")) {
+				isAnd = true;
+			} else if (token.equals("|")) {
+				isOr = true;
+			} else {
+				cleanTokens.add(token);
+			}
+		}
+		// token : HashMap<docId : frequency>
+		Map<String, Map<Integer, Integer>> invertedMap = new HashMap<>();
+		File myObj = new File("src/company/text.txt");
+		Scanner myReader = new Scanner(myObj);
+		int line = 1;
+		while (myReader.hasNextLine()) {
+			String data = myReader.nextLine();
+			String[] tokens = data.split("\\s+");
+			for (String token : tokens) {
+				for (String cToken : cleanTokens) {
+					if (token.equals(cToken)) {
+						Map<Integer, Integer> map = invertedMap.getOrDefault(token, new HashMap<>());
+						int count = map.getOrDefault(line, 0);
+						count++;
+						map.put(line, count);
+						invertedMap.put(token, map);
+					}
+				}
+			}
+			line++;
+		}
+		myReader.close();
+
+		// grab valid docs first
+		Set<Integer> docs = new HashSet<>();
+		docs.addAll(invertedMap.get(cleanTokens.get(0)).keySet());
+		for (int i = 1; i < cleanTokens.size(); i++) {
+			String cToken = cleanTokens.get(i);
+			Set<Integer> currDocs = new HashSet<>();
+			currDocs.addAll(invertedMap.get(cToken).keySet());
+			if (isAnd) {
+				docs.retainAll(currDocs);
+			} else if (isOr) {
+				docs.addAll(currDocs);
+			}
+		}
+
+		// result
+		PriorityQueue<Doc> pq = new PriorityQueue<>();
+		for (int docId : docs) {
+			int frequency = 0;
+			for (String token : cleanTokens) {
+				Map<Integer, Integer> map = invertedMap.getOrDefault(token, new HashMap<>());
+				frequency += map.getOrDefault(docId, 0);
+			}
+			pq.add(new Doc(docId, frequency));
+		}
+
+		List<Integer> result = new ArrayList<>();
+		while (!pq.isEmpty()) {
+			result.add(pq.poll().docId);
+		}
+		return result;
+	}
+
+	static class Doc implements Comparable<Doc> {
+		int docId;
+		int frequency;
+
+		public Doc(int docId, int frequency) {
+			this.docId = docId;
+			this.frequency = frequency;
+		}
+
+		@Override
+		public int compareTo(Doc other) {
+			if (this.frequency == other.frequency) {
+				return this.docId - other.docId;
+			}
+			return other.frequency - this.frequency;
+		}
+	}
+
+	// reverse String except HTML entity
+	// a HTML entity must start with "&" and end with ";"
+	// Step 1: reverse non-html tokens, and store the result into a list. For the
+	// HTML entity, do not reverse but just store into the result.
+	// Step 2: construct the final result just concatenate the list in a reverse
+	// order.
+	public String reverseHTML(String s) {
+		if (s == null || s.length() <= 1) {
+			return s;
+		}
+		List<String> tokens = new ArrayList<>();
+		int i = 0;
+		int j = 0;
+		while (j < s.length()) {
+			char c = s.charAt(j);
+			// Case 1: if c != &
+			if (c != '&') {
+				j++;
+			} else {
+				// step 1: reverse substring before &
+				if (j != 0) {
+					String token = reverse(s, i, j - 1);
+					tokens.add(token);
+				}
+				// step 2: put the html entity into the tokens
+				StringBuffer sb = new StringBuffer();
+				while (j < s.length() && s.charAt(j) != ';') {
+					sb.append(s.charAt(j));
+					j++;
+				}
+				if (j < s.length()) {
+					sb.append(';');
+					tokens.add(sb.toString());
+					// step 3: update i
+					j++;
+					i = j;
+				}
+			}
+		}
+
+		// Reverse the trailing chars
+		if (i < j) {
+			String token = reverse(s, i, s.length() - 1);
+			tokens.add(token);
+		}
+		// Step 2: concatenate the final result
+		StringBuffer result = new StringBuffer();
+		for (i = tokens.size() - 1; i >= 0; i--) {
+			result.append(tokens.get(i));
+		}
+		return result.toString();
+
+	}
+
+	private String reverse(String s, int start, int end) {
+		StringBuffer sb = new StringBuffer();
+		while (start <= end) {
+			sb.append(s.charAt(end));
+			end--;
+		}
+		return sb.toString();
+
+	}
+
+	// get bit from integer
+	public int getBit(int n, int k) {
+		return (n >> k) & 1;
+	}
+
+	// set bit in integer
+	public static int setBit(int n, int k) {
+		// Create mask
+		int mask = 1 << k;
+		// Set bit
+		return n | mask;
 	}
 }

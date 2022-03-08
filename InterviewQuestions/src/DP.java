@@ -1179,6 +1179,7 @@ public class DP {
 
 	// 1155. Number of Dice Rolls With Target Sum
 	public int numRollsToTarget(int n, int k, int target) {
+		// dp[i][j] = 扔i次骰子是，总和为j的次数
 		int[][] dp = new int[n + 1][target + 1];
 		for (int i = 1; i <= Math.min(k, target); i++) {
 			dp[1][i] = 1;
@@ -1194,5 +1195,39 @@ public class DP {
 			}
 		}
 		return dp[n][target];
+	}
+
+	// 688. Knight Probability in Chessboard
+	public double knightProbability(int n, int k, int row, int col) {
+		// dp[i][j] means after a round, the probablity land on (i, j)
+		double[][] dp = new double[n][n];
+		int[] dr = new int[] { 2, 2, 1, 1, -1, -1, -2, -2 };
+		int[] dc = new int[] { 1, -1, 2, -2, 2, -2, 1, -1 };
+
+		dp[row][col] = 1.0;
+		for (int step = 0; step < k; step++) {
+			// to save temp result
+			double[][] dp2 = new double[n][n];
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dp[i][j] > 0) {
+						for (int d = 0; d < 8; d++) {
+							int cr = i + dr[d];
+							int cc = j + dc[d];
+							if (0 <= cr && cr < n && 0 <= cc && cc < n) {
+								dp2[cr][cc] += dp[i][j] / 8.0;
+							}
+						}
+					}
+				}
+			}
+			dp = dp2;
+		}
+		double ans = 0.0;
+		for (double[] rows : dp) {
+			for (double x : rows)
+				ans += x;
+		}
+		return ans;
 	}
 }
