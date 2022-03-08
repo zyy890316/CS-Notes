@@ -16,6 +16,11 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // system design:
 // 1. job ad, click remove balance
@@ -25,13 +30,18 @@ import java.util.Stack;
 
 // https://github.com/interviewdiscussion/files/tree/master/Indeed%20Onsite%E8%AE%B0%E5%BD%95
 public class Indeed {
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException, InterruptedException, ExecutionException {
 		String rawTitle = "senior software engineer";
 		String[] cleanTitles = { "software engineer", "mechanical engineer", "senior software engineer" };
 
 		String result = getHighestTitle(rawTitle, cleanTitles);
 		System.out.println(result);
 		query("a | b");
+		List<String> docs = new ArrayList<>();
+		docs.add("a a b c");
+		docs.add("b b b c");
+		docs.add("a b c c");
+		query(docs);
 	}
 
 	// Given m sorted lists, find out the elements more than k times. If an element
@@ -605,6 +615,53 @@ public class Indeed {
 		return result;
 	}
 
+	static ConcurrentHashMap<String, Map<Integer, Integer>> invertMap = new ConcurrentHashMap<>();
+
+	public static void query(List<String> docs) throws InterruptedException, ExecutionException {
+		String threadName = Thread.currentThread().getName();
+		System.out.println(threadName + " running");
+		int cores = Runtime.getRuntime().availableProcessors();
+		System.out.println("Runtime cores: " + cores);
+		ExecutorService executor = Executors.newFixedThreadPool(cores - 1);
+		List<CompletableFuture<Map<String, Map<Integer, Integer>>>> futures = new ArrayList<>();
+		for (int i = 0; i < docs.size(); i++) {
+			final String doc = docs.get(i);
+			final int docId = i;
+			futures.add(CompletableFuture.supplyAsync(() -> parseSingleDoc(doc, docId), executor));
+		}
+		CompletableFuture<Void> combinedFuture = CompletableFuture
+				.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+		combinedFuture.join();
+		System.out.println(threadName + " finished");
+		executor.shutdown();
+	}
+
+	public static Map<String, Map<Integer, Integer>> parseSingleDoc(String doc, int docId) {
+		String threadName = Thread.currentThread().getName();
+		System.out.println(threadName + " running");
+		Map<String, Map<Integer, Integer>> invertedMap = new HashMap<>();
+		String[] tokens = doc.split("\\s+");
+		for (String token : tokens) {
+			Map<Integer, Integer> map = invertedMap.getOrDefault(token, new HashMap<>());
+			int count = map.getOrDefault(docId, 0);
+			count++;
+			map.put(docId, count);
+			invertedMap.put(token, map);
+		}
+		for (String key : invertedMap.keySet()) {
+			if (invertMap.containsKey(key)) {
+				Map<Integer, Integer> tempMap = invertMap.get(key);
+				int frequency = invertedMap.get(key).get(docId);
+				tempMap.put(docId, frequency);
+				invertMap.put(key, tempMap);
+			} else {
+				invertMap.put(key, invertedMap.get(key));
+			}
+		}
+		System.out.println(threadName + " finished");
+		return invertedMap;
+	}
+
 	static class Doc implements Comparable<Doc> {
 		int docId;
 		int frequency;
@@ -685,6 +742,33 @@ public class Indeed {
 		}
 		return sb.toString();
 
+	}
+
+	// 说实现一个简历的系统，3个API
+	// 1) update(String profileId, String field, String value); //这时候版本要+1
+	// 2) get(String profileId, int version); //找对应版本的field和value
+	// 3) getField(String profileId, int version, String field); //找对应的value
+	// 有算法可以算string diff，这样field里面就只存两个之间的diff就好了
+	class Profile {
+		String profileId;
+		Map<String, Field> fields;
+
+		public Profile(String profileId) {
+			this.profileId = profileId;
+			this.fields = new HashMap<>();
+		}
+	}
+
+	class Field {
+		String field;
+		List<String> values;
+		int version;
+
+		public Field(String field) {
+			this.field = field;
+			this.values = new ArrayList<>();
+			this.version = 0;
+		}
 	}
 
 	// get bit from integer
