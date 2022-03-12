@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +14,8 @@ import java.util.Stack;
 import tree.TreeNode;
 
 public class SearchAndBacktracking {
+	private final static int[][] directions = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+
 	public static void main(String[] args) {
 		shortestPathBinaryMatrix(new int[][] { { 0, 1 }, { 1, 0 } });
 		int[][] heights = new int[][] { { 1, 2, 2, 3, 5 }, { 3, 2, 3, 4, 4 }, { 2, 4, 5, 3, 1 }, { 6, 7, 1, 4, 5 },
@@ -191,8 +194,6 @@ public class SearchAndBacktracking {
 
 	// 695 查找最大的连通面积
 	// 用dfs查面积，查过的区块直接填成0就不会重复访问了
-	private static int[][] directions = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-
 	public int maxAreaOfIsland(int[][] grid) {
 		int m = grid.length;
 		int n = grid[0].length;
@@ -489,7 +490,6 @@ public class SearchAndBacktracking {
 	}
 
 	// 79 在矩阵中寻找字符串
-	private final static int[][] direction = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
 	private int m;
 	private int n;
 
@@ -528,7 +528,7 @@ public class SearchAndBacktracking {
 
 		visited[r][c] = true;
 
-		for (int[] d : direction) {
+		for (int[] d : directions) {
 			if (backtracking(curLen + 1, r + d[0], c + d[1], visited, board, word)) {
 				return true;
 			}
@@ -1205,4 +1205,90 @@ public class SearchAndBacktracking {
 
 	// 425. Word Squares
 	// 通过dfs穷举可能的组合，何以使用Trie来加速查找
+
+	// 1293. Shortest Path in a Grid with Obstacles Elimination
+	// bfs，搜索时需要记录当前这步还可以移除多少次，
+	class StepState {
+		/**
+		 * data object to keep the state info for each step: <steps, row, col,
+		 * remaining_eliminations>
+		 */
+		public int steps, row, col, k;
+
+		public StepState(int steps, int row, int col, int k) {
+			this.steps = steps;
+			this.row = row;
+			this.col = col;
+			this.k = k;
+		}
+
+		@Override
+		public int hashCode() {
+			// needed when we put objects into any container class
+			return (this.row + 1) * (this.col + 1) * this.k;
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			/**
+			 * only (row, col, k) matters as the state info
+			 */
+			if (!(other instanceof StepState)) {
+				return false;
+			}
+			StepState newState = (StepState) other;
+			return (this.row == newState.row) && (this.col == newState.col) && (this.k == newState.k);
+		}
+	}
+
+	public int shortestPath(int[][] grid, int k) {
+		int rows = grid.length, cols = grid[0].length;
+		int[] target = { rows - 1, cols - 1 };
+
+		// if we have sufficient quotas to eliminate the obstacles in the worst case,
+		// then the shortest distance is the Manhattan distance.
+		if (k >= rows + cols - 2) {
+			return rows + cols - 2;
+		}
+
+		Deque<StepState> queue = new LinkedList<>();
+		HashSet<StepState> seen = new HashSet<>();
+
+		// (steps, row, col, remaining quota to eliminate obstacles)
+		StepState start = new StepState(0, 0, 0, k);
+		queue.addLast(start);
+		seen.add(start);
+
+		while (!queue.isEmpty()) {
+			StepState curr = queue.pollFirst();
+
+			// we reach the target here
+			if (target[0] == curr.row && target[1] == curr.col) {
+				return curr.steps;
+			}
+
+			// explore the four directions in the next step
+			for (int[] direction : directions) {
+				int nextRow = curr.row + direction[0];
+				int nextCol = curr.col + direction[1];
+
+				// out of the boundary of grid
+				if (0 > nextRow || nextRow == rows || 0 > nextCol || nextCol == cols) {
+					continue;
+				}
+
+				int nextElimination = curr.k - grid[nextRow][nextCol];
+				StepState newState = new StepState(curr.steps + 1, nextRow, nextCol, nextElimination);
+
+				// add the next move in the queue if it qualifies.
+				if (nextElimination >= 0 && !seen.contains(newState)) {
+					seen.add(newState);
+					queue.addLast(newState);
+				}
+			}
+		}
+
+		// did not reach the target
+		return -1;
+	}
 }

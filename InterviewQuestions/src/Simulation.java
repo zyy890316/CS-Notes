@@ -1,3 +1,8 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Simulation {
@@ -144,4 +149,73 @@ public class Simulation {
 	// Next Closest Time
 	// 给定一个时间 "HH:MM"，用当前数字求下一个最近时间是几点几分
 	// 直接枚举从当前时间开始的每个时间，看是否可以用现在的数字组成，可以即返回
+
+	// 588. Design In-Memory File System
+	class FileSystem {
+		Dir root;
+
+		public FileSystem() {
+			root = new Dir();
+		}
+
+		public List<String> ls(String path) {
+			Dir t = root;
+			List<String> files = new ArrayList<>();
+			if (!path.equals("/")) {
+				String[] paths = path.split("/");
+				for (int i = 1; i < paths.length - 1; i++) {
+					t = t.dirs.get(paths[i]);
+				}
+				// ls is acting on a file rather than a directory
+				if (t.files.containsKey(paths[paths.length - 1])) {
+					files.add(paths[paths.length - 1]);
+					return files;
+				} else {
+					t = t.dirs.get(paths[paths.length - 1]);
+				}
+			}
+			files.addAll(new ArrayList<>(t.dirs.keySet()));
+			files.addAll(new ArrayList<>(t.files.keySet()));
+			Collections.sort(files);
+			return files;
+		}
+
+		public void mkdir(String path) {
+			Dir t = root;
+			String[] paths = path.split("/");
+			for (int i = 1; i < paths.length; i++) {
+				if (!t.dirs.containsKey(paths[i]))
+					t.dirs.put(paths[i], new Dir());
+				t = t.dirs.get(paths[i]);
+			}
+		}
+
+		public void addContentToFile(String path, String content) {
+			Dir t = root;
+			String[] paths = path.split("/");
+			for (int i = 1; i < paths.length - 1; i++) {
+				t = t.dirs.get(paths[i]);
+			}
+			t.files.put(paths[paths.length - 1], t.files.getOrDefault(paths[paths.length - 1], "") + content);
+		}
+
+		public String readContentFromFile(String path) {
+			Dir t = root;
+			String[] paths = path.split("/");
+			for (int i = 1; i < paths.length - 1; i++) {
+				t = t.dirs.get(paths[i]);
+			}
+			return t.files.get(paths[paths.length - 1]);
+		}
+
+		class Dir {
+			Map<String, Dir> dirs;
+			Map<String, String> files;
+
+			public Dir() {
+				this.dirs = new HashMap<>();
+				this.files = new HashMap<>();
+			}
+		}
+	}
 }

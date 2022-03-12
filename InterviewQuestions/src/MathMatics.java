@@ -367,4 +367,20 @@ public class MathMatics {
 		}
 		return quotient;
 	}
+
+	// 453. Minimum Moves to Equal Array Elements
+	// 每次n-1个元素加1，相当于每次1个元素减一
+	public int minMoves(int[] nums) {
+		int min = Integer.MAX_VALUE;
+		int n = nums.length;
+		int sum = 0;
+		for (int num : nums) {
+			sum += num;
+			if (num < min) {
+				min = num;
+			}
+		}
+		int result = sum - n * min;
+		return result;
+	}
 }
