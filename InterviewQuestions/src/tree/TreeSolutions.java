@@ -868,4 +868,69 @@ public class TreeSolutions {
 
 	// 315. Count of Smaller Numbers After Self
 	// 需要Segment Tree 线段树：https://www.youtube.com/watch?v=rYBtViWXYeI
+
+	// 2096. Step-By-Step Directions From a Binary Tree Node to Another
+	// find common ancestor first
+	class Result {
+		int a, b;
+		String pathA, pathB;
+
+		Result(int a, int b) {
+			this.a = a;
+			this.b = b;
+		}
+
+		boolean isBothFound() {
+			return this.pathA != null && this.pathB != null;
+		}
+	}
+
+	public String getDirections(TreeNode root, int startValue, int destValue) {
+		Result result = new Result(startValue, destValue);
+		dfs(root, startValue, destValue, new StringBuilder(), result);
+		// find the first match, i means the steps to get to first common ancestor
+		int i = 0;
+		while (i < Math.min(result.pathA.length(), result.pathB.length())) {
+			if (result.pathA.charAt(i) != result.pathB.charAt(i)) {
+				break;
+			}
+			i++;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		// path from A to common ancestor
+		for (int j = result.pathA.length() - 1; j >= i; j--) {
+			sb.append("U");
+		}
+
+		// path from common ancestor to B
+		for (int j = i; j < result.pathB.length(); j++) {
+			if (j < result.pathB.length())
+				sb.append(result.pathB.charAt(j));
+		}
+
+		return sb.toString();
+	}
+
+	private void dfs(TreeNode node, int a, int b, StringBuilder sb, Result result) {
+		if (node == null)
+			return;
+		if (node.val == a) {
+			result.pathA = sb.toString();
+		}
+		if (node.val == b) {
+			result.pathB = sb.toString();
+		}
+
+		int len = sb.length();
+		sb.append("L");
+		dfs(node.left, a, b, sb, result);
+		sb.setLength(len);
+		if (result.isBothFound()) {
+			return;
+		}
+		sb.append("R");
+		dfs(node.right, a, b, sb, result);
+		sb.setLength(len);
+	}
 }

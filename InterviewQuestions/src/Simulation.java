@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 
 public class Simulation {
 	public static void main(String[] args) {
@@ -216,6 +217,35 @@ public class Simulation {
 				this.dirs = new HashMap<>();
 				this.files = new HashMap<>();
 			}
+		}
+	}
+
+	// 1146. Snapshot Array
+	// 用 List<TreeMap<Integer, Integer>>, TreeMap存 version ： value
+	class SnapshotArray {
+		List<TreeMap<Integer, Integer>> values;
+		int snapId;
+
+		public SnapshotArray(int length) {
+			this.snapId = 0;
+			this.values = new ArrayList<>();
+			for (int i = 0; i < length; i++) {
+				TreeMap<Integer, Integer> map = new TreeMap<>();
+				map.put(snapId, 0);
+				values.add(i, map);
+			}
+		}
+
+		public void set(int index, int val) {
+			values.get(index).put(snapId, val);
+		}
+
+		public int snap() {
+			return snapId++;
+		}
+
+		public int get(int index, int snap_id) {
+			return values.get(index).floorEntry(snap_id).getValue();
 		}
 	}
 }

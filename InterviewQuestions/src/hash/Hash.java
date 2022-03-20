@@ -55,4 +55,30 @@ public class Hash {
 		}
 		return max;
 	}
+
+	// 833. Find And Replace in String
+	public String findReplaceString(String s, int[] indices, String[] sources, String[] targets) {
+		int len = indices.length;
+		HashMap<Integer, Integer[]> map = new HashMap<>();
+		for (int i = 0; i < len; i++) {
+			if (s.substring(indices[i], indices[i] + sources[i].length()).equals(sources[i])) {
+				Integer[] indexes = new Integer[2];
+				indexes[0] = i;
+				indexes[1] = sources[i].length();
+				map.put(indices[i], indexes);
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length();) {
+
+			if (map.containsKey(i)) {
+				sb.append(targets[map.get(i)[0]]);
+				i += map.get(i)[1];
+			} else {
+				sb.append(s.charAt(i));
+				i++;
+			}
+		}
+		return sb.toString();
+	}
 }

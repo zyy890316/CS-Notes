@@ -419,6 +419,56 @@ public class DoublePointers {
 		return ans;
 	}
 
+	// 727. Minimum Window Subsequence
+	public String minWindowSubsequence(String s, String t) {
+		int minLen = s.length() + t.length();
+		String res = "";
+		int left = 0, right = 0;
+		while (right < s.length()) {
+			int nextRight = extendRight(s, t, left);
+			if (nextRight == -1) {
+				break;
+			}
+			right = nextRight - 1;
+			left = shrinkLeft(s, t, right) + 1;
+			if (minLen > (right - left + 1)) {
+				minLen = right - left + 1;
+				res = s.substring(left, right + 1);
+			}
+			left++;
+		}
+		return res;
+	}
+
+	// return the first right index such that substring s[left:right] contains T as
+	// a sequence.
+	// return -1 if there no such substring
+	private int extendRight(String s, String t, int left) {
+		int sIdx = left, tIdx = 0;
+		while (sIdx < s.length() && tIdx < t.length()) {
+			if (s.charAt(sIdx) == t.charAt(tIdx)) {
+				tIdx++;
+			}
+			sIdx++;
+		}
+		if (tIdx < t.length()) {
+			return -1; // s[left:] not contains T as a sequence.
+		}
+		return sIdx;
+	}
+
+	// return index of last left, such that s[left:right] contains T.
+	private int shrinkLeft(String s, String t, int right) {
+		int sIdx = right, tIdx = t.length() - 1;
+		while (sIdx >= 0 && tIdx >= 0) {
+			if (s.charAt(sIdx) == t.charAt(tIdx)) {
+				tIdx--;
+			}
+			sIdx--;
+		}
+		return sIdx;
+	}
+
 	// 1004. Max Consecutive Ones III
 	public int longestOnes(int[] nums, int k) {
 		if (nums.length == 1 && k > 0) {
@@ -448,5 +498,46 @@ public class DoublePointers {
 			}
 		}
 		return max;
+	}
+
+	// 777. Swap Adjacent in LR String
+	// https://www.youtube.com/watch?v=LHrXl7vflE0
+	// L和R相对顺序无法改变
+	// L只能左移，R只能右移，所以起始string的L位置相对end的必须靠右，R必须靠左
+	public boolean canTransform(String s, String e) {
+		if (s.length() != e.length())
+			return false;
+		int i = 0, j = 0;
+		char[] sArray = s.toCharArray();
+		char[] eArray = e.toCharArray();
+		while (i < sArray.length || j < eArray.length) {
+			// only need to work with 'L' and 'R' so ignore 'X'
+			while (i < sArray.length && sArray[i] == 'X') {
+				++i;
+			}
+			while (j < eArray.length && eArray[j] == 'X') {
+				++j;
+			}
+			// both at end
+			if (i == sArray.length && j == eArray.length) {
+				return true;
+			}
+			// one of them at the end
+			if (i == sArray.length || j == eArray.length) {
+				return false;
+			}
+			// character not similar
+			if (sArray[i] != eArray[j])
+				return false;
+			// if char is R we can go right only when i pointer doesn't exceed j pointer
+			if (sArray[i] == 'R' && i > j)
+				return false;
+			// if char is L we can go left only when i pointer exceed j pointer
+			if (sArray[i] == 'L' && i < j)
+				return false;
+			i++;
+			j++;
+		}
+		return true;
 	}
 }

@@ -383,4 +383,32 @@ public class MathMatics {
 		int result = sum - n * min;
 		return result;
 	}
+
+	// 2128. Remove All Ones With Row and Column Flips
+	// 1. 最后结果只和每个元素反转了几次有关，和反转的顺序无关，
+	// 2. 因此可以假设先反转行，使得第一列全部为0，之后不能进行别的行反转，否则会破坏第一列
+	public boolean removeOnes(int[][] grid) {
+		// Step 1: Make all elements in 1st column ZERO.
+		for (int i = 0; i < grid.length; i++) {
+			if (grid[i][0] == 1) {
+				flipRow(grid, i);
+			}
+		}
+		// Now, can't do any further row operation because that will turn above element
+		// back to ONE.
+		// Step 2: Check if all the remaining columns have the same values.
+		for (int i = 1; i < grid.length; i++) {
+			for (int j = 1; j < grid[i].length; j++) {
+				if (grid[i][j] != grid[i - 1][j])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	private void flipRow(int[][] grid, int i) {
+		for (int j = 0; j < grid[i].length; j++) {
+			grid[i][j] = 1 - grid[i][j];
+		}
+	}
 }

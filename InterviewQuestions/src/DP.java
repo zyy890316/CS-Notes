@@ -1230,4 +1230,80 @@ public class DP {
 		}
 		return ans;
 	}
+
+	// 1937. Maximum Number of Points with Cost
+	public long maxPoints(int[][] points) {
+		int m = points.length;
+		int n = points[0].length;
+		// dp[i][j] means when picking i, j, the max value until there
+		long[][] dp = new long[m][n];
+		for (int j = 0; j < n; j++) {
+			dp[0][j] = points[0][j];
+		}
+		for (int i = 1; i < m; i++) {
+			/*
+			 * naive solution, time complexity will be O(m*n*n) for(int j = 0; j < n; j++){
+			 * for(int previousRowIndex = 0; previousRowIndex < n; previousRowIndex++){
+			 * dp[i][j] = Math.max(dp[i][j], dp[i-1][previousRowIndex] + points[i][j] -
+			 * Math.abs(previousRowIndex - j)); } }
+			 */
+			// https://www.youtube.com/watch?v=STEJHYc9rMw
+			long[] left = new long[n];
+			long[] right = new long[n];
+			for (int j = 0; j < n; j++) {
+				if (j == 0) {
+					left[j] = dp[i - 1][j];
+				} else {
+					left[j] = Math.max(dp[i - 1][j], left[j - 1] - 1);
+				}
+			}
+			for (int j = n - 1; j >= 0; j--) {
+				if (j == n - 1) {
+					right[j] = dp[i - 1][j];
+				} else {
+					right[j] = Math.max(dp[i - 1][j], right[j + 1] - 1);
+				}
+			}
+			for (int j = 0; j < n; j++) {
+				dp[i][j] = Math.max(left[j], right[j]) + points[i][j];
+			}
+		}
+		long result = 0;
+		for (int j = 0; j < n; j++) {
+			result = Math.max(dp[m - 1][j], result);
+		}
+		return result;
+	}
+
+	// 552. Student Attendance Record II
+	// dp[i][2][1], means in day i, the status is 2 consecutive L with 1 A before
+
+	// 664. Strange Printer
+	public int strangePrinter(String s) {
+		int len = s.length();
+		int[][] dp = new int[len][len];
+		return strangePrinterSection(s.toCharArray(), 0, len - 1, dp);
+	}
+
+	public int strangePrinterSection(char[] s, int l, int r, int[][] dp) {
+		if (l > r) {
+			return 0;
+		}
+		if (dp[l][r] > 0) {
+			return dp[l][r];
+		}
+		if (l == r) {
+			dp[l][r] = 1;
+			return 1;
+		}
+		int ans = Math.min(strangePrinterSection(s, l + 1, r, dp), strangePrinterSection(s, l, r - 1, dp)) + 1;
+		for (int i = l; i < r; i++) {
+			// 说明i到r肯定可以全部覆盖，所以算出i到r-1即可
+			if (s[i] == s[r]) {
+				ans = Math.min(ans, strangePrinterSection(s, l, i - 1, dp) + strangePrinterSection(s, i, r - 1, dp));
+			}
+		}
+		dp[l][r] = ans;
+		return ans;
+	}
 }

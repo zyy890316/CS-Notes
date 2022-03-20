@@ -191,4 +191,30 @@ public class Array {
 		}
 		return res;
 	}
+
+	// 2007. Find Original Array From Doubled Array
+	public int[] findOriginalArray(int[] changed) {
+		// sort the array to ensure doubled number will appear after the original number
+		Arrays.sort(changed);
+		// use map record original number * 2 and its occurance time
+		Map<Integer, Integer> map = new HashMap<>();
+		int[] res = new int[changed.length / 2];
+		int count = 0;
+		for (int i = 0; i < changed.length; i++) {
+			int num = changed[i];
+			// found a double number pair
+			if (map.containsKey(num)) {
+				res[count] = num / 2;
+				count++;
+				if (map.get(num) == 1) {
+					map.remove(num);
+				} else {
+					map.put(num, map.get(num) - 1);
+				}
+			} else {
+				map.put(num * 2, map.getOrDefault(num * 2, 0) + 1);
+			}
+		}
+		return map.size() == 0 ? res : new int[] {};
+	}
 }
