@@ -933,4 +933,22 @@ public class TreeSolutions {
 		dfs(node.right, a, b, sb, result);
 		sb.setLength(len);
 	}
+
+	// 156. Binary Tree Upside Down
+	public TreeNode upsideDownBinaryTree(TreeNode root) {
+		if (root == null)
+			return root;
+
+		if (root.left == null) {
+			return root;
+		}
+
+		TreeNode newRoot = upsideDownBinaryTree(root.left);
+		root.left.left = root.right;
+		root.left.right = root;
+		// Avoid cycle.
+		root.left = null;
+		root.right = null;
+		return newRoot;
+	}
 }

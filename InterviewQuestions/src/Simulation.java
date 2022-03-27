@@ -3,6 +3,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -246,6 +248,85 @@ public class Simulation {
 
 		public int get(int index, int snap_id) {
 			return values.get(index).floorEntry(snap_id).getValue();
+		}
+	}
+
+	// 1834. Single-Threaded CPU
+	public int[] getOrder(int[][] tasks) {
+		int n = tasks.length;
+
+		// Ordered by enqueueTime.
+		Queue<Integer> taskQueue = new PriorityQueue<>((a, b) -> tasks[a][0] - tasks[b][0]);
+		for (int i = 0; i < n; i++) {
+			taskQueue.add(i);
+		}
+
+		// Ordered by processingTime, with collisions resolved by taskId.
+		Queue<Integer> executionQueue = new PriorityQueue<>((a, b) -> {
+			int cmp = tasks[a][1] - tasks[b][1];
+			return cmp != 0 ? cmp : a - b;
+		});
+
+		int time = 0;
+		int[] order = new int[n];
+		for (int i = 0; i < n; i++) {
+			// Skip idle time.
+			if (executionQueue.isEmpty() && !taskQueue.isEmpty() && time < tasks[taskQueue.peek()][0]) {
+				time = tasks[taskQueue.peek()][0];
+			}
+
+			// Enqueue by enqueueTime.
+			while (!taskQueue.isEmpty() && time >= tasks[taskQueue.peek()][0]) {
+				executionQueue.add(taskQueue.remove());
+			}
+
+			// Pick a task to execute.
+			int taskId = executionQueue.remove();
+			time += tasks[taskId][1];
+			order[i] = taskId;
+		}
+		return order;
+	}
+
+	// 352. Data Stream as Disjoint Intervals
+	// 4 cases in total:
+	// 1. The new num is not close to any exising key. Thus, just add a new interval
+	// like [val, val];
+	// 2. The new num (e.g., b) can connect two exisitng intervals, like this case
+	// [a, b-1], b, [b+1, c]
+	// 3. The new num b can expand the largest smaller interval, like this case [a,
+	// b-1], b, or [a, b], b
+	// 4. The new b can expand the smallest larger interval, like b, [b+1, c]
+	class SummaryRanges {
+		// start : [start, end]
+		TreeMap<Integer, int[]> tree;
+
+		public SummaryRanges() {
+			tree = new TreeMap<>();
+		}
+
+		public void addNum(int val) {
+			if (tree.containsKey(val))
+				return;
+			Integer lowerKey = tree.lowerKey(val); // The greatest key that strictly less than val
+			Integer higherKey = tree.higherKey(val); // The smallest key that strictly larger than val
+
+			if (lowerKey != null && higherKey != null && val == tree.get(lowerKey)[1] + 1
+					&& val == tree.get(higherKey)[0] - 1) { // Case 2
+				tree.get(lowerKey)[1] = tree.get(higherKey)[1];
+				tree.remove(higherKey);
+			} else if (lowerKey != null && val <= tree.get(lowerKey)[1] + 1) { // Case 3
+				tree.get(lowerKey)[1] = Math.max(val, tree.get(lowerKey)[1]);
+			} else if (higherKey != null && val == tree.get(higherKey)[0] - 1) { // Case 4
+				tree.put(val, new int[] { val, tree.get(higherKey)[1] });
+				tree.remove(higherKey);
+			} else { // Case 1
+				tree.put(val, new int[] { val, val });
+			}
+		}
+
+		public int[][] getIntervals() {
+			return tree.values().toArray(new int[tree.size()][2]);
 		}
 	}
 }

@@ -29,13 +29,16 @@ https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
 
 # System Design Steps
 ## Questions to ask:
-* What are the most important features for the product? ?
+* What are the most important features for the product?
 * How many users does the product have?
 * rec only?
-* read write traffic, traffic pattern, traffic growth?
+* read / write traffic, traffic pattern, traffic growth?
 * latency
 * How fast does the company anticipate to scale up? What are the anticipated scales in 3 months, 6 months, and a year?
 * What is the company’s technology stack? What existing services you might leverage to simplify the design?
+* development cost vs maintenance cost
+* Consistency level
+
 0. General Requirements Clarification:
   * User: Who/How the system will be used?
   * Scale(read and write): how many read/write, TPS, traffic spike

@@ -167,7 +167,7 @@ public class Array {
 	// 135. Candy
 	// 给数组里每个孩子糖果，最少给一个，index高的需要比相邻的拿得多，问最少需要多少糖果
 	// 本质上就是看上升和下降区间分别多长，可以两个数组，一个left2rigth，一个right2left
-	// 分别从两边扫描，都只关注上升区间，不上升的就设为1，最后两个数组去最大值得出结果数组
+	// 分别从两边扫描，都只关注上升区间，不上升的就设为1，最后两个数组一起遍历，取最大值得出结果数组
 
 	// 498. Diagonal Traverse
 	// 矩阵对角线上的元素坐标和相加都相等，利用这个性质遍历矩阵，就能得到map，key为对角线坐标和，value为该对角线上的所有元素
@@ -216,5 +216,34 @@ public class Array {
 			}
 		}
 		return map.size() == 0 ? res : new int[] {};
+	}
+
+	// 670. Maximum Swap
+	public int maximumSwap(int num) {
+		char[] numArray = String.valueOf(num).toCharArray();
+		// 先找出每个数字最后一次出现的位置
+		// 比如 6 9 9 4，最后6应该和最后一个9交换，得到9964
+		int[] lastIndexMap = new int[10];
+		int ans = num;
+		for (int i = 0; i < numArray.length; i++) {
+			lastIndexMap[numArray[i] - '0'] = i;
+		}
+		for (int i = 0; i < numArray.length; i++) {
+			for (int d = 9; d >= 0; d--) {
+				// if there is a char that larger then the current one, and appears later
+				if (i < lastIndexMap[d] && numArray[i] - '0' < d) {
+					ans = swap(numArray, i, lastIndexMap[d]);
+					return ans;
+				}
+			}
+		}
+		return ans;
+	}
+
+	public int swap(char[] array, int a, int b) {
+		char tmp = array[a];
+		array[a] = array[b];
+		array[b] = tmp;
+		return Integer.valueOf(String.valueOf(array));
 	}
 }

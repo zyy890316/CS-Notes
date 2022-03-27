@@ -261,6 +261,7 @@ public class DP {
 				// i 依次分为 j 和 i-j两数
 				dp[i] = Math.max(dp[i], dp[j] * dp[i - j]);
 				dp[i] = Math.max(dp[i], dp[j] * (i - j));
+				dp[i] = Math.max(dp[i], j * dp[i - j]);
 				dp[i] = Math.max(dp[i], j * (i - j));
 			}
 		}
@@ -1304,6 +1305,20 @@ public class DP {
 			}
 		}
 		dp[l][r] = ans;
+		return ans;
+	}
+
+	// 1218. Longest Arithmetic Subsequence of Given Difference
+	public int longestSubsequence(int[] arr, int diff) {
+		int ans = 1;
+		// <a, b>, where b is the length of the subsequence ends at a
+		Map<Integer, Integer> dpMap = new HashMap<>();
+		dpMap.put(arr[0], 1);
+		for (int i = 1; i < arr.length; i++) {
+			int len = dpMap.getOrDefault(arr[i] - diff, 0) + 1;
+			dpMap.put(arr[i], len);
+			ans = Math.max(ans, len);
+		}
 		return ans;
 	}
 }

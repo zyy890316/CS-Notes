@@ -305,4 +305,74 @@ public class GreedyAlgorithm {
 			this.frequency = frequency;
 		}
 	}
+
+	// 68. Text Justification
+	// https://www.youtube.com/watch?v=qrZLQmL6fyI 直接贪心来做，难点在空格分布
+	public List<String> fullJustify(String[] words, int maxWidth) {
+		List<String> ans = new ArrayList<>();
+		int len = words.length;
+		int i = 0;
+		while (i < len) {
+			int currLength = words[i].length();
+			// lastIndex can not go beyond last word
+			if (i == len - 1) {
+				ans.add(formatLine(words, maxWidth, i, i));
+				break;
+			}
+			int lastIndex = i + 1;
+			while (currLength < maxWidth) {
+				if (lastIndex >= len) {
+					break;
+				}
+				if (currLength + 1 + words[lastIndex].length() <= maxWidth) {
+					currLength += 1 + words[lastIndex].length();
+					lastIndex++;
+				} else {
+					break;
+				}
+			}
+			ans.add(formatLine(words, maxWidth, i, lastIndex - 1));
+			i = lastIndex;
+		}
+		return ans;
+	}
+
+	public String formatLine(String[] words, int maxWidth, int l, int r) {
+		int gaps = r - l;
+		StringBuilder sb = new StringBuilder();
+		// if there is only one world in the line, or we are at the end
+		if (gaps == 0 || r == words.length - 1) {
+			for (int i = l; i <= r; i++) {
+				sb.append(words[i]);
+				sb.append(" ");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			while (sb.length() < maxWidth) {
+				sb.append(" ");
+			}
+		} else {
+			int wordLength = 0;
+			for (int i = l; i <= r; i++) {
+				wordLength += words[i].length();
+			}
+			int spaces = maxWidth - wordLength;
+			int eachSpace = spaces / gaps;
+			int remainingSpace = spaces % gaps;
+			for (int i = l; i <= r; i++) {
+				sb.append(words[i]);
+				// no more spaces after last word
+				if (i == r) {
+					break;
+				}
+				for (int j = 1; j <= eachSpace; j++) {
+					sb.append(" ");
+				}
+				if (remainingSpace > 0) {
+					sb.append(" ");
+					remainingSpace--;
+				}
+			}
+		}
+		return sb.toString();
+	}
 }
