@@ -81,4 +81,13 @@ public class Hash {
 		}
 		return sb.toString();
 	}
+
+	// 706. Design HashMap
+	// https://www.youtube.com/watch?v=UFCLHxgQa8w
+	// 用一个array来存储，array每个位置为一个LinkedList的Node
+	// 进来的key直接取模来看位置 index = key % array.size
+	class Node {
+		int value;
+		Node next = null;
+	}
 }

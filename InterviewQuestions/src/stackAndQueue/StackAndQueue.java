@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Stack;
 
 public class StackAndQueue {
@@ -142,7 +141,6 @@ public class StackAndQueue {
 		for (int currIndex = 0; currIndex < temperatures.length; currIndex++) {
 			// 堆栈顶topIndex是当前正在找的一天，如果currIndex那天温度较高，则已经找到，可以出栈
 			while (!indexs.isEmpty() && temperatures[indexs.peek()] < temperatures[currIndex]) {
-				int topTemp = temperatures[indexs.peek()]; // temperature at top of the stack
 				int topIndex = indexs.pop();
 
 				dist[topIndex] = currIndex - topIndex;
@@ -532,46 +530,6 @@ public class StackAndQueue {
 	// 和56 Merge Intervals类似，直接把所有的interval放到一个数组里面，不断merge，发现gap就为全部employee的free
 	// time
 
-	// 380. Insert Delete GetRandom O(1)
-	class RandomizedSet {
-		final Map<Integer, Integer> map;
-		final List<Integer> list;
-		final Random random;
-
-		public RandomizedSet() {
-			map = new HashMap<>();
-			list = new ArrayList<>();
-			random = new Random();
-		}
-
-		public boolean insert(int val) {
-			if (map.containsKey(val)) {
-				return false;
-			}
-			map.put(val, list.size());
-			list.add(val);
-			return true;
-		}
-
-		public boolean remove(int val) {
-			if (!map.containsKey(val)) {
-				return false;
-			}
-			int index = map.get(val);
-			int lastElement = list.get(list.size() - 1);
-			map.put(lastElement, index);
-			list.set(index, lastElement);
-			list.remove(list.size() - 1);
-			map.remove(val);
-			return true;
-		}
-
-		public int getRandom() {
-			int rand = random.nextInt(list.size());
-			return list.get(rand);
-		}
-	}
-
 	// 456. 132 Pattern: 能否找到这个pattern: i < j < k and nums[i] < nums[k] < nums[j]
 	// 此题关键是把k找到，让k为次大值
 	// 从后往前扫描数组，用一个递减单调栈，只要元素出栈，一定说明迫使该元素出栈的值更大，那么迫使该元素出栈的就是j，出栈的元素就是k
@@ -601,4 +559,40 @@ public class StackAndQueue {
 	// 402. Remove K Digits
 	// 去掉k位，使得数字最小
 	// greedy,用单调栈，从左边最高位开始扫描，只要当前数字比之前的小，之前的就出栈，保证是单调栈
+
+	// 895. Maximum Frequency Stack
+	class FreqStack {
+		// number : frequency
+		public Map<Integer, Integer> map;
+		// frequency : stack of numbers, to return the most recent max frequency number
+		public Map<Integer, Stack<Integer>> group;
+		public int maxFrequency;
+
+		public FreqStack() {
+			this.map = new HashMap<>();
+			this.group = new HashMap<>();
+			maxFrequency = 0;
+		}
+
+		public void push(int val) {
+			int frequency = map.getOrDefault(val, 0) + 1;
+			map.put(val, frequency);
+			// for each push, say frequency is 2, the frequency 1 stack also contains val
+			// this makes pop method below easy
+			group.computeIfAbsent(frequency, z -> new Stack<>()).push(val);
+			if (frequency > maxFrequency) {
+				maxFrequency = frequency;
+			}
+		}
+
+		public int pop() {
+			Stack<Integer> maxStack = group.get(maxFrequency);
+			int ans = maxStack.pop();
+			map.put(ans, maxFrequency - 1);
+			if (maxStack.size() == 0) {
+				maxFrequency--;
+			}
+			return ans;
+		}
+	}
 }
