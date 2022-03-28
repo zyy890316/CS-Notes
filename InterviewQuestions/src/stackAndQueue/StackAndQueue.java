@@ -5,10 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
@@ -559,40 +557,4 @@ public class StackAndQueue {
 	// 402. Remove K Digits
 	// 去掉k位，使得数字最小
 	// greedy,用单调栈，从左边最高位开始扫描，只要当前数字比之前的小，之前的就出栈，保证是单调栈
-
-	// 895. Maximum Frequency Stack
-	class FreqStack {
-		// number : frequency
-		public Map<Integer, Integer> map;
-		// frequency : stack of numbers, to return the most recent max frequency number
-		public Map<Integer, Stack<Integer>> group;
-		public int maxFrequency;
-
-		public FreqStack() {
-			this.map = new HashMap<>();
-			this.group = new HashMap<>();
-			maxFrequency = 0;
-		}
-
-		public void push(int val) {
-			int frequency = map.getOrDefault(val, 0) + 1;
-			map.put(val, frequency);
-			// for each push, say frequency is 2, the frequency 1 stack also contains val
-			// this makes pop method below easy
-			group.computeIfAbsent(frequency, z -> new Stack<>()).push(val);
-			if (frequency > maxFrequency) {
-				maxFrequency = frequency;
-			}
-		}
-
-		public int pop() {
-			Stack<Integer> maxStack = group.get(maxFrequency);
-			int ans = maxStack.pop();
-			map.put(ans, maxFrequency - 1);
-			if (maxStack.size() == 0) {
-				maxFrequency--;
-			}
-			return ans;
-		}
-	}
 }

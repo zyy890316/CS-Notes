@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Stack;
 
 public class Design {
 	public static void main(String[] args) {
@@ -221,6 +222,42 @@ public class Design {
 		public Node(int val, Set<String> set) {
 			this.val = val;
 			this.set = set;
+		}
+	}
+
+	// 895. Maximum Frequency Stack
+	class FreqStack {
+		// number : frequency
+		public Map<Integer, Integer> map;
+		// frequency : stack of numbers, to return the most recent max frequency number
+		public Map<Integer, Stack<Integer>> group;
+		public int maxFrequency;
+
+		public FreqStack() {
+			this.map = new HashMap<>();
+			this.group = new HashMap<>();
+			maxFrequency = 0;
+		}
+
+		public void push(int val) {
+			int frequency = map.getOrDefault(val, 0) + 1;
+			map.put(val, frequency);
+			// for each push, say frequency is 2, the frequency 1 stack also contains val
+			// this makes pop method below easy
+			group.computeIfAbsent(frequency, z -> new Stack<>()).push(val);
+			if (frequency > maxFrequency) {
+				maxFrequency = frequency;
+			}
+		}
+
+		public int pop() {
+			Stack<Integer> maxStack = group.get(maxFrequency);
+			int ans = maxStack.pop();
+			map.put(ans, maxFrequency - 1);
+			if (maxStack.size() == 0) {
+				maxFrequency--;
+			}
+			return ans;
 		}
 	}
 }

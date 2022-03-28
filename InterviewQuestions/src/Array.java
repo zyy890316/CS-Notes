@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.util.Pair;
+
 public class Array {
 	// 560. Subarray Sum Equals K
 	// Given an array of integers nums and an integer k, return the total number of
@@ -245,5 +247,99 @@ public class Array {
 		array[a] = array[b];
 		array[b] = tmp;
 		return Integer.valueOf(String.valueOf(array));
+	}
+
+	// 360. Sort Transformed Array
+	// ax^2+bx+c为抛物线，a>0，开口向上，a<0开口向下
+	public int[] sortTransformedArray(int[] nums, int a, int b, int c) {
+		int[] res = new int[nums.length];
+		int start = 0;
+		int end = nums.length - 1;
+		// 开口向上的抛物线，两个端点必有最大值
+		// 开口向下的抛物线，两个端点必有最小值
+		int i = a > 0 ? end : start;
+		while (start <= end) {
+			int startValue = a * nums[start] * nums[start] + b * nums[start] + c;
+			int endValue = a * nums[end] * nums[end] + b * nums[end] + c;
+			if (a > 0) {
+				if (startValue >= endValue) {
+					res[i] = startValue;
+					start++;
+				} else {
+					res[i] = endValue;
+					end--;
+				}
+				i--;
+			} else {
+				if (startValue <= endValue) {
+					res[i] = startValue;
+					start++;
+				} else {
+					res[i] = endValue;
+					end--;
+				}
+				i++;
+			}
+		}
+		return res;
+	}
+
+	// 149. Max Points on a Line
+	// 暴力求每组斜率
+	public int maxPoints(int[][] points) {
+		int maxCount = 1;
+		for (int i = 0; i < points.length; i++) {
+			Map<Pair<Integer, Integer>, Integer> lineCounts = new HashMap<Pair<Integer, Integer>, Integer>();
+			int[] cur = points[i];
+			int dups = 0;
+			// find all duplicate points first
+			for (int j = i + 1; j < points.length; j++) {
+				int[] pointB = points[j];
+				if (pointB[0] == cur[0] && pointB[1] == cur[1]) {
+					dups++;
+				}
+			}
+			for (int j = i + 1; j < points.length; j++) {
+				int[] pointB = points[j];
+				if (pointB[0] == cur[0] && pointB[1] == cur[1]) {
+					continue;
+				} else {
+					Pair<Integer, Integer> slope = getSlope(cur, pointB);
+					lineCounts.put(slope, lineCounts.getOrDefault(slope, 1) + 1);
+					maxCount = Math.max(maxCount, lineCounts.get(slope) + dups);
+				}
+			}
+		}
+		return maxCount;
+	}
+
+	private int gcd(int a, int b) {
+		if (b == 0) {
+			return a;
+		}
+		return gcd(b, a % b);
+	}
+
+	// slopes
+	private Pair<Integer, Integer> getSlope(int[] pointA, int[] pointB) {
+		int deltaX = pointA[0] - pointB[0];
+		int deltaY = pointA[1] - pointB[1];
+		// keep deltaX positive so co-prime is comparable when deltaX & deltaY are not
+		// all positive or negative
+		if (deltaX < 0) {
+			deltaX = -deltaX;
+			deltaY = -deltaY;
+		}
+
+		if (deltaX == 0) {
+			// upright line
+			return new Pair<Integer, Integer>(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		} else if (deltaY == 0) {
+			// horizontal line
+			return new Pair<Integer, Integer>(0, 0);
+		} else {
+			int gcd = gcd(deltaX, deltaY);
+			return new Pair<Integer, Integer>(deltaX / gcd, deltaY / gcd);
+		}
 	}
 }
