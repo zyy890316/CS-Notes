@@ -856,7 +856,36 @@ public class DP {
 	// 464 can I win
 	// https://www.bilibili.com/video/BV1KW411o7m2
 	// 状态压缩dp，N为可选数字范围，用一个N位二进制数字表示某个数字是否被选过
-	// 这样f(i)代表i状态下，是否可以赢
+	private int dfs(int dp[][], int current, int max, int desire, int mask, int player) {
+		if (dp[player][mask] != -1) {
+			// already calculated state
+			return dp[player][mask];
+		}
+
+		for (int i = 0; i < max; i++) {
+			int mk = (1 << i); // Set ith bit to 1
+			if ((mask & mk) == 0) { // ith number is not selected
+				// current value + i + 1 >= desired, then "player" wins
+				if (current + i + 1 >= desire
+						|| (dfs(dp, current + i + 1, max, desire, (mask | mk), 1 - player) != 1)) {
+					return dp[player][mask] = 1;
+				}
+			}
+		}
+		return dp[player][mask] = 0; // "player" does not win
+	}
+
+	public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+		// desired total can't be more that the possible max sum i.e. n*(n+1)/2
+		if ((maxChoosableInteger * (maxChoosableInteger + 1) / 2) < desiredTotal) {
+			return false;
+		}
+		int[][] dp = new int[2][1 << maxChoosableInteger];
+		Arrays.fill(dp[0], -1);
+		Arrays.fill(dp[1], -1);
+		return dfs(dp, 0, maxChoosableInteger, desiredTotal, 0, 0) == 1;
+
+	}
 
 	// 486 predict winner
 	// 区间dp，f[i][j]表示在区间i到j范围内，第一个player能得到的最高分

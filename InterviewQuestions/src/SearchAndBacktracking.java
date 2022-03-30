@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1138,48 +1139,54 @@ public class SearchAndBacktracking {
 	}
 
 	// 15. 3Sum 从nums中取三数，要求其和为0
-	// 从小到大取数，取两数之后，可以按照哈希表直接找剩下的数里有没有需要的
 	public List<List<Integer>> threeSum(int[] nums) {
+		return kSum(nums, 0, 3);
+	}
+
+	// 18. 4Sum
+	// make a generic k Sum issue, DFS until there are only 1 position left
+	// then use hashMap to see if can find or not
+	public List<List<Integer>> fourSum(int[] nums, int target) {
+		return kSum(nums, target, 4);
+	}
+
+	// 从小到大取数，取到还剩一个数的时候，可以按照哈希表直接找剩下的数里有没有需要的
+	public List<List<Integer>> kSum(int[] nums, int target, int k) {
 		Arrays.sort(nums);
 		Map<Integer, Integer> counts = new HashMap<>();
 		for (int num : nums) {
 			int count = counts.getOrDefault(num, 0);
 			counts.put(num, count + 1);
 		}
-		boolean[] used = new boolean[nums.length];
 		List<List<Integer>> ans = new ArrayList<>();
 		Stack<Integer> stack = new Stack<>();
-		threeSumDfs(nums, 0, 0, 0, stack, ans, used, counts);
+		kSumDfs(nums, 0, 0, 0, stack, ans, counts, k, target);
 		return ans;
 	}
 
-	public void threeSumDfs(int[] nums, int depth, int index, int sum, Stack<Integer> stack, List<List<Integer>> ans,
-			boolean[] used, Map<Integer, Integer> counts) {
-		// -sum 即为需要找的数，stack.peek()是之前取的最大的数，因为要去掉重复的，所以不能找比它小的了
-		if (depth == 2 && counts.get(-sum) != null && counts.get(-sum) > 0 && -sum >= stack.peek()) {
-			stack.add(-sum);
-			ans.add(new ArrayList<Integer>(stack));
+	public void kSumDfs(int[] nums, int depth, int index, int sum, Stack<Integer> stack, List<List<Integer>> ans,
+			Map<Integer, Integer> counts, int k, int target) {
+		if (depth == k - 1 && counts.containsKey(target - sum) && counts.get(target - sum) > 0
+				&& target - sum >= stack.peek()) {
+			stack.add(target - sum);
+			ans.add(new ArrayList<>(stack));
 			stack.pop();
 			return;
 		}
-		if (depth == 2) {
+		if (depth == k - 1) {
 			return;
 		}
 
 		for (int i = index; i < nums.length; i++) {
-			if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+			// do not take duplicate element in the same depth
+			if (i > 0 && nums[i] == nums[i - 1] && i != index) {
 				continue;
 			}
-			if (used[i])
-				continue;
-
-			used[i] = true;
 			counts.put(nums[i], counts.get(nums[i]) - 1);
 			stack.add(nums[i]);
-			threeSumDfs(nums, depth + 1, i, sum + nums[i], stack, ans, used, counts);
+			kSumDfs(nums, depth + 1, i + 1, sum + nums[i], stack, ans, counts, k, target);
 			stack.pop();
 			counts.put(nums[i], counts.get(nums[i]) + 1);
-			used[i] = false;
 		}
 		return;
 	}
@@ -1290,5 +1297,100 @@ public class SearchAndBacktracking {
 
 		// did not reach the target
 		return -1;
+	}
+
+	// 698. Partition to K Equal Sum Subsets
+	// DFS with memorization
+	private boolean backtrack(int[] arr, int index, int count, int currSum, int k, int targetSum, char[] taken,
+			Map<String, Boolean> memo) {
+		int n = arr.length;
+
+		String takenToken = String.valueOf(taken);
+		if (memo.containsKey(takenToken)) {
+			return memo.get(takenToken);
+		}
+
+		// We made k - 1 subsets with target sum and last subset will also have target
+		// sum.
+		if (count == k - 1) {
+			memo.put(takenToken, true);
+			return true;
+		}
+
+		if (currSum > targetSum) {
+			memo.put(takenToken, false);
+			return false;
+		}
+
+		if (currSum == targetSum) {
+			boolean ans = backtrack(arr, 0, count + 1, 0, k, targetSum, taken, memo);
+			memo.put(takenToken, ans);
+			return ans;
+		}
+
+		for (int j = index; j < n; ++j) {
+			if (taken[j] == '0') {
+				taken[j] = '1';
+				if (backtrack(arr, j + 1, count, currSum + arr[j], k, targetSum, taken, memo)) {
+					memo.put(takenToken, true);
+					return true;
+				}
+				taken[j] = '0';
+			}
+		}
+		memo.put(takenToken, false);
+		return false;
+	}
+
+	public boolean canPartitionKSubsets(int[] arr, int k) {
+		int totalArraySum = 0;
+		int n = arr.length;
+
+		for (int i = 0; i < n; ++i) {
+			totalArraySum += arr[i];
+		}
+		if (totalArraySum % k != 0) {
+			return false;
+		}
+
+		int targetSum = totalArraySum / k;
+		char[] taken = new char[n];
+		for (int i = 0; i < n; ++i) {
+			taken[i] = '0';
+		}
+		Map<String, Boolean> memo = new HashMap<>();
+		// If we had sorted the array in ascending order, then there would be more
+		// recursion branches (recursive calls)
+		int[] arrDesc = Arrays.stream(arr).boxed().sorted(Collections.reverseOrder()).mapToInt(Integer::intValue)
+				.toArray();
+
+		return backtrack(arrDesc, 0, 0, 0, k, targetSum, taken, memo);
+	}
+
+	// 254. Factor Combinations
+	public List<List<Integer>> getFactors(int n) {
+		List<List<Integer>> res = new ArrayList<>();
+		Stack<Integer> factors = new Stack<>();
+
+		recursion(n, 2, factors, res);
+		return res;
+	}
+
+	private void recursion(int remain, int startFactor, Stack<Integer> factors, List<List<Integer>> res) {
+		if (factors.size() > 0) {
+			factors.add(remain);
+			res.add(new ArrayList<>(factors));
+			factors.pop();
+		}
+
+		int factor = startFactor;
+		while (factor * factor <= remain) {
+			if (remain % factor == 0) {
+				factors.add(factor);
+				recursion(remain / factor, factor, factors, res);
+				factors.pop();
+			}
+			factor++;
+		}
 	}
 }

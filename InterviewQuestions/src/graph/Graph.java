@@ -728,50 +728,110 @@ public class Graph {
 		}
 		return false;
 	}
-	
+
 	// 65. Valid Number
 	// 用有限状态机 Deterministic Finite Automaton (DFA)来定义状态和转换
 	// https://leetcode.com/problems/valid-number/solution/
 	// This is the DFA we have designed above
-    private static final List<Map<String, Integer>> dfa = List.of(
-        Map.of("digit", 1, "sign", 2, "dot", 3),
-        Map.of("digit", 1, "dot", 4, "exponent", 5), 
-        Map.of("digit", 1, "dot", 3), 
-        Map.of("digit", 4), 
-        Map.of("digit", 4, "exponent", 5),
-        Map.of("sign", 6, "digit", 7),
-        Map.of("digit", 7),
-        Map.of("digit", 7)
-    );
+	private static final List<Map<String, Integer>> dfa = List.of(Map.of("digit", 1, "sign", 2, "dot", 3),
+			Map.of("digit", 1, "dot", 4, "exponent", 5), Map.of("digit", 1, "dot", 3), Map.of("digit", 4),
+			Map.of("digit", 4, "exponent", 5), Map.of("sign", 6, "digit", 7), Map.of("digit", 7), Map.of("digit", 7));
 
-    // These are all of the valid finishing states for our DFA.
-    private static final Set<Integer> validFinalStates = Set.of(1, 4, 7);
+	// These are all of the valid finishing states for our DFA.
+	private static final Set<Integer> validFinalStates = Set.of(1, 4, 7);
 
-    public boolean isNumber(String s) {
-        int currentState = 0;
-        String group = "";
-        
-        for (int i = 0; i < s.length(); i++) {
-            char curr = s.charAt(i);
-            if (Character.isDigit(curr)) {
-                group = "digit";
-            } else if (curr == '+' || curr == '-') {
-                group = "sign";
-            } else if (curr == 'e' || curr == 'E') {
-                group = "exponent";
-            } else if (curr == '.') {
-                group = "dot";
-            } else {
-                return false;
-            }
-            
-            if (!dfa.get(currentState).containsKey(group)) {
-                return false;
-            }
-            
-            currentState = dfa.get(currentState).get(group);
-        }
-        
-        return validFinalStates.contains(currentState);
-    }
+	public boolean isNumber(String s) {
+		int currentState = 0;
+		String group = "";
+
+		for (int i = 0; i < s.length(); i++) {
+			char curr = s.charAt(i);
+			if (Character.isDigit(curr)) {
+				group = "digit";
+			} else if (curr == '+' || curr == '-') {
+				group = "sign";
+			} else if (curr == 'e' || curr == 'E') {
+				group = "exponent";
+			} else if (curr == '.') {
+				group = "dot";
+			} else {
+				return false;
+			}
+
+			if (!dfa.get(currentState).containsKey(group)) {
+				return false;
+			}
+
+			currentState = dfa.get(currentState).get(group);
+		}
+
+		return validFinalStates.contains(currentState);
+	}
+
+	// 261. Graph Valid Tree
+	// 树需要满足两个条件：
+	// 1. 有n个节点情况下只能有n-1条边
+	// 2. 所有节点都要联通
+	// 满足这两个条件一定没有环，所以不用担心环的问题
+	public boolean validTree(int n, int[][] edges) {
+		if (edges.length != n - 1)
+			return false;
+
+		// Make the adjacency list.
+		List<List<Integer>> adjacencyList = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			adjacencyList.add(new ArrayList<>());
+		}
+		for (int[] edge : edges) {
+			adjacencyList.get(edge[0]).add(edge[1]);
+			adjacencyList.get(edge[1]).add(edge[0]);
+		}
+
+		// bfs
+		Queue<Integer> queue = new LinkedList<>();
+		Set<Integer> seen = new HashSet<>();
+		queue.offer(0);
+		seen.add(0);
+		while (!queue.isEmpty()) {
+			int node = queue.poll();
+			for (int neighbour : adjacencyList.get(node)) {
+				if (seen.contains(neighbour))
+					continue;
+				seen.add(neighbour);
+				queue.offer(neighbour);
+			}
+		}
+		return seen.size() == n;
+	}
+
+	// 277. Find the Celebrity
+	public int findCelebrity(int n) {
+		// loop through i to n, will find a single celebrityCandidate
+		int celebrityCandidate = 0;
+		for (int i = 1; i < n; i++) {
+			if (knows(celebrityCandidate, i)) {
+				// celebrity does not know anyone, so i is next candidate
+				celebrityCandidate = i;
+			} else {
+				// do nothing, when candidate does not know i, i can not be candidate
+				// so candidate remains the same
+			}
+		}
+		return isCelebrity(celebrityCandidate, n) ? celebrityCandidate : -1;
+	}
+
+	private boolean isCelebrity(int i, int n) {
+		for (int j = 0; j < n; j++) {
+			if (i == j)
+				continue; // Don't ask if they know themselves.
+			if (knows(i, j) || !knows(j, i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean knows(int a, int b) {
+		return false;
+	}
 }

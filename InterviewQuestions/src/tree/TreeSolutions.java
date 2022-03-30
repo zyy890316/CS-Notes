@@ -1,5 +1,6 @@
 package tree;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.TreeMap;
 
+import javafx.util.Pair;
 import linkedlist.ListNode;
 
 // range query 用segment tree：
@@ -950,5 +953,66 @@ public class TreeSolutions {
 		root.left = null;
 		root.right = null;
 		return newRoot;
+	}
+
+	// 366. Find Leaves of Binary Tree
+	public List<List<Integer>> findLeaves(TreeNode root) {
+		List<List<Integer>> ans = new ArrayList<>();
+		if (root == null)
+			return ans;
+		TreeMap<Integer, List<Integer>> map = new TreeMap<>();
+		findLeaves(root, map);
+		for (int i : map.keySet()) {
+			ans.add(map.get(i));
+		}
+		return ans;
+	}
+
+	public int findLeaves(TreeNode root, TreeMap<Integer, List<Integer>> map) {
+		if (root == null)
+			return 0;
+		int depth = Math.max(findLeaves(root.left, map), findLeaves(root.right, map)) + 1;
+		List<Integer> array = map.getOrDefault(depth, new ArrayList<>());
+		array.add(root.val);
+		map.put(depth, array);
+		return depth;
+	}
+
+	// 314. Binary Tree Vertical Order Traversal
+	public List<List<Integer>> verticalOrder(TreeNode root) {
+		List<List<Integer>> output = new ArrayList<>();
+		if (root == null) {
+			return output;
+		}
+
+		Map<Integer, ArrayList<Integer>> columnTable = new HashMap<>();
+		// Pair of node and its column offset
+		Queue<Pair<TreeNode, Integer>> queue = new ArrayDeque<>();
+		int column = 0;
+		queue.offer(new Pair<>(root, column));
+
+		int minColumn = 0, maxColumn = 0;
+
+		while (!queue.isEmpty()) {
+			Pair<TreeNode, Integer> p = queue.poll();
+			root = p.getKey();
+			column = p.getValue();
+
+			if (root != null) {
+				columnTable.computeIfAbsent(column, z -> new ArrayList<Integer>()).add(root.val);
+
+				minColumn = Math.min(minColumn, column);
+				maxColumn = Math.max(maxColumn, column);
+
+				queue.offer(new Pair<>(root.left, column - 1));
+				queue.offer(new Pair<>(root.right, column + 1));
+			}
+		}
+
+		for (int i = minColumn; i < maxColumn + 1; ++i) {
+			output.add(columnTable.get(i));
+		}
+
+		return output;
 	}
 }

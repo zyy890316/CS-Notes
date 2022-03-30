@@ -5,11 +5,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
+
+import javafx.util.Pair;
 
 public class StackAndQueue {
 	public static void main(String args[]) {
@@ -557,4 +561,72 @@ public class StackAndQueue {
 	// 402. Remove K Digits
 	// 去掉k位，使得数字最小
 	// greedy,用单调栈，从左边最高位开始扫描，只要当前数字比之前的小，之前的就出栈，保证是单调栈
+
+	// 373. Find K Pairs with Smallest Sums
+	// https://www.youtube.com/watch?v=K2WdEIyXpv0
+	public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+		List<List<Integer>> ans = new ArrayList<>();
+		int m = nums1.length;
+		int n = nums2.length;
+		if (m == 0 || n == 0 || k == 0)
+			return ans;
+		Set<Pair<Integer, Integer>> visited = new HashSet<>();
+		PriorityQueue<Pair<Integer, Integer>> pq = new PriorityQueue<>(
+				(p1, p2) -> nums1[p1.getKey()] + nums2[p1.getValue()] - nums1[p2.getKey()] - nums2[p2.getValue()]);
+		// arrays are sorted, so nums1[0], nums[2] are smallest, pair 存index
+		pq.add(new Pair<Integer, Integer>(0, 0));
+		visited.add(new Pair<Integer, Integer>(0, 0));
+		while (!pq.isEmpty() && ans.size() < k) {
+			Pair<Integer, Integer> pair = pq.poll();
+			int a = pair.getKey();
+			int b = pair.getValue();
+			ans.add(Arrays.asList(nums1[a], nums2[b]));
+			Pair<Integer, Integer> newPair = new Pair<Integer, Integer>(a + 1, b);
+			if (a < m - 1 && !visited.contains(newPair)) {
+				pq.add(newPair);
+				visited.add(newPair);
+			}
+			newPair = new Pair<Integer, Integer>(a, b + 1);
+			if (b < n - 1 && !visited.contains(newPair)) {
+				pq.add(newPair);
+				visited.add(newPair);
+			}
+		}
+		return ans;
+	}
+
+	// 678. Valid Parenthesis String
+	public boolean checkValidString(String s) {
+		Stack<Integer> open = new Stack<>();
+		Stack<Integer> star = new Stack<>();
+		char[] sArray = s.toCharArray();
+		for (int i = 0; i < sArray.length; i++) {
+			char c = sArray[i];
+			if (c == '(') {
+				open.push(i);
+			} else if (c == '*') {
+				star.push(i);
+			} else if (c == ')') {
+				if (!open.isEmpty()) {
+					open.pop();
+				} else if (!star.isEmpty()) {
+					star.pop();
+				} else {
+					return false;
+				}
+			}
+		}
+		while (!open.isEmpty()) {
+			if (star.isEmpty()) {
+				return false;
+			} else {
+				if (open.peek() < star.peek()) {
+					open.pop();
+					star.pop();
+				} else
+					return false;
+			}
+		}
+		return true;
+	}
 }
