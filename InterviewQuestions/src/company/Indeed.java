@@ -29,6 +29,7 @@ import java.util.concurrent.Executors;
 // 4. job/resume search
 
 // https://github.com/interviewdiscussion/files/tree/master/Indeed%20Onsite%E8%AE%B0%E5%BD%95
+// https://yaopiupiupiu.gitbooks.io/i2017/content/root-to-leaf-min-cost.html
 public class Indeed {
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException, ExecutionException {
 		String rawTitle = "senior software engineer";

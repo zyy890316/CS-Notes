@@ -18,6 +18,9 @@ public class Design {
 		allOne.inc("c");
 		allOne.getMinKey();
 		allOne.getMaxKey();
+		RandomizedCollection c = new RandomizedCollection();
+		c.insert(0);
+		c.remove(0);
 	}
 
 	// 146. LRU Cache
@@ -53,6 +56,7 @@ public class Design {
 	// 用LinkedHashMap相当于LRU，相同次数的最早用的先remove
 
 	// 380. Insert Delete GetRandom O(1)
+	// HashMap + ArrayList
 	class RandomizedSet {
 		final Map<Integer, Integer> map;
 		final List<Integer> list;
@@ -91,6 +95,64 @@ public class Design {
 			return list.get(rand);
 		}
 	}
+
+	// 381. Insert Delete GetRandom O(1) - Duplicates allowed
+	// 和380区别在于map里面要存某val所有的index
+	static class RandomizedCollection {
+		final HashMap<Integer, Set<Integer>> map;
+		final List<Integer> list;
+		final Random random = new Random();
+
+		public RandomizedCollection() {
+			map = new HashMap<>();
+			list = new ArrayList<>();
+		}
+
+		// Inserts a value to the collection. Returns true if the collection did not
+		// already contain the specified element.
+		public boolean insert(int val) {
+			map.computeIfAbsent(val, z -> new HashSet<Integer>()).add(list.size());
+			list.add(val);
+			return map.get(val).size() == 1;
+		}
+
+		public boolean remove(int val) {
+			if (!map.containsKey(val)) {
+				return false;
+			}
+			// remove val from map
+			Set<Integer> indexSet = map.get(val);
+			int index = indexSet.iterator().next();
+			indexSet.remove(index);
+			if (indexSet.size() == 0) {
+				map.remove(val);
+			}
+			int lastElement = list.get(list.size() - 1);
+			// add lastElement to right set, also remove the last occurance
+			Set<Integer> lastIndexSet = map.computeIfAbsent(lastElement, z -> new HashSet<Integer>());
+			lastIndexSet.add(index);
+			lastIndexSet.remove(list.size() - 1);
+			if (lastIndexSet.size() == 0) {
+				map.remove(lastElement);
+			}
+			// adjust the list
+			list.set(index, lastElement);
+			list.remove(list.size() - 1);
+			return true;
+		}
+
+		public int getRandom() {
+			int rand = random.nextInt(list.size());
+			return list.get(rand);
+		}
+	}
+
+	/**
+	 * Your RandomizedCollection object will be instantiated and called as such:
+	 * RandomizedCollection obj = new RandomizedCollection(); boolean param_1 =
+	 * obj.insert(val); boolean param_2 = obj.remove(val); int param_3 =
+	 * obj.getRandom();
+	 */
 
 	// 432. All O`one Data Structure
 	// Map 映射到双链表,链表里每个node值为frequency，set是出现这些次数的所有string
