@@ -7,8 +7,12 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -161,4 +165,59 @@ public class Concurrency {
 
 	// Design a delayed Scheduler
 	// https://silhding.github.io/2021/03/13/How-to-design-a-delayed-scheduler-in-Java/
+	class DelayedTask extends FutureTask<Void> implements Delayed {
+
+		private final long startTime;
+		@SuppressWarnings("unused")
+		private final Runnable task;
+
+		public DelayedTask(Runnable task, long delayTime) {
+			super(task, null); // null is the return value for the runnable tasks
+			this.task = task;
+			this.startTime = System.currentTimeMillis() + delayTime;
+		}
+
+		@Override
+		public long getDelay(TimeUnit unit) {
+			long diff = this.startTime - System.currentTimeMillis();
+			return unit.convert(diff, TimeUnit.MILLISECONDS);
+		}
+
+		@Override
+		public int compareTo(Delayed o) {
+			return Long.compare(this.getDelay(TimeUnit.MILLISECONDS),
+					((DelayedTask) o).getDelay(TimeUnit.MILLISECONDS));
+		}
+	}
+
+	public class DelayedScheduler {
+		private final DelayQueue<DelayedTask> queue;
+		private final ExecutorService executor;
+
+		public DelayedScheduler() {
+			this.queue = new DelayQueue<>();
+			this.executor = Executors.newFixedThreadPool(10);
+			this.startExecute();
+		}
+
+		public Future<?> schedule(Runnable task, long delayTime) {
+			DelayedTask newTask = new DelayedTask(task, delayTime);
+			this.queue.offer(newTask);
+			return newTask;
+		}
+
+		private void startExecute() {
+			Runnable execute = () -> {
+				while (true) {
+					try {
+						DelayedTask task = this.queue.take();
+						executor.submit(task);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			new Thread(execute, "DelayedScheduler").start();
+		}
+	}
 }
