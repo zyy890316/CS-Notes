@@ -1,6 +1,8 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1378,5 +1380,32 @@ public class DP {
 			}
 		}
 		return dp[0][n - 1];
+	}
+
+	// 1696. Jump Game VI
+	public int maxResult(int[] nums, int k) {
+		int n = nums.length;
+		int[] dp = new int[n]; // max score when get at position i
+		dp[0] = nums[0];
+		int score = nums[0];
+		Deque<int[]> deque = new ArrayDeque<>(); // store i-k 到 i-1 的单调递减队列，头为最大值
+		deque.offerLast(new int[] { 0, score });
+		for (int i = 1; i < n; i++) {
+			// naive做法，这部分就是sliding window max，可以优化，否则会超时
+			// int max = Integer.MIN_VALUE;
+			// for(int j = Math.max(0, i - k); j <= i - 1; j++){
+			// max = Math.max(max, dp[j]);
+			// }
+			while (!deque.isEmpty() && deque.peekFirst()[0] < i - k) {
+				deque.removeFirst();
+			}
+			score = deque.peek()[1] + nums[i];
+			while (!deque.isEmpty() && deque.peekLast()[1] <= score) {
+				deque.removeLast();
+			}
+			deque.offerLast(new int[] { i, score });
+			dp[i] = score;
+		}
+		return dp[n - 1];
 	}
 }

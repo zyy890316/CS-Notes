@@ -536,39 +536,20 @@ public class TreeSolutions {
 		if (root == null)
 			return null;
 
-		Stack<TreeNode> stack = new Stack<TreeNode>();
-		stack.add(root);
-		while (!stack.isEmpty()) {
-			TreeNode cNode = stack.pop();
-			if (cNode != null) {
-				// 左右子树任意一个找到一个就有可能
-				boolean foundInLeft = foundInTree(cNode.left, p, q);
-				boolean foundInRight = foundInTree(cNode.right, p, q);
-				if (foundInLeft || foundInRight) {
-					// 左右子树有找到的，并且当前节点也是其一
-					if (root == p || root == q) {
-						return cNode;
-					}
-					// 左右子树分别找到
-					if (foundInLeft && foundInRight) {
-						return cNode;
-					}
-				}
-				stack.add(cNode.right);
-				stack.add(cNode.left);
-			}
-		}
-		return null;
-	}
-
-	private boolean foundInTree(TreeNode root, TreeNode p, TreeNode q) {
-		if (root == null)
-			return false;
-
+		// base case, if found one, return the founded node, let upper layer find
+		// common ancestor
 		if (root == p || root == q)
-			return true;
+			return root;
 
-		return foundInTree(root.left, p, q) || foundInTree(root.right, p, q);
+		TreeNode l = lowestCommonAncestor(root.left, p, q);
+		TreeNode r = lowestCommonAncestor(root.right, p, q);
+
+		if (l != null && r != null)
+			return root;
+		if (l == null)
+			return r;
+
+		return l;
 	}
 
 	// 从有序数组中构造二叉查找树
