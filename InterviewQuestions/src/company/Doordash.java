@@ -566,4 +566,19 @@ public class Doordash {
 			return group.size();
 		}
 	}
+
+	// 1347. Minimum Number of Steps to Make Two Strings Anagram
+	// s and t same length, just need to find how many chars are different in total
+	public int minSteps(String s, String t) {
+		int[] freqCount = new int[26];
+		for (int i = 0; i < s.length(); i++) {
+			freqCount[s.charAt(i) - 'a']++;
+			freqCount[t.charAt(i) - 'a']--;
+		}
+		int count = 0;
+		for (int fre : freqCount) {
+			count += Math.abs(fre);
+		}
+		return count / 2;
+	}
 }

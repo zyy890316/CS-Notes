@@ -638,7 +638,7 @@ public class DP {
 		return dp[n];
 	}
 
-	// DFS 法
+	// DFS + memorization
 	public static boolean wordBreakDFS(String s, List<String> wordDict) {
 		if (s.length() == 0) {
 			return true;
@@ -1407,5 +1407,29 @@ public class DP {
 			dp[i] = score;
 		}
 		return dp[n - 1];
+	}
+
+	// 256. Paint House
+	public int minCost(int[][] costs) {
+		int houseCount = costs.length;
+		// only 3 colors, dp[i][j] means min cost of paint until house i, with color j
+		int[][] dp = new int[houseCount][3];
+		for (int i = 0; i < houseCount; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (i == 0) {
+					dp[i][j] = costs[i][j];
+					continue;
+				}
+				if (j == 0)
+					dp[i][j] = Math.min(dp[i - 1][1], dp[i - 1][2]) + costs[i][0];
+				else if (j == 1)
+					dp[i][j] = Math.min(dp[i - 1][0], dp[i - 1][2]) + costs[i][1];
+				else
+					dp[i][j] = Math.min(dp[i - 1][0], dp[i - 1][1]) + costs[i][2];
+			}
+		}
+		int ans = Math.min(dp[houseCount - 1][0], dp[houseCount - 1][1]);
+		ans = Math.min(ans, dp[houseCount - 1][2]);
+		return ans;
 	}
 }

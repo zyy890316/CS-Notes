@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -8,6 +9,7 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 
 public class Design {
 	public static void main(String[] args) {
@@ -475,6 +477,100 @@ public class Design {
 
 		TrieNode(boolean isEnd) {
 			this.isEnd = isEnd;
+		}
+	}
+
+	// 635. Design Log Storage System
+	// parse the date into a single long to make store/ retrieve easier
+	// Use tailMap function of TreeMap for retrieve path, which stores the entries
+	// in the form of a sorted navigable binary tree.
+	public class LogSystem {
+		TreeMap<Long, Integer> map;
+
+		public LogSystem() {
+			map = new TreeMap<>();
+		}
+
+		public void put(int id, String timestamp) {
+			int[] st = Arrays.stream(timestamp.split(":")).mapToInt(Integer::parseInt).toArray();
+			map.put(convert(st), id);
+		}
+
+		// Firstly, we split the given timestamp based on : and store the individual
+		// components obtained into an array. Now, in order to put this log's entry into
+		// the storage, firstly, we convert this timestamp, now available as individual
+		// components in the array into a single number.
+		// To obtain a number which is unique for each
+		// timestamp, the number chosen is such that it represents the timestamp in
+		// terms of seconds. But, doing so for the Year values can lead to very large
+		// numbers, which could lead to a potential overflow. Since, we know that the
+		// Year's value can start from 2000 only, we subtract 1999 from the Year's value
+		public long convert(int[] st) {
+			st[1] = st[1] - (st[1] == 0 ? 0 : 1);
+			st[2] = st[2] - (st[2] == 0 ? 0 : 1);
+			return (st[0] - 1999L) * (31 * 12) * 24 * 60 * 60 + st[1] * 31 * 24 * 60 * 60 + st[2] * 24 * 60 * 60
+					+ st[3] * 60 * 60 + st[4] * 60 + st[5];
+		}
+
+		public List<Integer> retrieve(String s, String e, String gra) {
+			ArrayList<Integer> res = new ArrayList<>();
+			long start = granularity(s, gra, false);
+			long end = granularity(e, gra, true);
+			for (long key : map.tailMap(start).keySet()) {
+				if (key >= start && key < end)
+					res.add(map.get(key));
+			}
+			return res;
+		}
+
+		public long granularity(String s, String gra, boolean end) {
+			HashMap<String, Integer> h = new HashMap<>();
+			h.put("Year", 0);
+			h.put("Month", 1);
+			h.put("Day", 2);
+			h.put("Hour", 3);
+			h.put("Minute", 4);
+			h.put("Second", 5);
+			String[] res = new String[] { "1999", "00", "00", "00", "00", "00" };
+			String[] st = s.split(":");
+			for (int i = 0; i <= h.get(gra); i++) {
+				res[i] = st[i];
+			}
+			int[] t = Arrays.stream(res).mapToInt(Integer::parseInt).toArray();
+			if (end)
+				t[h.get(gra)]++;
+			return convert(t);
+		}
+	}
+
+	// 1348. Tweet Counts Per Frequency
+	// Use TreeMap.subMap()
+	class TweetCounts {
+		private Map<String, TreeMap<Integer, Integer>> tweetMap;
+
+		public TweetCounts() {
+			tweetMap = new HashMap<>();
+		}
+
+		public void recordTweet(String tweetName, int time) {
+			tweetMap.putIfAbsent(tweetName, new TreeMap<>());
+			TreeMap<Integer, Integer> timeFreqMap = tweetMap.get(tweetName);
+			timeFreqMap.put(time, timeFreqMap.getOrDefault(time, 0) + 1);
+		}
+
+		public List<Integer> getTweetCountsPerFrequency(String freq, String tweetName, int startTime, int endTime) {
+			int interval = freq.equals("minute") ? 60 : freq.equals("hour") ? 3600 : 86400;
+			int size = (endTime - startTime) / interval;
+			int[] count = new int[size + 1];
+			TreeMap<Integer, Integer> timeFreqMap = tweetMap.get(tweetName);
+			for (Map.Entry<Integer, Integer> entry : timeFreqMap.subMap(startTime, endTime + 1).entrySet()) {
+				int index = (entry.getKey() - startTime) / interval;
+				count[index] += entry.getValue();
+			}
+			List<Integer> res = new ArrayList<>();
+			for (int num : count)
+				res.add(num);
+			return res;
 		}
 	}
 }
