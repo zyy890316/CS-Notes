@@ -1393,4 +1393,111 @@ public class SearchAndBacktracking {
 			factor++;
 		}
 	}
+
+	// 212. Word Search II
+	// Backtracking with Trie
+	public List<String> findWords(char[][] board, String[] words) {
+		// Step 1). Construct the Trie
+		Trie trie = new Trie();
+		for (String word : words) {
+			trie.insert(word);
+		}
+		Set<String> result = new HashSet<>();
+		// Step 2). Backtracking starting for each cell in the board
+		for (int row = 0; row < board.length; ++row) {
+			for (int col = 0; col < board[row].length; ++col) {
+				if (trie.root.nodes.containsKey(board[row][col])) {
+					backtracking(row, col, trie.root, result, board);
+				}
+			}
+		}
+
+		return new ArrayList<>(result);
+	}
+
+	private void backtracking(int row, int col, TrieNode parent, Set<String> result, char[][] board) {
+		Character letter = board[row][col];
+		TrieNode currNode = parent.nodes.get(letter);
+
+		// check if there is any match
+		if (currNode.isEnd == true) {
+			result.add(currNode.word);
+		}
+
+		// mark the current letter before the EXPLORATION
+		board[row][col] = '#';
+
+		// explore neighbor cells in around-clock directions: up, right, down, left
+		int[] rowOffset = { -1, 0, 1, 0 };
+		int[] colOffset = { 0, 1, 0, -1 };
+		for (int i = 0; i < 4; ++i) {
+			int newRow = row + rowOffset[i];
+			int newCol = col + colOffset[i];
+			if (newRow < 0 || newRow >= board.length || newCol < 0 || newCol >= board[0].length) {
+				continue;
+			}
+			if (currNode.nodes.containsKey(board[newRow][newCol])) {
+				backtracking(newRow, newCol, currNode, result, board);
+			}
+		}
+
+		// End of EXPLORATION, restore the original letter in the board.
+		board[row][col] = letter;
+	}
+
+	class Trie {
+		TrieNode root;
+
+		Trie() {
+			this.root = new TrieNode(false);
+		}
+
+		public void insert(String word) {
+			TrieNode curr = root;
+			for (char c : word.toCharArray()) {
+				if (!curr.nodes.containsKey(c))
+					curr.nodes.put(c, new TrieNode(false));
+				curr = curr.nodes.get(c);
+			}
+			curr.isEnd = true;
+			curr.word = word;
+		}
+
+		public List<String> search(String prefix) {
+			TrieNode curr = root;
+
+			for (char c : prefix.toCharArray()) {
+				if (!curr.nodes.containsKey(c))
+					return new ArrayList<>();
+				curr = curr.nodes.get(c);
+			}
+
+			// We perform a DFS on the TrieNode on which the prefix String's last character
+			// ends
+			// All sentences formed from the DFS are potential results
+			List<String> result = new ArrayList<>();
+			dfs(curr, result, new StringBuilder(prefix.toString()));
+			return result;
+		}
+
+		void dfs(TrieNode curr, List<String> strs, StringBuilder prefix) {
+			if (curr.isEnd)
+				strs.add(new String(prefix.toString()));
+
+			for (char c : curr.nodes.keySet()) {
+				dfs(curr.nodes.get(c), strs, prefix.append(c));
+				prefix.deleteCharAt(prefix.length() - 1);
+			}
+		}
+	}
+
+	class TrieNode {
+		Map<Character, TrieNode> nodes = new HashMap<>();
+		boolean isEnd;
+		String word;
+
+		TrieNode(boolean isEnd) {
+			this.isEnd = isEnd;
+		}
+	}
 }

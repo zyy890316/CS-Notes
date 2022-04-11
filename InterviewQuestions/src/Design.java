@@ -30,7 +30,7 @@ public class Design {
 	// 或者用 Hashmap + DoubleLinkedList, Map<Integer, DLinkedNode> cache = new
 	// HashMap<>();
 	@SuppressWarnings("serial")
-	class LRUCache extends LinkedHashMap<Integer, Integer> {
+	class LRUCache<K, V> extends LinkedHashMap<K, V> {
 		private int capacity;
 
 		public LRUCache(int capacity) {
@@ -38,16 +38,8 @@ public class Design {
 			this.capacity = capacity;
 		}
 
-		public int get(int key) {
-			return super.getOrDefault(key, -1);
-		}
-
-		public void put(int key, int value) {
-			super.put(key, value);
-		}
-
 		@Override
-		protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+		protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 			return size() > capacity;
 		}
 	}
@@ -149,13 +141,6 @@ public class Design {
 			return list.get(rand);
 		}
 	}
-
-	/**
-	 * Your RandomizedCollection object will be instantiated and called as such:
-	 * RandomizedCollection obj = new RandomizedCollection(); boolean param_1 =
-	 * obj.insert(val); boolean param_2 = obj.remove(val); int param_3 =
-	 * obj.getRandom();
-	 */
 
 	// 432. All O`one Data Structure
 	// Map 映射到双链表,链表里每个node值为frequency，set是出现这些次数的所有string
