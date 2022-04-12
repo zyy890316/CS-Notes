@@ -11,6 +11,11 @@ public class BinarySearch {
 	// [l, r]划分成[l, mid]和[mid + 1, r], mid = l + r >> 1
 	// [l, r]划分成[l, mid - 1]和[mid, r]，mid = l + r + 1 >> 1
 
+	// 如果l r可以为负值，则需另外模板：
+	// while (l <= r)
+	// mid = (l + r) / 2
+	// l r 分别取 mid + 1 和 mid - 1
+
 	public static void main(String[] args) {
 		kthSmallestProduct(new int[] { -4, -2, 0, 3 }, new int[] { 2, 4 }, 6);
 	}

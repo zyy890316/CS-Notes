@@ -133,7 +133,7 @@ public class Sort {
 				i++;
 			}
 			while (nums[j] > pivot) {
-				j++;
+				j--;
 			}
 			if (i < j) {
 				swap(nums, i, j);

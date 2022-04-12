@@ -317,8 +317,8 @@ public class Design {
 	public String intToString(String s) {
 		int x = s.length();
 		char[] bytes = new char[4];
-		for (int i = 3; i > -1; --i) {
-			bytes[3 - i] = (char) (x >> (i * 8) & 0xff);
+		for (int i = 0; i <= 3; i++) {
+			bytes[i] = (char) (x >> ((3 - i) * 8) & 0xff);
 		}
 		return new String(bytes);
 	}
@@ -531,6 +531,7 @@ public class Design {
 	// 1348. Tweet Counts Per Frequency
 	// Use TreeMap.subMap()
 	class TweetCounts {
+		// tweetName : <time : frequency>
 		private Map<String, TreeMap<Integer, Integer>> tweetMap;
 
 		public TweetCounts() {

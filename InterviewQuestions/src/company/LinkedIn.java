@@ -10,8 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
+
+import tree.TreeNode;
 
 public class LinkedIn {
 
@@ -185,7 +189,7 @@ public class LinkedIn {
 	// https://github.com/shileiwill/destination/blob/master/Round1/src/company/linkedin/RetainBestCache.java
 	public class RetainBestCache<K, V> {
 		private Map<K, V> cache;
-		private TreeMap<Integer, Set<K>> rank; // TreeMap<rabk, list<key>>
+		private TreeMap<Integer, Set<K>> rank; // TreeMap<rank, list<key>>
 		private DataSource<K, V> dataSource;
 		private int capacity;
 
@@ -250,5 +254,26 @@ public class LinkedIn {
 		int getRank(K key) {
 			return 1;
 		}
+	}
+
+	// 272. Closest Binary Search Tree Value II
+	// inorder traverse, then use pq to find top K
+	public void inorder(TreeNode r, List<Integer> nums, Queue<Integer> heap, int k) {
+		if (r == null)
+			return;
+		inorder(r.left, nums, heap, k);
+		heap.add(r.val);
+		if (heap.size() > k)
+			heap.remove();
+		inorder(r.right, nums, heap, k);
+	}
+
+	public List<Integer> closestKValues(TreeNode root, double target, int k) {
+		List<Integer> nums = new ArrayList<>();
+
+		// init heap 'less close element first'
+		Queue<Integer> heap = new PriorityQueue<>((o1, o2) -> Math.abs(o1 - target) > Math.abs(o2 - target) ? -1 : 1);
+		inorder(root, nums, heap, k);
+		return new ArrayList<>(heap);
 	}
 }

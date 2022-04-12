@@ -993,6 +993,7 @@ public class DP {
 		if (nums.length == 1)
 			return nums[0];
 		int n = nums.length;
+		// dp[i] means using ith number as part of subarry, the max postivie/negative
 		int[][] dp = new int[n + 1][2];
 
 		for (int i = 1; i <= n; i++) {
@@ -1353,35 +1354,6 @@ public class DP {
 		return ans;
 	}
 
-	// 1312. Minimum Insertion Steps to Make a String Palindrome
-	public int minInsertions(String s) {
-		int n = s.length();
-		int[][] dp = new int[n][n];
-		for (int len = 2; len <= n; len++) {
-			for (int i = 0; i < n; i++) {
-				int j = i + len - 1;
-				if (j >= n) {
-					continue;
-				}
-				// base case
-				if (len == 2) {
-					if (s.charAt(i) == s.charAt(j)) {
-						dp[i][j] = 0;
-					} else {
-						dp[i][j] = 1;
-					}
-				}
-
-				if (s.charAt(i) == s.charAt(j)) {
-					dp[i][j] = dp[i + 1][j - 1];
-				} else {
-					dp[i][j] = Math.min(dp[i + 1][j], dp[i][j - 1]) + 1;
-				}
-			}
-		}
-		return dp[0][n - 1];
-	}
-
 	// 1696. Jump Game VI
 	public int maxResult(int[] nums, int k) {
 		int n = nums.length;
@@ -1431,5 +1403,71 @@ public class DP {
 		int ans = Math.min(dp[houseCount - 1][0], dp[houseCount - 1][1]);
 		ans = Math.min(ans, dp[houseCount - 1][2]);
 		return ans;
+	}
+
+	// 516. Longest Palindromic Subsequence
+	public int longestPalindromeSubseq(String s) {
+		int n = s.length();
+		// dp[i][j]: the longest palindromic subsequence's length of substring(i, j),
+		// here i, j represent left, right indexes in the string
+		int[][] dp = new int[n][n];
+
+		for (int len = 1; len <= n; len++) {
+			for (int i = 0; i < n; i++) {
+				int j = i + len - 1;
+				if (j >= n) {
+					continue;
+				}
+				// base case
+				if (len == 1) {
+					dp[i][j] = 1;
+					continue;
+				}
+				if (len == 2) {
+					if (s.charAt(i) == s.charAt(j)) {
+						dp[i][j] = 2;
+					} else {
+						dp[i][j] = 1;
+					}
+					continue;
+				}
+				// general case
+				if (s.charAt(i) == s.charAt(j)) {
+					dp[i][j] = dp[i + 1][j - 1] + 2;
+				} else {
+					dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+				}
+			}
+		}
+		return dp[0][n - 1];
+	}
+
+	// 1312. Minimum Insertion Steps to Make a String Palindrome
+	public int minInsertions(String s) {
+		int n = s.length();
+		int[][] dp = new int[n][n];
+		for (int len = 2; len <= n; len++) {
+			for (int i = 0; i < n; i++) {
+				int j = i + len - 1;
+				if (j >= n) {
+					continue;
+				}
+				// base case
+				if (len == 2) {
+					if (s.charAt(i) == s.charAt(j)) {
+						dp[i][j] = 0;
+					} else {
+						dp[i][j] = 1;
+					}
+				}
+
+				if (s.charAt(i) == s.charAt(j)) {
+					dp[i][j] = dp[i + 1][j - 1];
+				} else {
+					dp[i][j] = Math.min(dp[i + 1][j], dp[i][j - 1]) + 1;
+				}
+			}
+		}
+		return dp[0][n - 1];
 	}
 }

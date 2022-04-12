@@ -411,4 +411,26 @@ public class MathMatics {
 			grid[i][j] = 1 - grid[i][j];
 		}
 	}
+
+	// 1017. Convert to Base -2
+	// https://leetcode.com/problems/convert-to-base-2/discuss/265507/JavaC%2B%2BPython-2-lines-Exactly-Same-as-Base-2
+	// base -2和2几乎一样只有
+	public String base2(int N) {
+		StringBuilder res = new StringBuilder();
+		while (N != 0) {
+			res.append(N % 2);
+			N = N >> 1;
+		}
+		return res.length() > 0 ? res.reverse().toString() : "0";
+	}
+
+	public String baseNeg2(int N) {
+		StringBuilder res = new StringBuilder();
+		while (N != 0) {
+			res.append(Math.abs(N % 2));
+			// in base2 we are dividing 2, here we are dividing -2
+			N = -(N >> 1);
+		}
+		return res.length() > 0 ? res.reverse().toString() : "0";
+	}
 }
