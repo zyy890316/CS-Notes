@@ -18,6 +18,7 @@ import java.util.Set;
 // 5. 给两个stream，一个是tweet的stream一个是tweet_view 这个action的stream，格式是(tweet_id, viewer_id, timestamp)，想要实现一个API给企‍‍‌‌‌‍‌‌‌‍‌‌‍‌‌‌‌‌‌‍业用户，显示实时的某广告tweet的views数量并做成折线图之类的output
 // 6. distrubuted message queue
 // 7. 常见的在线游戏
+// 8. rate limiter
 public class Twitter {
 	public static void main(String[] args) {
 		maxEvents(new int[][] { { 1, 2 }, { 1, 2 }, { 3, 3 }, { 1, 5 }, { 1, 5 } });
@@ -27,8 +28,7 @@ public class Twitter {
 	public int[] findingUsersActiveMinutes(int[][] logs, int k) {
 		HashMap<Integer, Set<Integer>> map = new HashMap<>();
 		for (int[] log : logs) {
-			map.putIfAbsent(log[0], new HashSet<>());
-			map.get(log[0]).add(log[1]);
+			map.computeIfAbsent(log[0], z -> new HashSet<>()).add(log[1]);
 		}
 
 		int[] ans = new int[k];
