@@ -1191,9 +1191,6 @@ public class SearchAndBacktracking {
 		return;
 	}
 
-	// 212. Word Search II
-	// DFS + Trie, 用trie来来加速搜索，这样如果有很多前缀一致的单词可以更快搜到
-
 	// 301. Remove Invalid Parentheses
 	// 此题关键是找出到底最少需要删掉多少左括号，多少右括号，知道这个信息，然后dfs即可
 	// 核心在于先扫描一遍string，如果遇到'('，left++，因为这个'('可能会和后面的某个右括号匹配。left只会>=0。

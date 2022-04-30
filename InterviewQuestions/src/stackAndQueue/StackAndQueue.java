@@ -507,7 +507,6 @@ public class StackAndQueue {
 		Arrays.sort(intervals, new Comparator<int[]>() {
 			@Override
 			public int compare(int[] o1, int[] o2) {
-				Integer.compare(o2[0], o1[0]);
 				return o1[0] - o2[0];
 			}
 		});

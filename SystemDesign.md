@@ -37,6 +37,7 @@ https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
 * How fast does the company anticipate to scale up? What are the anticipated scales in 3 months, 6 months, and a year?
 * What is the company’s technology stack? What existing services you might leverage to simplify the design?
 * development cost vs maintenance cost
+* edge cases to support
 * Consistency level
 
 0. General Requirements Clarification:
@@ -139,7 +140,7 @@ https://www.youtube.com/watch?v=1TIzPL4878Q&list=PLcb8lnLqm6_pn_fnHgRNlVAxNIXdYX
 ## The Four Golden Signals for monitoring:
 Latency, Traffic, Errors, Saturation
 
-# Stream Provessing Platforms
+# Stream Processing Platforms
 * Apache Flink: is a streaming engine. Flink stream processing is designed to achieve end2end exactly once processing semantics in face of failures.
 * Akka Streams: is a library implementing asynchronous non-blocking backpressure (as per reactive streams specification) to guarantee the memory boundedness during execution. (Good for crawler)
 * Apache Spark: is a streaming engine. it natively supports batch processing and stream processing (micro Batch). Spark leverages micro batching for streaming which provides near real-time processing. Flink offers true native streaming, while Spark uses micro batches to emulate streaming. That means Flink processes each event in real-time and provides very low latency. Spark, by using micro-batching, can only deliver near real-time processing.

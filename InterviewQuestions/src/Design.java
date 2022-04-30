@@ -3,9 +3,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
@@ -557,6 +559,33 @@ public class Design {
 			for (int num : count)
 				res.add(num);
 			return res;
+		}
+	}
+
+	// 362. Design Hit Counter
+	class HitCounter {
+		private Queue<Integer> hits;
+
+		/** Initialize your data structure here. */
+		public HitCounter() {
+			this.hits = new LinkedList<Integer>();
+		}
+
+		// record a hit
+		public void hit(int timestamp) {
+			this.hits.add(timestamp);
+		}
+
+		// Return the number of hits in the past 5 minutes.
+		public int getHits(int timestamp) {
+			while (!this.hits.isEmpty()) {
+				int diff = timestamp - this.hits.peek();
+				if (diff >= 300)
+					this.hits.remove();
+				else
+					break;
+			}
+			return this.hits.size();
 		}
 	}
 }

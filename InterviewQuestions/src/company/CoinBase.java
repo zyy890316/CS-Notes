@@ -14,6 +14,15 @@ package company;
 // https://www.1point3acres.com/bbs/thread-807965-1-1.html
 // https://leetcode.com/discuss/interview-experience/923447/coinbase-sde-bay-area-2020-reject
 // https://www.1point3acres.com/bbs/thread-642147-1-1.html
+
+//system design
+// 比特币交易平台
+// 设计信用卡申请的验证系统
+
 public class CoinBase {
+	// 有一些transaction，
+	// 每一个transaction都有一个size和fee。我们要从这些transaction中挑出一些，条件是选出来的transaction的size总和不能超过一个limit，同时最大化fee。
+	// list iterator，range iterator
+	// 换汇
 
 }

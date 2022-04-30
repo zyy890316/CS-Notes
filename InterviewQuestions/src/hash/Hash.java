@@ -63,6 +63,7 @@ public class Hash {
 		for (int i = 0; i < len; i++) {
 			if (s.substring(indices[i], indices[i] + sources[i].length()).equals(sources[i])) {
 				Integer[] indexes = new Integer[2];
+				// has to store i here, so later we can find right target to replace
 				indexes[0] = i;
 				indexes[1] = sources[i].length();
 				map.put(indices[i], indexes);

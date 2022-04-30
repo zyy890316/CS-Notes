@@ -16,7 +16,7 @@ import java.util.Set;
 // 3. We want to build a feed reader application similar to Google Reader
 // 4. design slack
 // 5. 给两个stream，一个是tweet的stream一个是tweet_view 这个action的stream，格式是(tweet_id, viewer_id, timestamp)，想要实现一个API给企‍‍‌‌‌‍‌‌‌‍‌‌‍‌‌‌‌‌‌‍业用户，显示实时的某广告tweet的views数量并做成折线图之类的output
-// 6. distrubuted message queue
+// 6. distributed message queue
 // 7. 常见的在线游戏
 // 8. rate limiter
 public class Twitter {
@@ -116,8 +116,12 @@ public class Twitter {
 				break;
 			if (tx > ty) {
 				if (ty > sy)
+					// essentially: while tx > ty: tx -= ty
 					tx %= ty;
 				else
+					// if say tx > ty and ty <= sy, then we know ty will not be changing (it can
+					// only decrease). Thus, only tx will change, and it can only change by
+					// subtracting by ty.
 					return (tx - sx) % ty == 0;
 			} else {
 				if (tx > sx)

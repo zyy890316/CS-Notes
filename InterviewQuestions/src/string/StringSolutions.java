@@ -120,7 +120,7 @@ public class StringSolutions {
 		return r - l - 1;
 	}
 
-	// 回文子字符串个数
+	// 647. Palindromic Substrings 回文子字符串个数
 	public int countSubstrings(String s) {
 		int sum = 0;
 		for (int i = 0; i < s.length(); i++) {

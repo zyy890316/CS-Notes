@@ -69,6 +69,20 @@ public class Array {
 		return ans;
 	}
 
+	// 1248. Count Number of Nice Subarrays
+	// 类似前缀和的方法
+	public int numberOfSubarrays(int[] nums, int k) {
+		int cur = 0, ans = 0;
+		Map<Integer, Integer> map = new HashMap<>();
+		map.put(0, 1);
+		for (int i = 0; i < nums.length; i++) {
+			cur += nums[i] % 2 == 1 ? 1 : 0;
+			map.put(cur, map.getOrDefault(cur, 0) + 1);
+			ans += map.getOrDefault(cur - k, 0);
+		}
+		return ans;
+	}
+
 	// 数组的度：[1,2,2,3,1,4,2]
 	// 数组的度定义为元素出现的最高频率，例如上面的数组度为 3。要求找到一个最小的子数组，这个子数组的度和原数组一样。
 	public int findShortestSubArray(int[] nums) {
