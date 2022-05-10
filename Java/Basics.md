@@ -47,6 +47,7 @@ pq.offer(int), pq.poll```
 * ```random = new Random();``` ```random.nextInt(list.size());```
 * ```s.split("\\s+")```
 * ```int[] st = Arrays.stream(string.split(":")).mapToInt(Integer::parseInt).toArray();```
+* ```Iterator<Map.Entry<String, String>> itr = map.entrySet().iterator();```
 
 # LinkedList and ArrayList
 LinkedList and ArrayList are two different implementations of the List interface. LinkedList implements it with a doubly-linked list. ArrayList implements it with a dynamically re-sizing array.
