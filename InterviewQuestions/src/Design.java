@@ -30,7 +30,7 @@ public class Design {
 
 	// 146. LRU Cache
 	// 或者用 Hashmap + DoubleLinkedList, Map<Integer, DLinkedNode> cache = new
-	// HashMap<>();
+	// LinkedHashMap<>();
 	@SuppressWarnings("serial")
 	class LRUCache<K, V> extends LinkedHashMap<K, V> {
 		private int capacity;

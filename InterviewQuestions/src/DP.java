@@ -490,6 +490,7 @@ public class DP {
 	// 0-1 背包
 	// https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20题解%20-%20动态规划.md#0-1-背包
 	// https://www.youtube.com/watch?v=CO0r6kcwHUU
+	// 完全背包：dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - weight] + value);
 	public int knapsack(int W, int N, int[] weights, int[] values) {
 		// 其中 dp[i][j] 表示前 i 件物品在背包承重不超过 j 的情况下能达到的最大价值
 		int[][] dp = new int[N + 1][W + 1];

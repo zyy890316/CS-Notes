@@ -65,7 +65,7 @@ public class CoinBase {
 
 	// list iterator: https://www.1point3acres.com/bbs/thread-831571-1-1.html
 	// https://techdevguide.withgoogle.com/resources/former-interview-question-flatten-iterators/
-	class InterleavingFlattener<T> {
+	class InterleavingFlattener<T> implements Iterator<T> {
 		private Queue<Iterator<T>> iterqueue;
 
 		public InterleavingFlattener(Iterator<T>[] iterlist) {
@@ -92,6 +92,7 @@ public class CoinBase {
 	}
 
 	public static void interleavePrint(List<List<Integer>> input) {
+		input.stream().map(i -> i.iterator()).collect(Collectors.toList());
 		int numOfLists = input.size();
 		int printedLists = 0;
 		List<Integer> ans = new ArrayList<>();
