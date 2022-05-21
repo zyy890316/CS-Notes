@@ -17,6 +17,11 @@ import java.util.TreeMap;
 
 import tree.TreeNode;
 
+// system design:
+// google calender
+// 设计blocked ip
+// Design an access control system for all micro services in Linkedin
+// url shortener
 public class LinkedIn {
 
 	public static void main(String[] args) {

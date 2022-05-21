@@ -367,9 +367,6 @@ public class StackAndQueue {
 		}
 	}
 
-	// 636. Exclusive Time of Functions 程序执行时间，直接用堆栈即可
-	// https://leetcode.com/problems/exclusive-time-of-functions/
-
 	// 84. Largest Rectangle in Histogram
 	// 分别从左右遍历两次，拿到两个index数组，分别对应每个元素向左/右看有多少大于等于当前元素高度的
 	// 利用这个两个index数组，就能得到当前元素作为高度的长方形

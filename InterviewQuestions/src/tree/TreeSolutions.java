@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -1053,5 +1054,29 @@ public class TreeSolutions {
 			return 0;
 		}
 		return Math.max(getHeight(root.left), getHeight(root.right)) + 1;
+	}
+
+	// 272. Closest Binary Search Tree Value II
+	// Inorder travels first
+	// then sort, can also use heap/quick select to get top N
+	public void inorder(TreeNode root, List<Integer> nums) {
+		if (root == null)
+			return;
+		inorder(root.left, nums);
+		nums.add(root.val);
+		inorder(root.right, nums);
+	}
+
+	public List<Integer> closestKValues(TreeNode root, double target, int k) {
+		List<Integer> nums = new ArrayList<>();
+		inorder(root, nums);
+
+		Collections.sort(nums, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return Math.abs(o1 - target) < Math.abs(o2 - target) ? -1 : 1;
+			}
+		});
+		return nums.subList(0, k);
 	}
 }

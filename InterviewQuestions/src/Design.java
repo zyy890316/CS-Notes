@@ -54,6 +54,7 @@ public class Design {
 
 	// 380. Insert Delete GetRandom O(1)
 	// HashMap + ArrayList
+	// Map里面存对应的list的index，list里面存实际值
 	class RandomizedSet {
 		final Map<Integer, Integer> map;
 		final List<Integer> list;
@@ -314,7 +315,7 @@ public class Design {
 	}
 
 	// 271. Encode and Decode Strings
-	// use 4 bytes to represent the length of the next chunck
+	// use 4 bytes to represent the length of the next chunk
 	// Encodes string length to bytes string
 	public String intToString(String s) {
 		int x = s.length();
