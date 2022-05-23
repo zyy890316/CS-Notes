@@ -266,7 +266,7 @@ public class Graph {
 		}
 	}
 
-	// Account Merge
+	// 721. Account Merge
 	// https://leetcode.com/problems/accounts-merge/
 	// DSU, 每个email先连到当前账户index上，然后
 	public List<List<String>> accountsMerge(List<List<String>> accountList) {

@@ -356,4 +356,7 @@ public class Array {
 			return new Pair<Integer, Integer>(deltaX / gcd, deltaY / gcd);
 		}
 	}
+
+	// 528. Random Pick with Weight
+	// prefix Sum
 }

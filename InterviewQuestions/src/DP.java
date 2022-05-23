@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 // 残酷刷题群算法小讲座：动态规划的套路 - https://www.youtube.com/watch?v=FLbqgyJ-70I
 public class DP {
@@ -1470,5 +1471,51 @@ public class DP {
 			}
 		}
 		return dp[0][n - 1];
+	}
+
+	// 730. Count Different Palindromic Subsequences
+	// https://leetcode.com/problems/count-different-palindromic-subsequences/discuss/109509/Accepted-Java-Solution-using-memoization
+	// it will first check the string [a...a, b...b, c...c, d...d], then goes to
+	// next level.
+	// For a...a in next level, it will check [aa...a, ab...a, ac...a, ad...a].
+	public int countPalindromicSubsequences(String S) {
+		TreeSet<Integer>[] characters = (TreeSet<Integer>[]) new TreeSet[26];
+		int len = S.length();
+
+		for (int i = 0; i < 26; i++)
+			characters[i] = new TreeSet<Integer>();
+
+		for (int i = 0; i < len; ++i) {
+			int c = S.charAt(i) - 'a';
+			characters[c].add(i);
+		}
+		Integer[][] dp = new Integer[len + 1][len + 1];
+		return memo(characters, dp, 0, len);
+	}
+
+	public int memo(TreeSet<Integer>[] characters, Integer[][] dp, int start, int end) {
+		int div = 1000000007;
+		if (start >= end)
+			return 0;
+		if (dp[start][end] != null)
+			return dp[start][end];
+
+		long ans = 0;
+
+		for (int i = 0; i < 26; i++) {
+			Integer new_start = characters[i].ceiling(start);
+			Integer new_end = characters[i].lower(end);
+			if (new_start == null || new_start >= end)
+				continue;
+			// means we at least get a single char palindrome like a
+			ans++;
+			if (new_start != new_end)
+				// means we at least get single char palindrome like aa
+				ans++;
+			ans += memo(characters, dp, new_start + 1, new_end);
+
+		}
+		dp[start][end] = (int) (ans % div);
+		return dp[start][end];
 	}
 }
