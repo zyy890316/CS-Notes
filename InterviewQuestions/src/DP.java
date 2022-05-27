@@ -1507,10 +1507,10 @@ public class DP {
 			Integer new_end = characters[i].lower(end);
 			if (new_start == null || new_start >= end)
 				continue;
-			// means we at least get a single char palindrome like a
+			// means we at least get a single char palindrome like "a"
 			ans++;
 			if (new_start != new_end)
-				// means we at least get single char palindrome like aa
+				// means we at least get double char palindrome like "aa"
 				ans++;
 			ans += memo(characters, dp, new_start + 1, new_end);
 
