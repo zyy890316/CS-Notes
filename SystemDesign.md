@@ -6,6 +6,7 @@
 * System Design: Designing a distributed Job Scheduler:
 https://leetcode.com/discuss/general-discussion/1082786/System-Design%3A-Designing-a-distributed-Job-Scheduler-or-Many-interesting-concepts-to-learn
 https://dropbox.tech/infrastructure/asynchronous-task-scheduling-at-dropbox
+* 系统设计面试准备心得 https://www.1point3acres.com/bbs/thread-1013082-1-1.html 
 
 # Restful API Design:
 * Endpoint: https://api_domain/version/collection/

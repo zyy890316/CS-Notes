@@ -10,6 +10,7 @@ public class BinarySearch {
 	// 两种分法都是追求在l = r - 1时，仍能继续缩小范围：
 	// [l, r]划分成[l, mid]和[mid + 1, r], mid = l + r >> 1
 	// [l, r]划分成[l, mid - 1]和[mid, r]，mid = l + r + 1 >> 1
+	// return l;
 
 	// 如果l r可以为负值，则需另外模板：
 	// while (l <= r)

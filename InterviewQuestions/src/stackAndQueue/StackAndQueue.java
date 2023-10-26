@@ -13,8 +13,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
-import javafx.util.Pair;
-
 public class StackAndQueue {
 	public static void main(String args[]) {
 		decodeString("2[abc]3[cd]ef");
