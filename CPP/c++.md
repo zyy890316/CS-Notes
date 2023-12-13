@@ -1,4 +1,27 @@
 # C++ Learning
+C++ for Java Programmers: go/totw/154#tip-of-the-week-154-c-for-java-programmers-–-part-1  go/totw/156#tip-of-the-week-156-c-for-java-programmers-–-part-2 
+
+Key Take Aways from C++98 to C++20
+1. C++ Not a OO language, it allows functions to be alive wihtout a class, more like
+a function language with OO ability
+2. Deterministic Object Lifetime
+3. RAII: destructors can be used because #2 above
+4. Templates ```Template<Typpename T>```
+5. ```auto``` keyword makes templates much easier to use, also return type deduction added in C++14
+6. Ranged-for-loops, goes well with ```auto``` as well
+7. lambdas, later in C++14 generalized capture expression
+8. Variadic templates ```Template<Typpename ... T>``` https://www.youtube.com/watch?v=o1EvPhz6UNE
+9. ```unique_ptr``` the unique owner of what it points to, so it will be responsible to delete what it points to https://www.youtube.com/watch?v=AmjoK55h68Y
+```std::make_unique``` introduced in C++14, no more ```new``` and ```delete```!
+10. ```constexpr``` and ```constexpr``` in lambda
+11. Guaranteed Copy Elision: compiler optimization to avoid unnecessary copy/move https://www.youtube.com/watch?v=IZbL-RGr_mk
+12. Class template argument deduction https://www.youtube.com/watch?v=dEBQL4KPSk8
+13. Structured binding:
+    * > std::pair<int, int> p(1, 2);\
+        auto [first, second] = p;
+14. if-init expressions: can initialize locale variables that valid for the entire if block
+15. Designated initializers: initialize structs in a readable way
+
 ## Language
 * ```const vector<Student>& getStudents() const{``` first constant is to say the returned value should not be modified. 
 The second const is to say the function will not change any internal value.
